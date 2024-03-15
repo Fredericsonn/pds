@@ -1,8 +1,8 @@
 package uiass.gisiba.eia.java.dao.crm;
 
-import uiass.gisiba.eia.java.entity.crm.Contact;
+import uiass.gisiba.eia.java.entity.crm.Person;
 
 public interface iContactDao {
 
-    Contact getContactById(int id);
+    Person getContactById(int id);
 }

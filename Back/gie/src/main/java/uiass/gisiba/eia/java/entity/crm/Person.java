@@ -5,7 +5,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "Customer")
-public class Contact {
+public class Person {
 	
 	@Id
 	@GeneratedValue(strategy =GenerationType.IDENTITY)
@@ -29,14 +29,14 @@ public class Contact {
 	
 	// Constructor for regular contacts
 
-	public Contact(String fname, String lname, String phoneNum) {
+	public Person(String fname, String lname, String phoneNum) {
 		
 		this.firstName = fname;
 		this.lastName = lname;
 		this.phoneNumber = phoneNum;
 	}
 
-	public Contact() {
+	public Person() {
 
 	}
 
