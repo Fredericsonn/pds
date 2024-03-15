@@ -4,51 +4,32 @@ package uiass.gisiba.eia.java.entity.crm;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Customer")
-public class Person {
-	
-	@Id
-	@GeneratedValue(strategy =GenerationType.IDENTITY)
-	private int id;
-	
+@DiscriminatorValue("Person")
+@Table(name = "Person")
+public class Person extends Contact {
+
 	@Column(name="first_name")
 	private String firstName;
 	
 	@Column(name="last_name")
 	private String lastName;
 	
-	@Column(name="phone_number")
-	private String phoneNumber;
 
-	@Column(name="email")
-	private String email;
 
-	@OneToOne(mappedBy = "contact")
-	private Address address;
 	
 	
 	// Constructor for regular contacts
 
-	public Person(String fname, String lname, String phoneNum) {
-		
+	public Person(int id,String fname, String lname, String phoneNum, String email, Address address) {
+		super(id,phoneNum,email,address);
 		this.firstName = fname;
 		this.lastName = lname;
-		this.phoneNumber = phoneNum;
 	}
 
-	public Person() {
 
-	}
 
 	// Getters - Setters
 	
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	public String getFirstName() {
 		return firstName;
@@ -66,13 +47,7 @@ public class Person {
 		this.lastName = lastName;
 	}
 
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
 
 	
 	
