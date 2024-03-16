@@ -6,6 +6,7 @@ import javax.persistence.EntityTransaction;
 import uiass.gisiba.eia.java.entity.crm.Address;
 
 public class AddressDao implements iAddressDao {
+	
 	private EntityManager em;
 	private EntityTransaction tr;
 
@@ -32,27 +33,26 @@ public class AddressDao implements iAddressDao {
     }
 	@Override
 	public boolean removeAddress(String country, String city, int zipCode, String region, String neighborhood,
-			int houseNumber) {
+		int houseNumber) {
 
 				
 
-				try {
+		try {
 
-					tr.begin();
-					Address address = em.find(Address.class, new Address(country, city, 
-					zipCode, region, neighborhood, houseNumber));
-					if (address != null) {
-						em.remove(address);
-						return true;
-					}
-					tr.commit();
+			tr.begin();
+			Address address = em.find(Address.class, new Address(country, city, 
+			zipCode, region, neighborhood, houseNumber));
+			if (address != null) {
+				em.remove(address);
+				return true;
+			}
+			tr.commit();
 
-				}catch(Exception e) {
-					tr.rollback();
-					System.out.println("This address doen't exist in the system !!");
-		
-				}
-			return false;
+		}catch(Exception e) {
+			tr.rollback();
+			System.out.println("This address doen't exist in the system !!");
+		}
+		return false;
 	}
 
 }
