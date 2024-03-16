@@ -1,5 +1,9 @@
 package uiass.gisiba.eia.java.entity.crm;
 
+import java.io.Serializable;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,11 +11,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.OneToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class Contact {
+public class Contact implements Serializable {
 
     @Id
 	@GeneratedValue(strategy =GenerationType.IDENTITY)
@@ -23,16 +28,13 @@ public abstract class Contact {
 	@Column(name="email")
 	private String email;
 
-	@OneToOne(mappedBy = "contact")
-	private Address address;
+  
 
     // Constructor 
 
-    public Contact(int id, String phoneNumber, String email, Address address) {
-        this.id = id;
+    public Contact(String phoneNumber, String email, List<Address> addresses) {
         this.phoneNumber = phoneNumber;
         this.email = email;
-        this.address = address;
     }
 
     // Getters - Setters
@@ -61,13 +63,8 @@ public abstract class Contact {
         this.email = email;
     }
 
-    public Address getAddress() {
-        return address;
-    }
 
-    public void setAddress(Address address) {
-        this.address = address;
-    }
+
 
     
 }

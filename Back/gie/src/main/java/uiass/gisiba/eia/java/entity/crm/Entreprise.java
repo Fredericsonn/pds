@@ -1,5 +1,7 @@
 package uiass.gisiba.eia.java.entity.crm;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -17,11 +19,11 @@ public class Entreprise extends Contact {
 
     // Constructor
     
-    public Entreprise(int id, String entrepriseName, EntrepriseType type, String phoneNumber,
+    public Entreprise(String entrepriseName, EntrepriseType type, String phoneNumber,
     
-    String email, Address address) {
+    String email, List<Address> addresses) {
         
-        super(id,phoneNumber,email,address);
+        super(phoneNumber,email,addresses);
         this.entrepriseName = entrepriseName;
         this.type = type;
     }

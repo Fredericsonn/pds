@@ -1,33 +1,43 @@
 package uiass.gisiba.eia.java.entity.crm;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 
 @Entity
 public class Address {
 
-    @Embedded
-    private String country;
+	@Id
+	@GeneratedValue(strategy =GenerationType.IDENTITY)
+	@Column(name = "adress_id")
+	private int addressId;
 
-    @Column(name = "zip_code", insertable = false, updatable = false)
+    @Column(name = "house_number")
+    private int houseNumber;
+
+	@Column(name = "neighborhood")
+    private String neighborhood;
+
+	@Column(name = "city")
+    private String city;
+
+    @Column(name = "zip_code")
     private int zipCode;
 
     @Column(name = "region")
     private String region;
 
-    @Column(name = "city")
-    private String city;
+	@Column(name="country")
+    private String country;
 
-    @Column(name = "neighborhood")
-    private String neighborhood;
-
-    @Column(name = "house_number")
-    private int houseNumber;
+    //Constructor
 
     public Address(String country, String city, int zipCode, String region, String neighborhood, int houseNumber) {
-        this.country = country;
+		this.country = country;
+		this.city = city;
         this.zipCode = zipCode;
         this.region = region;
         this.neighborhood = neighborhood;
@@ -81,5 +91,20 @@ public class Address {
 	public void setHouseNumber(int houseNumber) {
 		this.houseNumber = houseNumber;
 	}
+
+	public int getAddressId() {
+		return addressId;
+	}
+
+	public void setAddressId(int addressId) {
+		this.addressId = addressId;
+	}
+
+	public String formulateAddress() {
+		return this.houseNumber + " " +  this.neighborhood + " " + this.city + ", " + this.zipCode + ", "  
+		+ this.region +  ", " + this.country;
+	}
+
+
    
 }

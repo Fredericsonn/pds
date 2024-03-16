@@ -1,6 +1,8 @@
 package uiass.gisiba.eia.java.entity.crm;
 
 
+import java.util.List;
+
 import javax.persistence.*;
 
 @Entity
@@ -14,14 +16,11 @@ public class Person extends Contact {
 	@Column(name="last_name")
 	private String lastName;
 	
-
-
+	// Constructor
 	
-	
-	// Constructor for regular contacts
-
-	public Person(int id,String fname, String lname, String phoneNum, String email, Address address) {
-		super(id,phoneNum,email,address);
+	public Person(String fname, String lname, String phoneNum, String email, List<Address> address) {
+		
+		super(phoneNum,email,address);
 		this.firstName = fname;
 		this.lastName = lname;
 	}
