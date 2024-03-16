@@ -1,29 +1,30 @@
 package uiass.gisiba.eia.java.entity.crm;
 
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 @Entity
 @DiscriminatorValue("Entreprise")
-public class Entreprise extends Contact {
+public class Enterprise extends Contact {
 	
-    @Column(name="Entrprise Name")
+    @Column(name="Entrprise_Name")
     private String entrepriseName;
 
-    @Column(name="type")
+    @Enumerated(EnumType.STRING)
     private EntrepriseType type;
 
 
     // Constructor
     
-    public Entreprise(String entrepriseName, EntrepriseType type, String phoneNumber,
+    public Enterprise(String entrepriseName, EntrepriseType type, String phoneNumber,
     
-    String email, List<Address> addresses) {
+    String email, Address address) {
         
-        super(phoneNumber,email,addresses);
+        super(phoneNumber,email,address);
         this.entrepriseName = entrepriseName;
         this.type = type;
     }

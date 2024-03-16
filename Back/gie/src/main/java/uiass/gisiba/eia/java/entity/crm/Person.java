@@ -1,13 +1,10 @@
 package uiass.gisiba.eia.java.entity.crm;
 
 
-import java.util.List;
-
 import javax.persistence.*;
 
 @Entity
 @DiscriminatorValue("Person")
-@Table(name = "Person")
 public class Person extends Contact {
 
 	@Column(name="first_name")
@@ -18,7 +15,7 @@ public class Person extends Contact {
 	
 	// Constructor
 	
-	public Person(String fname, String lname, String phoneNum, String email, List<Address> address) {
+	public Person(String fname, String lname, String phoneNum, String email, Address address) {
 		
 		super(phoneNum,email,address);
 		this.firstName = fname;

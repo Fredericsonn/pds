@@ -12,7 +12,7 @@ public class Address {
 
 	@Id
 	@GeneratedValue(strategy =GenerationType.IDENTITY)
-	@Column(name = "adress_id")
+	@Column(name = "address_id")
 	private int addressId;
 
     @Column(name = "house_number")
@@ -25,7 +25,7 @@ public class Address {
     private String city;
 
     @Column(name = "zip_code")
-    private int zipCode;
+    private String zipCode;
 
     @Column(name = "region")
     private String region;
@@ -35,7 +35,7 @@ public class Address {
 
     //Constructor
 
-    public Address(String country, String city, int zipCode, String region, String neighborhood, int houseNumber) {
+    public Address(String country, String city, String zipCode, String region, String neighborhood, int houseNumber) {
 		this.country = country;
 		this.city = city;
         this.zipCode = zipCode;
@@ -52,11 +52,11 @@ public class Address {
 		this.country = country;
 	}
 
-	public int getZipCode() {
+	public String getZipCode() {
 		return zipCode;
 	}
 
-	public void setZipCode(int zipCode) {
+	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
 	}
 

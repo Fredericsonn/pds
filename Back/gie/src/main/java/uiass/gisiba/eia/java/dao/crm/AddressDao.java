@@ -15,7 +15,7 @@ public class AddressDao implements iAddressDao {
 	    this.tr=em.getTransaction();
 	}
     @Override
-    public void addAddress(String country, String city, int zipCode, String region, String neighborhood, int houseNumber) {
+    public void addAddress(String country, String city, String zipCode, String region, String neighborhood, int houseNumber) {
 
         Address address = new Address(country, city, zipCode, region, neighborhood, houseNumber);
 
@@ -32,7 +32,7 @@ public class AddressDao implements iAddressDao {
 		}
     }
 	@Override
-	public boolean removeAddress(String country, String city, int zipCode, String region, String neighborhood,
+	public boolean removeAddress(String country, String city, String zipCode, String region, String neighborhood,
 		int houseNumber) {
 
 				

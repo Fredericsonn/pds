@@ -1,25 +1,26 @@
 package uiass.gisiba.eia.java.entity.crm;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
 
 @Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "contact_type")
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 public class Contact implements Serializable {
 
     @Id
-	@GeneratedValue(strategy =GenerationType.IDENTITY)
+	@GeneratedValue(strategy =GenerationType.AUTO)
 	private int id;
 	
 	@Column(name="phone_number")
@@ -28,13 +29,15 @@ public class Contact implements Serializable {
 	@Column(name="email")
 	private String email;
 
-  
+    @OneToOne(cascade = CascadeType.ALL)
+    private Address address;
 
     // Constructor 
 
-    public Contact(String phoneNumber, String email, List<Address> addresses) {
+    public Contact(String phoneNumber, String email, Address address) {
         this.phoneNumber = phoneNumber;
         this.email = email;
+        this.address = address;
     }
 
     // Getters - Setters
@@ -63,6 +66,15 @@ public class Contact implements Serializable {
         this.email = email;
     }
 
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    
 
 
 
