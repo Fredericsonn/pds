@@ -57,66 +57,79 @@ public class ContactDao implements iContactDao {
 	}
 
 	@Override
-    public Contact getContactById(int id) throws ContactIdNotFound {
+    public Contact getContactById(int id, String contactType) throws ContactIdNotFound,InvalidContactType {
 
-		Contact contact = em.find(Contact.class, id);
+		if (contactType == Person.class.getSimpleName()) {
 
-		if (contact != null) return contact;
+			Contact contact = em.find(Person.class, id);
 
-		throw new ContactIdNotFound(id);
+			if (contact != null) return contact;
+			throw new ContactIdNotFound(id);
+		}
+
+		if (contactType == Person.class.getSimpleName()) {
+
+			Contact contact = em.find(Enterprise.class, id);
+			
+			if (contact != null) return contact;
+			throw new ContactIdNotFound(id);
+		}
+
+
+		throw new InvalidContactType(contactType);
 	
     }
 
+	// gets all objects of a given entity type
 	public List getAll(String table) {
 
-		Query query = em.createQuery("from " + table + ";");
+		Query query = em.createQuery("from " + table);
 		
 		return query.getResultList();		
 	}
 
 	@Override
-	public List<Contact> getAllContacts() {
+	public List<Contact> getAllContacts(String contactType) {
 
-		return this.getAll("contact");
-	}
-
-	@Override
-	public List getAllContactsByType(String type) throws InvalidContactType {
-
-		if (type == Person.class.getSimpleName() || type == Enterprise.class.getSimpleName()) {
-			return this.getAll(type);
-		}
-		throw new InvalidContactType(type);
+		return this.getAll(contactType);
 	}
 
     @Override
-    public void updateContact(int id, String fname, String lname,String enterprise_name, EntrepriseType type,
-    
-    String phone_number, String email, int address_id) throws ContactIdNotFound {
+    public void updateContact(int id,Map<String,Object> columnsNewValues, String contactType) throws ContactIdNotFound, InvalidContactType {
 
-		Contact contact = this.getContactById(id);
-		List<Map<String,Boolean>> columns = new ArrayList<Map<String,Boolean>>();
-		List parameters = UpdateManager.attributeSelecter(contact, fname, lname, enterprise_name, type, phone_number, email, address_id);
-        Map<String,Boolean> columnsUpdateState = UpdateManager.columnsToUpdate(contact, id, fname, lname,
-    
-		enterprise_name, type, phone_number, email, address_id);
+		tr.begin();
+		// get the contact to update :
+		Contact contact = this.getContactById(id,contactType);
 
-		String hql = UpdateManager.UpdateHQLQueryGenerator(contact, columnsUpdateState);
+		//dynamically generate the corresponding hql string :
+		String hql = UpdateManager.UpdateHQLQueryGenerator(contactType, columnsNewValues);
+
+		// create the query using the generated hql :
 		Query query = em.createQuery(hql);
-        for (Map.Entry<String, Boolean> entry : columnsUpdateState.entrySet()) {
-            Map<String,Boolean> pair = new HashMap<String,Boolean>();
-            pair.put(entry.getKey(), entry.getValue());
-            columns.add(pair);
+
+		// set the query parameters :
+        for (String column : columnsNewValues.keySet()) {
+
+			Object newValue = columnsNewValues.get(column);
+            
+            query.setParameter(column, newValue);
+            
         }
 
-        for (int i = 0; i < columns.size(); i ++) {
-            if (columnsUpdateState.get(columns.get(i)) == true){
-                query.setParameter(i, parameters.get(i));
-            } 
-        }
+		query.setParameter("id", id);
 
         query.executeUpdate();
+
+		tr.commit();
     }
+
+
+
+	@Override
+	public void notifyContact(int id, String msg) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'notifyContact'");
+	}
 
 
 

@@ -33,7 +33,7 @@ public class Address {
 	@Column(name="country")
     private String country;
 
-    //Constructor
+    // Constructors
 
     public Address(String country, String city, String zipCode, String region, String neighborhood, int houseNumber) {
 		this.country = country;
@@ -43,6 +43,10 @@ public class Address {
         this.neighborhood = neighborhood;
         this.houseNumber = houseNumber;
     }
+
+	public Address() {
+		
+	}
 
     public String getCountry() {
 		return country;

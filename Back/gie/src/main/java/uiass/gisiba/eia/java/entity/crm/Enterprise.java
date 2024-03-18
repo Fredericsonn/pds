@@ -18,7 +18,7 @@ public class Enterprise extends Contact {
     private EntrepriseType type;
 
 
-    // Constructor
+    // Constructors
     
     public Enterprise(String entrepriseName, EntrepriseType type, String phoneNumber,
     
@@ -27,6 +27,10 @@ public class Enterprise extends Contact {
         super(phoneNumber,email,address);
         this.entrepriseName = entrepriseName;
         this.type = type;
+    }
+
+    public Enterprise() {
+
     }
 
 
@@ -49,7 +53,11 @@ public class Enterprise extends Contact {
         this.type = type;
     }
 
-
+	@Override
+	public String toString() {
+		return "Enterprise Name : " + this.entrepriseName + ", type : " + type + ", id : " + this.getId() + ", phone number : " + 
+		this.getPhoneNumber() + ", email : " + this.getEmail() + ", address : " + this.getAddress().formulateAddress();
+	}
 
     
 

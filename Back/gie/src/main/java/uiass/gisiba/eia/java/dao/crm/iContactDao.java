@@ -1,7 +1,7 @@
 package uiass.gisiba.eia.java.dao.crm;
 
 
-import java.util.List;
+import java.util.*;
 
 import uiass.gisiba.eia.java.dao.exceptions.*;
 import uiass.gisiba.eia.java.entity.crm.Address;
@@ -14,14 +14,12 @@ public interface iContactDao {
 
     void addContact(String entrepriseName, EntrepriseType type, String phoneNumber, String email, Address address);
 
-    Contact getContactById(int id) throws ContactIdNotFound;
+    Contact getContactById(int id, String contactType) throws ContactIdNotFound,InvalidContactType;
 
-    List<Contact> getAllContacts();
+    List<Contact> getAllContacts(String contactType);
 
-    List getAllContactsByType(String type) throws InvalidContactType;
+    void updateContact(int id, Map<String,Object> columnsNewValues,String contactType) throws ContactIdNotFound,InvalidContactType;
 
-    void updateContact(int id, String fname, String lname,String enterprise_name, EntrepriseType type,
-    
-    String phone_number, String email, int address_id) throws ContactIdNotFound;
+    void notifyContact(int id, String msg);
 
 }

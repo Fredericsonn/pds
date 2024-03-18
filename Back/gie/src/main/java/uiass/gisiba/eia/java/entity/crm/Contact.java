@@ -12,12 +12,13 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 
 
-@Entity
+@MappedSuperclass
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "contact_type")
-@Inheritance(strategy=InheritanceType.JOINED)
 public class Contact implements Serializable {
 
     @Id

@@ -13,13 +13,17 @@ public class Person extends Contact {
 	@Column(name="last_name")
 	private String lastName;
 	
-	// Constructor
+	// Constructors
 	
 	public Person(String fname, String lname, String phoneNum, String email, Address address) {
 		
 		super(phoneNum,email,address);
 		this.firstName = fname;
 		this.lastName = lname;
+	}
+
+	public Person() {
+
 	}
 
 
@@ -41,6 +45,12 @@ public class Person extends Contact {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	@Override
+	public String toString() {
+		return this.firstName + " " + this.lastName + ", id : " + this.getId() + ", phone number : " + 
+		this.getPhoneNumber() + ", email : " + this.getEmail() + ", address : " + this.getAddress().formulateAddress();
 	}
 
 
