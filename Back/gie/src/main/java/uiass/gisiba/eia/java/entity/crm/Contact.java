@@ -11,16 +11,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 
 @Entity
 @DiscriminatorColumn(name = "contact_type")
-@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy=InheritanceType.JOINED)
 public class Contact implements Serializable {
 
     @Id
-	@GeneratedValue(strategy =GenerationType.AUTO)
+	@GeneratedValue(strategy =GenerationType.IDENTITY)
 	private int id;
 	
 	@Column(name="phone_number")
@@ -30,14 +31,19 @@ public class Contact implements Serializable {
 	private String email;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
     private Address address;
 
-    // Constructor 
+    // Constructors
 
     public Contact(String phoneNumber, String email, Address address) {
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.address = address;
+    }
+
+    public Contact() {
+        
     }
 
     // Getters - Setters

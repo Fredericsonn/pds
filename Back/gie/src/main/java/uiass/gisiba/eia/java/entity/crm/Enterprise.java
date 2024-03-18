@@ -11,7 +11,7 @@ import javax.persistence.Enumerated;
 @DiscriminatorValue("Entreprise")
 public class Enterprise extends Contact {
 	
-    @Column(name="Entrprise_Name")
+    @Column(name="enterprise_name")
     private String entrepriseName;
 
     @Enumerated(EnumType.STRING)
