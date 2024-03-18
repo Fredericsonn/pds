@@ -20,6 +20,5 @@ public interface iContactDao {
 
     void updateContact(int id, Map<String,Object> columnsNewValues,String contactType) throws ContactIdNotFound,InvalidContactType;
 
-    void notifyContact(int id, String msg);
 
 }

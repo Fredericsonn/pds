@@ -125,11 +125,6 @@ public class ContactDao implements iContactDao {
 
 
 
-	@Override
-	public void notifyContact(int id, String msg) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'notifyContact'");
-	}
 
 
 
