@@ -11,6 +11,7 @@ import uiass.gisiba.eia.java.dao.exceptions.ContactNotFound;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactType;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
+import uiass.gisiba.eia.java.entity.crm.Enterprise;
 import uiass.gisiba.eia.java.entity.crm.Person;
 
 public class AppTest {
@@ -23,13 +24,23 @@ public class AppTest {
 
         ContactDao contactDao = new ContactDao();
         AddressDao adao = new AddressDao();
+
         try {
+            System.out.println(contactDao.getContactByName("Moore-Sanchez", Enterprise.class.getSimpleName()));
+        } catch (ContactNotFound | InvalidContactType e) {
+
+            e.printStackTrace();
+        }
+        /*try {
             System.out.println(contactDao.getContactByName("Alyssa Weber",Person.class.getSimpleName()));
         } catch (ContactNotFound | InvalidContactType e) {
 
             e.printStackTrace();
-        } 
-        
+        }*/ 
+        //adao.addAddress("USA", "Washington", "40000", "Washington DC", "Donald Trump Street", 911);
+        //Address address = adao.getAddressById(1004);
+        //System.out.println(address);
+        //contactDao.addContact("Jordan", "Smith", "+14875236941", "jordan.smith@gmail.com", address);
         /*try {
             contactDao.deleteContact(1001, Person.class.getSimpleName());
         } catch (ContactNotFound | InvalidContactType e) {
@@ -40,7 +51,7 @@ public class AppTest {
         contactDao.addContact("Donald", "Trump", "+12548796231",
          "donald.trump@gmail.com", new Address("USA", "Floria", "40000", "Florida", "Donald Trump Street", 911));
         
-        //adao.addAddress("USA", "Floria", "40000", "Florida", "Donald Trump Street", 911);
+        adao.addAddress("France", "Paris", "40000", "Florida", "Donald Trump Street", 911);
 
         //contactDao.addContact("Mark", "Hamelton", "+1236515478", "smthing@gmail.com", new Address("Morocco", "Marakech", "40000", "Marakech-Safi", "Salam", 70));
     	

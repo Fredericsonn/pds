@@ -106,7 +106,7 @@ public class Address {
 
 	@Override
 	public String toString() {
-		return this.houseNumber + " " +  this.neighborhood + " " + this.city + ", " + this.zipCode + ", "  
+		return "id : " + this.addressId + ", " + this.houseNumber + " " +  this.neighborhood + " " + this.city + ", " + this.zipCode + ", "  
 		+ this.region +  ", " + this.country;
 	}
 

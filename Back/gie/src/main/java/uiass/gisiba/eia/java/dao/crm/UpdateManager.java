@@ -37,7 +37,7 @@ public class UpdateManager {
         if (contactType == Person.class.getSimpleName()) {
             return "from  Person where concat(firstName,' ',lastName) = :fullName";
         }
-        return "from  Enterprise where enterpriseName = :fullName";
+        return "from  Enterprise where enterprise_name = :fullName";
     }
 
 
