@@ -14,11 +14,15 @@ public interface iContactDao {
 
     void addContact(String entrepriseName, EntrepriseType type, String phoneNumber, String email, Address address);
 
+    void deleteContact(int id, String contactType) throws ContactIdNotFound, InvalidContactType;
+
     Contact getContactById(int id, String contactType) throws ContactIdNotFound,InvalidContactType;
 
     List<Contact> getAllContacts(String contactType);
 
     void updateContact(int id, Map<String,Object> columnsNewValues,String contactType) throws ContactIdNotFound,InvalidContactType;
+
+    
 
 
 }

@@ -8,6 +8,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
+import com.mysql.fabric.xmlrpc.Client;
+
 import uiass.gisiba.eia.java.dao.exceptions.*;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
@@ -26,34 +28,40 @@ public class ContactDao implements iContactDao {
 
 	@Override
 	public void addContact(String fname, String lname, String phoneNumber, String email, Address address) {
+		
 		Person contact = new Person(fname,lname,phoneNumber,email,address);
-		try {
-			tr.begin();
-			em.persist(contact);
-			tr.commit();
-
-		}
-		catch(Exception e) {
-			tr.rollback();
-			System.out.println(e);
-
-		}
+		tr.begin();
+		em.persist(contact);
+		tr.commit();
 	}
 
 	@Override
 	public void addContact(String entrepriseName, EntrepriseType type, String phoneNumber, String email, Address address) {
+
 		Enterprise contact = new Enterprise(entrepriseName,type,phoneNumber,email,address);
-		try {
-			tr.begin();
-			em.persist(contact);
-			tr.commit();
 
-		}
-		catch(Exception e) {
-			tr.rollback();
-			System.out.println(e);
+		tr.begin();
+		em.persist(contact);
+		tr.commit();
 
-		}
+
+	}
+
+	@Override
+	public void deleteContact(int id, String contactType) throws ContactIdNotFound, InvalidContactType {
+
+	            tr.begin();
+
+	            Contact contact = this.getContactById(id, contactType);
+
+	            if (contact != null) { 
+
+	                em.remove(contact);	
+					System.out.println("Contact removed successfully.");	
+	            }
+
+	            tr.commit();
+
 	}
 
 	@Override
@@ -122,6 +130,12 @@ public class ContactDao implements iContactDao {
 
 		tr.commit();
     }
+
+
+
+
+
+
 
 
 

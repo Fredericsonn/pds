@@ -21,13 +21,15 @@ public class AppTest {
 
     public static void main(String[] args) {
 
-        ContactDao contactDao = new ContactDao();
-        //AddressDao adao = new AddressDao();
+        //ContactDao contactDao = new ContactDao();
+        AddressDao adao = new AddressDao();
+            adao.removeAddress(1002);
+   
         
-        //contactDao.addContact("Jake", "Palmer", "+12548796231",
-        // "jake.palmer@gmail.com", new Address("Morocco", "Marakech", "40000", "Marakech-Safi", "Salam", 70));
+        //contactDao.addContact("Donald", "Trump", "+12548796231",
+         //"donald.trump@gmail.com", new Address("USA", "Floria", "40000", "Florida", "Donald Trump Street", 911));
         
-        //adao.addAddress("Morocco", "Marakech", "40000", "Marakech-Safi", "Salam", 70);
+        //adao.addAddress("USA", "Floria", "40000", "Florida", "Donald Trump Street", 911);
 
         //contactDao.addContact("Mark", "Hamelton", "+1236515478", "smthing@gmail.com", new Address("Morocco", "Marakech", "40000", "Marakech-Safi", "Salam", 70));
     	
