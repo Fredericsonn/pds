@@ -2,7 +2,7 @@ package uiass.gisiba.eia.java.dao.crm;
 
 import java.util.List;
 
-import uiass.gisiba.eia.java.dao.exceptions.ContactIdNotFound;
+import uiass.gisiba.eia.java.dao.exceptions.ContactNotFound;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactType;
 import uiass.gisiba.eia.java.entity.crm.Address;
 
@@ -14,5 +14,5 @@ public interface iAddressDao {
 
     List<Address> getAllAddresses();
 
-    void removeAddress(int id);
+    void removeAddress(int id) throws ContactNotFound, InvalidContactType;
 }

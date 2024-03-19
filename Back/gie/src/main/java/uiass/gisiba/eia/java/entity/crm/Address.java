@@ -104,7 +104,8 @@ public class Address {
 		this.addressId = addressId;
 	}
 
-	public String formulateAddress() {
+	@Override
+	public String toString() {
 		return this.houseNumber + " " +  this.neighborhood + " " + this.city + ", " + this.zipCode + ", "  
 		+ this.region +  ", " + this.country;
 	}

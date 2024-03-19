@@ -50,7 +50,7 @@ public class Person extends Contact {
 	@Override
 	public String toString() {
 		return this.firstName + " " + this.lastName + ", id : " + this.getId() + ", phone number : " + 
-		this.getPhoneNumber() + ", email : " + this.getEmail() + ", address : " + this.getAddress().formulateAddress();
+		this.getPhoneNumber() + ", email : " + this.getEmail() + ", address : " + this.getAddress();
 	}
 
 

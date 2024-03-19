@@ -7,6 +7,7 @@ import java.util.*;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import com.mysql.fabric.xmlrpc.Client;
 
@@ -24,6 +25,10 @@ public class ContactDao implements iContactDao {
     public ContactDao() {
         this.em= HibernateUtility.getEntityManger();
 	    tr=em.getTransaction();
+	}
+
+	public static boolean contactTypeChecker(String contactType) {
+		return contactType == Person.class.getSimpleName() || contactType == Enterprise.class.getSimpleName();
 	}
 
 	@Override
@@ -48,7 +53,7 @@ public class ContactDao implements iContactDao {
 	}
 
 	@Override
-	public void deleteContact(int id, String contactType) throws ContactIdNotFound, InvalidContactType {
+	public void deleteContact(int id, String contactType) throws ContactNotFound, InvalidContactType {
 
 	            tr.begin();
 
@@ -65,14 +70,14 @@ public class ContactDao implements iContactDao {
 	}
 
 	@Override
-    public Contact getContactById(int id, String contactType) throws ContactIdNotFound,InvalidContactType {
+    public Contact getContactById(int id, String contactType) throws ContactNotFound,InvalidContactType {
 
 		if (contactType == Person.class.getSimpleName()) {
 
 			Contact contact = em.find(Person.class, id);
 
 			if (contact != null) return contact;
-			throw new ContactIdNotFound(id);
+			throw new ContactNotFound(id);
 		}
 
 		if (contactType == Person.class.getSimpleName()) {
@@ -80,13 +85,36 @@ public class ContactDao implements iContactDao {
 			Contact contact = em.find(Enterprise.class, id);
 			
 			if (contact != null) return contact;
-			throw new ContactIdNotFound(id);
+			throw new ContactNotFound(id);
 		}
 
 
 		throw new InvalidContactType(contactType);
 	
     }
+
+	@Override
+	public Contact getContactByName(String name, String contactType) throws ContactNotFound, InvalidContactType {
+
+		if (contactTypeChecker(contactType)) {
+
+			String hql = UpdateManager.getContactByNameHQLQueryGenerator(contactType);
+			Query query = em.createQuery(hql);
+			query.setParameter("fullName", name);
+			
+			if (query.getSingleResult() != null) {
+				return (Contact) query.getSingleResult();
+			}
+
+			throw new ContactNotFound(name);
+
+		}
+
+		throw new InvalidContactType(contactType);
+
+
+		
+	}
 
 	// gets all objects of a given entity type
 	public List getAll(String table) {
@@ -97,13 +125,19 @@ public class ContactDao implements iContactDao {
 	}
 
 	@Override
-	public List<Contact> getAllContacts(String contactType) {
+	public List<Contact> getAllContacts(String contactType) throws InvalidContactType {
 
-		return this.getAll(contactType);
+		if (contactType == Person.class.getSimpleName() || contactType == Enterprise.class.getSimpleName()) {
+			
+			return this.getAll(contactType);
+		}
+
+		throw new InvalidContactType(contactType);
+		
 	}
 
     @Override
-    public void updateContact(int id,Map<String,Object> columnsNewValues, String contactType) throws ContactIdNotFound, InvalidContactType {
+    public void updateContact(int id,Map<String,Object> columnsNewValues, String contactType) throws ContactNotFound, InvalidContactType {
 
 		tr.begin();
 		// get the contact to update :
@@ -130,6 +164,18 @@ public class ContactDao implements iContactDao {
 
 		tr.commit();
     }
+
+	@Override
+	public Contact getContactByAddresId(int address_id) {
+		
+		Query query = em.createQuery("from Person p, Address a where p.address.addressId = a.addressId " 
+		+ "and a.addressId = :address_id");
+		query.setParameter("address_id", address_id);
+		Contact contact = (Contact) query.getSingleResult();
+		return contact;
+	}
+
+
 
 
 

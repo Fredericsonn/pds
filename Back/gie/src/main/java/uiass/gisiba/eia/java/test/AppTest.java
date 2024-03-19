@@ -7,7 +7,7 @@ import javax.persistence.EntityTransaction;
 
 import uiass.gisiba.eia.java.dao.crm.AddressDao;
 import uiass.gisiba.eia.java.dao.crm.ContactDao;
-import uiass.gisiba.eia.java.dao.exceptions.ContactIdNotFound;
+import uiass.gisiba.eia.java.dao.exceptions.ContactNotFound;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactType;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
@@ -21,13 +21,24 @@ public class AppTest {
 
     public static void main(String[] args) {
 
-        //ContactDao contactDao = new ContactDao();
+        ContactDao contactDao = new ContactDao();
         AddressDao adao = new AddressDao();
-            adao.removeAddress(1002);
+        try {
+            System.out.println(contactDao.getContactByName("Alyssa Weber",Person.class.getSimpleName()));
+        } catch (ContactNotFound | InvalidContactType e) {
+
+            e.printStackTrace();
+        } 
+        
+        /*try {
+            contactDao.deleteContact(1001, Person.class.getSimpleName());
+        } catch (ContactNotFound | InvalidContactType e) {
+            e.printStackTrace();
+        } 
    
         
-        //contactDao.addContact("Donald", "Trump", "+12548796231",
-         //"donald.trump@gmail.com", new Address("USA", "Floria", "40000", "Florida", "Donald Trump Street", 911));
+        contactDao.addContact("Donald", "Trump", "+12548796231",
+         "donald.trump@gmail.com", new Address("USA", "Floria", "40000", "Florida", "Donald Trump Street", 911));
         
         //adao.addAddress("USA", "Floria", "40000", "Florida", "Donald Trump Street", 911);
 
@@ -39,7 +50,7 @@ public class AppTest {
             columnsNewValues.put("last_name","Velasquez");
             contactDao.updateContact(41, columnsNewValues, Person.class.getSimpleName());
 
-        } catch (ContactIdNotFound | InvalidContactType e) {
+        } catch (ContactNotFound | InvalidContactType e) {
             e.printStackTrace();
         }*/
 

@@ -2,6 +2,7 @@ package uiass.gisiba.eia.java.dao.crm;
 
 import java.util.*;
 import uiass.gisiba.eia.java.entity.crm.Contact;
+import uiass.gisiba.eia.java.entity.crm.Person;
 
 
 public class UpdateManager {
@@ -30,6 +31,13 @@ public class UpdateManager {
         hql += " where id = :id";
         
         return hql;
+    }
+
+    public static String getContactByNameHQLQueryGenerator(String contactType) {
+        if (contactType == Person.class.getSimpleName()) {
+            return "from  Person where concat(firstName,' ',lastName) = :fullName";
+        }
+        return "from  Enterprise where enterpriseName = :fullName";
     }
 
 

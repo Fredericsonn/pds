@@ -56,7 +56,7 @@ public class Enterprise extends Contact {
 	@Override
 	public String toString() {
 		return "Enterprise Name : " + this.entrepriseName + ", type : " + type + ", id : " + this.getId() + ", phone number : " + 
-		this.getPhoneNumber() + ", email : " + this.getEmail() + ", address : " + this.getAddress().formulateAddress();
+		this.getPhoneNumber() + ", email : " + this.getEmail() + ", address : " + this.getAddress();
 	}
 
     

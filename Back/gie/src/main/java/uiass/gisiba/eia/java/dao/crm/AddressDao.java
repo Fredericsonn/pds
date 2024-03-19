@@ -6,7 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
-import uiass.gisiba.eia.java.dao.exceptions.ContactIdNotFound;
+import uiass.gisiba.eia.java.dao.exceptions.ContactNotFound;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactType;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
@@ -51,7 +51,7 @@ public class AddressDao implements iAddressDao {
 		return query.getResultList();		
 	}
 	@Override
-	public void removeAddress(int id) {
+	public void removeAddress(int id) throws ContactNotFound, InvalidContactType {
 
 		tr.begin();
 
@@ -60,6 +60,12 @@ public class AddressDao implements iAddressDao {
 		if (address != null) {
 
 			em.remove(address);
+			
+			Contact contact = cdao.getContactByAddresId(id);
+
+			int contactId = contact.getId();
+			String contactType = contact.getClass().getSimpleName();
+			cdao.deleteContact(id, contactType);
 
 			System.out.println("Address removed successfully.");	
 		}	
