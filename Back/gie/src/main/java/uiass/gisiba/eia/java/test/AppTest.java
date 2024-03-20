@@ -53,10 +53,7 @@ public class AppTest {
 
         try {
             adao.addAddress("France" , "Paris", "100911", "Catalonia", "Lionel Andres Messi", 1010);
-        } catch (AddressNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (DuplicatedAddressException e) {
+        } catch (AddressNotFoundException | DuplicatedAddressException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
