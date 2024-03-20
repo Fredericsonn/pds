@@ -6,10 +6,10 @@ import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import com.mysql.fabric.xmlrpc.Client;
 
 import uiass.gisiba.eia.java.dao.exceptions.*;
 import uiass.gisiba.eia.java.entity.crm.Address;
@@ -21,6 +21,7 @@ import uiass.gisiba.eia.java.entity.crm.Person;
 public class ContactDao implements iContactDao {
 	private EntityManager em;
 	private EntityTransaction tr;
+	private AddressDao adao = new AddressDao();
 
     public ContactDao() {
         this.em= HibernateUtility.getEntityManger();
@@ -32,8 +33,16 @@ public class ContactDao implements iContactDao {
 	}
 
 	@Override
-	public void addContact(String fname, String lname, String phoneNumber, String email, Address address) {
+	public void addContact(String fname, String lname, String phoneNumber, String email, Address address) throws AddressNotFoundException, DuplicatedAddressException{
 		
+		int original_id = adao.existingAddressChecker(address); // Check if the address already exists in the Address table
+		                                                // to prevent duplication
+
+		if (original_id != 0) {
+
+			throw new DuplicatedAddressException();
+		
+		}
 		Person contact = new Person(fname,lname,phoneNumber,email,address);
 		tr.begin();
 		em.persist(contact);
@@ -41,7 +50,16 @@ public class ContactDao implements iContactDao {
 	}
 
 	@Override
-	public void addContact(String entrepriseName, EntrepriseType type, String phoneNumber, String email, Address address) {
+	public void addContact(String entrepriseName, EntrepriseType type, String phoneNumber, String email, Address address) throws AddressNotFoundException, DuplicatedAddressException {
+
+		int original_id = adao.existingAddressChecker(address); // Check if the address already exists in the Address table
+		                                                // to prevent duplication
+
+		if (original_id != 0) {
+
+			throw new DuplicatedAddressException();
+		
+		}
 
 		Enterprise contact = new Enterprise(entrepriseName,type,phoneNumber,email,address);
 
@@ -53,31 +71,38 @@ public class ContactDao implements iContactDao {
 	}
 
 	@Override
-	public void deleteContact(int id, String contactType) throws ContactNotFound, InvalidContactType {
+	public void deleteContact(int id, String contactType) throws ContactNotFoundException, InvalidContactTypeException {
 
-	            tr.begin();
+		if (contactTypeChecker(contactType)) {
 
-	            Contact contact = this.getContactById(id, contactType);
+			tr.begin();
 
-	            if (contact != null) { 
+			Contact contact = this.getContactById(id, contactType);
 
-	                em.remove(contact);	
-					System.out.println("Contact removed successfully.");	
-	            }
+			if (contact != null) { 
 
-	            tr.commit();
+				em.remove(contact);	
+				System.out.println("Contact removed successfully.");	
+			}
+
+			tr.commit();
+
+			throw new ContactNotFoundException(id);
+		}
+
+		throw new InvalidContactTypeException(contactType);
 
 	}
 
 	@Override
-    public Contact getContactById(int id, String contactType) throws ContactNotFound,InvalidContactType {
+    public Contact getContactById(int id, String contactType) throws ContactNotFoundException,InvalidContactTypeException {
 
 		if (contactType == Person.class.getSimpleName()) {
 
 			Contact contact = em.find(Person.class, id);
 
 			if (contact != null) return contact;
-			throw new ContactNotFound(id);
+			throw new ContactNotFoundException(id);
 		}
 
 		if (contactType == Person.class.getSimpleName()) {
@@ -85,16 +110,16 @@ public class ContactDao implements iContactDao {
 			Contact contact = em.find(Enterprise.class, id);
 			
 			if (contact != null) return contact;
-			throw new ContactNotFound(id);
+			throw new ContactNotFoundException(id);
 		}
 
 
-		throw new InvalidContactType(contactType);
+		throw new InvalidContactTypeException(contactType);
 	
     }
 
 	@Override
-	public Contact getContactByName(String name, String contactType) throws ContactNotFound, InvalidContactType {
+	public Contact getContactByName(String name, String contactType) throws ContactNotFoundException, InvalidContactTypeException {
 
 		if (contactTypeChecker(contactType)) {
 
@@ -106,11 +131,11 @@ public class ContactDao implements iContactDao {
 				return (Contact) query.getSingleResult();
 			}
 
-			throw new ContactNotFound(name);
+			throw new ContactNotFoundException(name);
 
 		}
 
-		throw new InvalidContactType(contactType);
+		throw new InvalidContactTypeException(contactType);
 
 
 		
@@ -125,19 +150,19 @@ public class ContactDao implements iContactDao {
 	}
 
 	@Override
-	public List<Contact> getAllContacts(String contactType) throws InvalidContactType {
+	public List<Contact> getAllContacts(String contactType) throws InvalidContactTypeException {
 
 		if (contactType == Person.class.getSimpleName() || contactType == Enterprise.class.getSimpleName()) {
 			
 			return this.getAll(contactType);
 		}
 
-		throw new InvalidContactType(contactType);
+		throw new InvalidContactTypeException(contactType);
 		
 	}
 
     @Override
-    public void updateContact(int id,Map<String,Object> columnsNewValues, String contactType) throws ContactNotFound, InvalidContactType {
+    public void updateContact(int id,Map<String,Object> columnsNewValues, String contactType) throws ContactNotFoundException, InvalidContactTypeException {
 
 		tr.begin();
 		// get the contact to update :
@@ -174,6 +199,8 @@ public class ContactDao implements iContactDao {
 		Contact contact = (Contact) query.getSingleResult();
 		return contact;
 	}
+
+
 
 
 
