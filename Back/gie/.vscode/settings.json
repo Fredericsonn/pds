@@ -1,5 +1,8 @@
 {
+<<<<<<< HEAD
     "java.configuration.updateBuildConfiguration": "interactive",
+=======
+>>>>>>> sprint_1
     "sqltools.connections": [
         {
             "mysqlOptions": {

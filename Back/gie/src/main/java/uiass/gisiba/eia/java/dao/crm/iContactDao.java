@@ -10,21 +10,21 @@ import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
 
 public interface iContactDao {
 
-    void addContact(String fname, String lname, String phoneNum, String email, Address address);
+    void addContact(String fname, String lname, String phoneNum, String email, Address address) throws AddressNotFoundException, DuplicatedAddressException;
 
-    void addContact(String entrepriseName, EntrepriseType type, String phoneNumber, String email, Address address);
+    void addContact(String entrepriseName, EntrepriseType type, String phoneNumber, String email, Address address) throws AddressNotFoundException, DuplicatedAddressException;
 
-    void deleteContact(int id, String contactType) throws ContactNotFound, InvalidContactType;
+    void deleteContact(int id, String contactType) throws ContactNotFoundException, InvalidContactTypeException;
 
-    Contact getContactById(int id, String contactType) throws ContactNotFound,InvalidContactType;
+    Contact getContactById(int id, String contactType) throws ContactNotFoundException,InvalidContactTypeException;
 
-    Contact getContactByName(String name, String contactType) throws ContactNotFound, InvalidContactType;
+    Contact getContactByName(String name, String contactType) throws ContactNotFoundException, InvalidContactTypeException;
 
     Contact getContactByAddresId(int address_id);
 
-    List<Contact> getAllContacts(String contactType) throws InvalidContactType;
+    List<Contact> getAllContacts(String contactType) throws InvalidContactTypeException;
 
-    void updateContact(int id, Map<String,Object> columnsNewValues,String contactType) throws ContactNotFound,InvalidContactType;
+    void updateContact(int id, Map<String,Object> columnsNewValues,String contactType) throws ContactNotFoundException,InvalidContactTypeException;
 
     
 

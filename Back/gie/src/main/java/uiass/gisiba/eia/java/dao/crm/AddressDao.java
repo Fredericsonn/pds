@@ -4,27 +4,35 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
-import uiass.gisiba.eia.java.dao.exceptions.ContactNotFound;
-import uiass.gisiba.eia.java.dao.exceptions.InvalidContactType;
+import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
+import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
 import uiass.gisiba.eia.java.entity.crm.Address;
-import uiass.gisiba.eia.java.entity.crm.Contact;
 
 public class AddressDao implements iAddressDao {
 	
 	private EntityManager em;
 	private EntityTransaction tr;
-	private ContactDao cdao = new ContactDao();
 
     public AddressDao() {
         this.em= HibernateUtility.getEntityManger();
 	    this.tr=em.getTransaction();
 	}
     @Override
-    public void addAddress(String country, String city, String zipCode, String region, String neighborhood, int houseNumber) {
+    public void addAddress(String country, String city, String zipCode, String region, String neighborhood, int houseNumber) throws AddressNotFoundException,DuplicatedAddressException {
 
         Address address = new Address(country, city, zipCode, region, neighborhood, houseNumber);
+
+		int i = this.existingAddressChecker(address);
+
+		if (i != 0) {
+			throw new DuplicatedAddressException();
+		}
 		
 		tr.begin();
 		em.persist(address);
@@ -34,12 +42,22 @@ public class AddressDao implements iAddressDao {
     }
 
 	@Override
-	public Address getAddressById(int id) {
+	public Address getAddressById(int id) throws AddressNotFoundException {
 
 		tr.begin();
+
 		Address address = em.find(Address.class, id);
+
+		if (address != null) {
+
+			return address;
+
+		}
+
 		tr.commit();
-		return address;
+
+		throw new AddressNotFoundException(id);
+		
 	}
 
 	@Override
@@ -51,7 +69,7 @@ public class AddressDao implements iAddressDao {
 		return query.getResultList();		
 	}
 	@Override
-	public void removeAddress(int id) throws ContactNotFound, InvalidContactType {
+	public void removeAddress(int id) throws AddressNotFoundException {
 
 		tr.begin();
 
@@ -60,19 +78,58 @@ public class AddressDao implements iAddressDao {
 		if (address != null) {
 
 			em.remove(address);
-			
-			Contact contact = cdao.getContactByAddresId(id);
-
-			int contactId = contact.getId();
-			String contactType = contact.getClass().getSimpleName();
-			cdao.deleteContact(id, contactType);
 
 			System.out.println("Address removed successfully.");	
 		}	
+
 		tr.commit();
+
+		throw new AddressNotFoundException(id);
 
 
 	}
 
+	@Override
+	public int existingAddressChecker(Address addressToCheck) throws AddressNotFoundException {
+
+		tr.begin();
+		// Generate the hql to find any matching addresses 
+		String hql = UpdateManager.checkAddressExistenceHQLQueryGnenerator();
+		TypedQuery<Integer> query = em.createQuery(hql, Integer.class);
+
+		// Get the address attributes to fill the query's parameters
+		String country = addressToCheck.getCountry();
+		String city = addressToCheck.getCity();
+		String zipCode = addressToCheck.getZipCode();
+		String region = addressToCheck.getRegion();
+		String neighborhood = addressToCheck.getNeighborhood();
+		int houseNumber = addressToCheck.getHouseNumber();
+
+		// Set the query's parameters
+		query.setParameter("country", country);
+        query.setParameter("city", city);
+        query.setParameter("zip_code", zipCode);
+        query.setParameter("region", region);
+        query.setParameter("neighborhood", neighborhood);
+        query.setParameter("house_number", houseNumber);
+
+
+		try { // if a match is found we return the original address's id
+
+			int id = query.getSingleResult();
+			
+			tr.commit();
+
+			return id;
+
+			} catch(NoResultException e) {  // if no match is found we return 0
+			
+			      return 0;
+			
+			}
+		
+
+
+	}
 
 }
