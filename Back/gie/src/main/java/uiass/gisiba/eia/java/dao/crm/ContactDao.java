@@ -105,7 +105,7 @@ public class ContactDao implements iContactDao {
 			throw new ContactNotFoundException(id);
 		}
 
-		if (contactType == Person.class.getSimpleName()) {
+		if (contactType == Enterprise.class.getSimpleName()) {
 
 			Contact contact = em.find(Enterprise.class, id);
 			
@@ -141,24 +141,30 @@ public class ContactDao implements iContactDao {
 		
 	}
 
-	// gets all objects of a given entity type
-	public List getAll(String table) {
-
-		Query query = em.createQuery("from " + table);
-		
-		return query.getResultList();		
-	}
-
 	@Override
-	public List<Contact> getAllContacts(String contactType) throws InvalidContactTypeException {
+	public List<Contact> getAllContactsByType(String contactType) throws InvalidContactTypeException {
 
-		if (contactType == Person.class.getSimpleName() || contactType == Enterprise.class.getSimpleName()) {
+		if (contactTypeChecker(contactType)) {
 			
-			return this.getAll(contactType);
+			Query query = em.createQuery("from " + contactType);
+
+			return query.getResultList();
 		}
 
 		throw new InvalidContactTypeException(contactType);
 		
+	}
+
+	@Override
+	public List<Contact> getAllContacts() throws InvalidContactTypeException {
+
+		List<Contact> persons = this.getAllContactsByType(Person.class.getSimpleName());       // All person contacts
+
+		List<Contact> enterprises = this.getAllContactsByType(Enterprise.class.getSimpleName()); // All enterprise contacts
+
+		persons.addAll(enterprises);  // We combine all
+
+		return persons;		
 	}
 
     @Override

@@ -22,7 +22,9 @@ public interface iContactDao {
 
     Contact getContactByAddresId(int address_id);
 
-    List<Contact> getAllContacts(String contactType) throws InvalidContactTypeException;
+    List<Contact> getAllContactsByType(String contactType) throws InvalidContactTypeException;
+
+    List<Contact> getAllContacts() throws InvalidContactTypeException;
 
     void updateContact(int id, Map<String,Object> columnsNewValues,String contactType) throws ContactNotFoundException,InvalidContactTypeException;
 
