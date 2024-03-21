@@ -20,9 +20,11 @@ public interface iContactDao {
 
     Contact getContactByName(String name, String contactType) throws ContactNotFoundException, InvalidContactTypeException;
 
-    Contact getContactByAddresId(int address_id);
+    Contact getContactByAddresId(String contactType, int address_id);
 
-    List<Contact> getAllContacts(String contactType) throws InvalidContactTypeException;
+    List<Contact> getAllContactsByType(String contactType) throws InvalidContactTypeException;
+
+    List<Contact> getAllContacts() throws InvalidContactTypeException;
 
     void updateContact(int id, Map<String,Object> columnsNewValues,String contactType) throws ContactNotFoundException,InvalidContactTypeException;
 

@@ -28,12 +28,12 @@ public class AddressDao implements iAddressDao {
 
         Address address = new Address(country, city, zipCode, region, neighborhood, houseNumber);
 
-		int i = this.existingAddressChecker(address);
+		if (this.existingAddressChecker(address) != 0) {
 
-		if (i != 0) {
 			throw new DuplicatedAddressException();
+			
 		}
-		
+
 		tr.begin();
 		em.persist(address);
 		tr.commit();
@@ -93,6 +93,7 @@ public class AddressDao implements iAddressDao {
 	public int existingAddressChecker(Address addressToCheck) throws AddressNotFoundException {
 
 		tr.begin();
+
 		// Generate the hql to find any matching addresses 
 		String hql = UpdateManager.checkAddressExistenceHQLQueryGnenerator();
 		TypedQuery<Integer> query = em.createQuery(hql, Integer.class);
@@ -113,23 +114,22 @@ public class AddressDao implements iAddressDao {
         query.setParameter("neighborhood", neighborhood);
         query.setParameter("house_number", houseNumber);
 
+		int id;
 
-		try { // if a match is found we return the original address's id
+		try {  // if a match is found we return the original address's id
 
-			int id = query.getSingleResult();
-			
+			id = query.getSingleResult();
 			tr.commit();
-
-			return id;
+			
 
 			} catch(NoResultException e) {  // if no match is found we return 0
-			
-			      return 0;
-			
+				
+				id = 0;
+			    tr.commit();
 			}
+
+		return id;
 		
-
-
 	}
 
 }

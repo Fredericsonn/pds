@@ -41,5 +41,6 @@
             "username": "root",
             "database": "gie"
         }
-    ]
+    ],
+    "java.debug.settings.onBuildFailureProceed": true
 }
