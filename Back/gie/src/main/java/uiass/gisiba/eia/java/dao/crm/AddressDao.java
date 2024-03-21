@@ -93,6 +93,7 @@ public class AddressDao implements iAddressDao {
 	public int existingAddressChecker(Address addressToCheck) throws AddressNotFoundException {
 
 		tr.begin();
+
 		// Generate the hql to find any matching addresses 
 		String hql = UpdateManager.checkAddressExistenceHQLQueryGnenerator();
 		TypedQuery<Integer> query = em.createQuery(hql, Integer.class);
@@ -117,21 +118,18 @@ public class AddressDao implements iAddressDao {
 
 		try {  // if a match is found we return the original address's id
 
-		    tr.commit();
-
 			id = query.getSingleResult();
-			
 			tr.commit();
+			
 
 			} catch(NoResultException e) {  // if no match is found we return 0
+				
 				id = 0;
-			    
+			    tr.commit();
 			}
 
 		return id;
 		
-
-
 	}
 
 }

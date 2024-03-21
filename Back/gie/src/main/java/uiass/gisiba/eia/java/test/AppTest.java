@@ -27,33 +27,25 @@ public class AppTest {
         ContactDao contactDao = new ContactDao();
         AddressDao adao = new AddressDao();
 
-        try {
+        /*try {
             System.out.println(contactDao.getAllContacts());
         } catch (InvalidContactTypeException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
- 
-       /* try {
-            System.out.println(contactDao.getContactByName("Simmons-Simmons",Enterprise.class.getSimpleName()));
-        } catch (InvalidContactTypeException | ContactNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }*/
-        /*try {
-            contactDao.deleteContact(1001, Person.class.getSimpleName());
-        } catch (ContactNotFound | InvalidContactType e) {
-            e.printStackTrace();
-        } */
+ 
+
    
-        /*Address barcelona;
+        Address barcelona;
         try {
             barcelona = adao.getAddressById(556);
-            System.out.println(barcelona);
-        } catch (AddressNotFoundException e) {
+            //contactDao.addContact("Vlad", "Dracula", "62514878523", "bloody.blood@jiss.com", barcelona);
+            //System.out.println(barcelona);
+            adao.addAddress(barcelona.getCountry(), "smth", barcelona.getZipCode(), barcelona.getRegion(), barcelona.getNeighborhood(), barcelona.getHouseNumber());
+        } catch (AddressNotFoundException | DuplicatedAddressException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }*/
+        }
         
 
              
