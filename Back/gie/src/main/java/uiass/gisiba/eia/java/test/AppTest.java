@@ -15,6 +15,7 @@ import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
 import uiass.gisiba.eia.java.entity.crm.Enterprise;
 import uiass.gisiba.eia.java.entity.crm.Person;
+import uiass.gisiba.eia.java.service.Service;
 
 public class AppTest {
     private EntityManager em;
@@ -24,65 +25,14 @@ public class AppTest {
 
     public static void main(String[] args) {
 
-        ContactDao contactDao = new ContactDao();
-        AddressDao adao = new AddressDao();
+        Service service = new Service();
 
-        /*try {
-            System.out.println(contactDao.getAllContacts());
-        } catch (InvalidContactTypeException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }*/
- 
-
-   
-        Address barcelona;
         try {
-            barcelona = adao.getAddressById(556);
-            //contactDao.addContact("Vlad", "Dracula", "62514878523", "bloody.blood@jiss.com", barcelona);
-            //System.out.println(barcelona);
-            adao.addAddress(barcelona.getCountry(), "smth", barcelona.getZipCode(), barcelona.getRegion(), barcelona.getNeighborhood(), barcelona.getHouseNumber());
+            service.addAddress("New York", "USA", "362", "Neighborhood 7", "Region 6", 71669);
         } catch (AddressNotFoundException | DuplicatedAddressException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-        
-
-             
-                //Address add1 = adao.getAddressById(26);
-               /*  try {
-                    contactDao.addContact("Johan", "Cruff", "+6215487923",
-                    "johan.barca@gmail.com", new Address("France" , "Paris", "100911", "Catalonia", "Lionel Andres Messi", 1010));
-                } catch (AddressNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }*/
-                
-            /*  catch (AddressNotFoundException e) {
-
-                e.printStackTrace();
-            }*/ 
-
-       /* try {
-            adao.addAddress("France" , "Paris", "100911", "Catalonia", "Lionel Andres Messi", 1010);
-        } catch (AddressNotFoundException | DuplicatedAddressException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }*/
-
-        //contactDao.addContact("Mark", "Hamelton", "+1236515478", "smthing@gmail.com", new Address("Morocco", "Marakech", "40000", "Marakech-Safi", "Salam", 70));
-    	
-        /*try {        
-            Map<String,Object> columnsNewValues = new HashMap<String,Object>();
-            columnsNewValues.put("enterprise_name","Simmons-Simmons");
-            contactDao.updateContact(999, columnsNewValues, Enterprise.class.getSimpleName());
-
-        } catch (ContactNotFoundException | InvalidContactTypeException e) {
-            e.printStackTrace();
-        }*/
-
-        //contactDao.addContact("Joe", "Biden", "+1234789215", "biden@gmail.com", new Address("New York", "USA", "362", "Neighborhood 7", "Region 6", 71669));
-
+        } 
     }
 }
     
