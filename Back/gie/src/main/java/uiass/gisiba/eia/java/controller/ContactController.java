@@ -18,19 +18,21 @@ public class ContactController {
 
 	}
 
-	public static void main(String[] args) {
+	public static void getContactByIdController(int id, String contactType) {
 
 	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
-	    Spark.get("/contacts", (req,res)-> {
+	    Spark.get("/contacts/:id", (req,res)-> {
 
-		List<Contact> contactsList = ContactController.service.getAllContacts();
+		String param = req.params("id");
+		
+		Contact contact = ContactController.service.getContactById(id, contactType);
 		
 		res.type("application/json");
 		   		   
-		return contactsList;
+		return contact;
 		   
 	   } , gson::toJson );
 	}
