@@ -2,6 +2,7 @@ package uiass.gisiba.eia.java.dao.crm;
 
 
 
+import java.nio.channels.NoConnectionPendingException;
 import java.util.*;
 
 import javax.persistence.EntityManager;
@@ -69,7 +70,7 @@ public class ContactDao implements iContactDao {
 	@Override
 	public void deleteContact(int id, String contactType) throws ContactNotFoundException, InvalidContactTypeException {
 
-		if (UpdateManager.contactTypeChecker(contactType)) {
+		if (HQLQueryManager.contactTypeChecker(contactType)) {
 
 			tr.begin();
 
@@ -117,9 +118,9 @@ public class ContactDao implements iContactDao {
 	@Override
 	public Contact getContactByName(String name, String contactType) throws ContactNotFoundException, InvalidContactTypeException {
 
-		if (UpdateManager.contactTypeChecker(contactType)) {
+		if (HQLQueryManager.contactTypeChecker(contactType)) {
 
-			String hql = UpdateManager.getContactByNameHQLQueryGenerator(contactType);
+			String hql = HQLQueryManager.getContactByNameHQLQueryGenerator(contactType);
 			Query query = em.createQuery(hql);
 			query.setParameter("fullName", name);
 			
@@ -136,9 +137,9 @@ public class ContactDao implements iContactDao {
 	}
 
 	@Override
-	public Contact getContactByAddresId(String contactType, int address_id) {
+	public Contact getContactByAddressId(String contactType, int address_id) {
 
-		String hql = UpdateManager.getContactByAddressIdHQLQueryGenerator(contactType);
+		String hql = HQLQueryManager.getContactByAddressIdHQLQueryGenerator(contactType);
 
 		Query query = em.createQuery(hql);
 
@@ -150,9 +151,33 @@ public class ContactDao implements iContactDao {
 	}
 
 	@Override
+	public List<Contact> getAllContactsByCountry(String contactType, String country) throws InvalidContactTypeException, NoContactsFoundInCountry {
+
+		if (HQLQueryManager.contactTypeChecker(contactType)) {
+
+			String hql = HQLQueryManager.geContactsByCountryHQLQueryGenerator(contactType, country);
+
+			Query query = em.createQuery(hql);
+
+			query.setParameter("country", country);
+
+			List<Contact> contacts = query.getResultList();
+
+			if (!contacts.isEmpty()) {
+
+				return contacts;
+			}
+
+			throw new NoContactsFoundInCountry(country);
+		}
+		
+		throw new InvalidContactTypeException(contactType);
+	}
+
+	@Override
 	public List<Contact> getAllContactsByType(String contactType) throws InvalidContactTypeException {
 
-		if (UpdateManager.contactTypeChecker(contactType)) {
+		if (HQLQueryManager.contactTypeChecker(contactType)) {
 			
 			Query query = em.createQuery("from " + contactType);
 
@@ -183,7 +208,7 @@ public class ContactDao implements iContactDao {
 		Contact contact = this.getContactById(id,contactType);
 
 		//dynamically generate the corresponding hql string :
-		String hql = UpdateManager.UpdateHQLQueryGenerator(contactType, columnsNewValues);
+		String hql = HQLQueryManager.UpdateHQLQueryGenerator(contactType, columnsNewValues);
 
 		// create the query using the generated hql :
 		Query query = em.createQuery(hql);
@@ -203,6 +228,8 @@ public class ContactDao implements iContactDao {
 
 		tr.commit();
     }
+
+
 
 
 

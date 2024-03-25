@@ -95,7 +95,7 @@ public class AddressDao implements iAddressDao {
 		tr.begin();
 
 		// Generate the hql to find any matching addresses 
-		String hql = UpdateManager.checkAddressExistenceHQLQueryGnenerator();
+		String hql = HQLQueryManager.checkAddressExistenceHQLQueryGnenerator();
 		TypedQuery<Integer> query = em.createQuery(hql, Integer.class);
 
 		// Get the address attributes to fill the query's parameters

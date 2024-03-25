@@ -9,6 +9,7 @@ import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
+import uiass.gisiba.eia.java.dao.exceptions.NoContactsFoundInCountry;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
 import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
@@ -89,9 +90,17 @@ public class Service implements iService {
     }
 
     @Override
-    public Contact getContactByAddresId(int address_id) {
+    public Contact getContactByAddressId(String contactType, int address_id) {
 
-        return getContactByAddresId(address_id);
+        return getContactByAddressId(contactType,address_id);
+    }
+
+    @Override
+    public List<Contact> getAllContactsByCountry(String contactType, String country)
+    
+            throws InvalidContactTypeException, NoContactsFoundInCountry {
+
+        return cdao.getAllContactsByCountry(contactType, country);
     }
 
     @Override
@@ -113,5 +122,7 @@ public class Service implements iService {
 
         cdao.updateContact(id, columnsNewValues, contactType);
     }
+
+
 
 }

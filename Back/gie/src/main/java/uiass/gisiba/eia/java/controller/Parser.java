@@ -3,6 +3,7 @@ package uiass.gisiba.eia.java.controller;
 import java.io.IOException;
 import java.util.*;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -16,11 +17,11 @@ import uiass.gisiba.eia.java.entity.crm.Person;
 public class Parser {
  
     private static Map<String, List<String>> atrributes_by_type_map = new HashMap<String, List<String>>() {{
-        put("Person", Arrays.asList("firstName","lastName","phoneNumber","email","address"));
-        put("Enterprise", Arrays.asList("enterpriseName","type","phoneNumber","email","address"));
+        put("Person", Arrays.asList("firstName","lastName","id","phoneNumber","email"));
+        put("Enterprise", Arrays.asList("enterpriseName","type","id","phoneNumber","email"));
     }};
 
-    private static List<String> addressAttributes = Arrays.asList("neighborhood","city","zipCode","region","country");
+    private static List<String> addressAttributes = Arrays.asList("addressId","houseNumber","neighborhood","city","zipCode","region","country");
 
 
     public static String responseBodyGenerator(String url) {
@@ -47,67 +48,63 @@ public class Parser {
     }
 
     public static String collectString(JsonObject jsObj, String attribute) {
+        JsonElement element = jsObj.get(attribute);
 
-        return jsObj.has(attribute) ? jsObj.get(attribute).getAsString() : "";
-
+        return element != null ? String.valueOf(element) : "";
     }
 
     public static int collectInt(JsonObject jsObj, String attribute) {
+        JsonElement element = jsObj.get(attribute);
 
-        return jsObj.has(attribute) ? jsObj.get(attribute).getAsInt() : 0;
-
+        return element != null ? Integer.valueOf(element.getAsString()) : 0;
     }
+
 
     public static Contact parse(String responseBody, String contactType) {
     		
     	JsonObject contact = new JsonParser().parse(responseBody).getAsJsonObject();
 
-        String[] contactStringInfo = new String[4];
-        int[] contactIntInfo = new int[1];
+        List<String> contactStringInfo = new ArrayList<String>();
+        
+        List<Integer> contactIntInfo = new ArrayList<Integer>();
 
-        String[] contactStringAddress = new String[5];
-        int[] contactIntAddress = new int[2];
+    
     	
         List<String> attributes = atrributes_by_type_map.get(contactType);
 
-        for (int i = 0; i < attributes.size(); i++) {
-
-            String attribute = attributes.get(i);
+        for (String attribute : attributes) {
 
             if (attribute.equals("id")) {
                 
-                contactIntInfo[0] = collectInt(contact, attribute);
+                contactIntInfo.add(collectInt(contact, attribute));
             }
-            contactStringInfo[i] = collectString(contact, attribute);
+            else contactStringInfo.add(collectString(contact, attribute));
         }
     
         JsonObject addressObject = contact.has("address") ? contact.get("address").getAsJsonObject() : null;
 
-        for (int i = 0; i < addressAttributes.size(); i++) {
+        for (String attribute : addressAttributes) {
 
-            String attribute = addressAttributes.get(i);
-            int index = 0;
-            if (attribute.equals("id") || attribute.equals("houseNumber")) {
+            if (attribute.equals("addressId") || attribute.equals("houseNumber")) {
                 
-                contactIntAddress[index] = collectInt(addressObject, attribute);
-                index++;
+                contactIntInfo.add(collectInt(addressObject, attribute));
             }
-            contactStringAddress[i] = collectString(addressObject, attribute);
+            else contactStringInfo.add(collectString(addressObject, attribute));
         }
 
-        String first_or_enterprise_name = (String) contactStringInfo[0]; 
-        String last_name_or_enterprise_type = (String) contactStringInfo[1];
-        int id = (int) contactIntInfo[0];
-        String phoneNumber = (String) contactStringInfo[2];
-        String email = (String) contactStringInfo[3];
+        String first_or_enterprise_name = contactStringInfo.get(0); 
+        String last_name_or_enterprise_type = contactStringInfo.get(1);
+        int id = contactIntInfo.get(0);
+        String phoneNumber = contactStringInfo.get(2);
+        String email = contactStringInfo.get(3);
 
-        int addressId = (int) contactIntAddress[0];
-        int houseNumber = (int) contactIntAddress[1];
-        String neighborhood = (String) contactStringAddress[0];
-        String city = (String) contactStringAddress[1];
-        String zipCode = (String) contactStringAddress[2];
-        String region = (String) contactStringAddress[3];
-        String country = (String) contactStringAddress[4];
+        int addressId = contactIntInfo.get(1);
+        int houseNumber = contactIntInfo.get(2);
+        String neighborhood = contactStringInfo.get(4);
+        String city =  contactStringInfo.get(5);
+        String zipCode = contactStringInfo.get(6);
+        String region = contactStringInfo.get(7);
+        String country = contactStringInfo.get(8);
 
 		Address firstParsedAddress = new Address(country, city, zipCode, region, neighborhood, houseNumber);
 		firstParsedAddress.setAddressId(addressId);

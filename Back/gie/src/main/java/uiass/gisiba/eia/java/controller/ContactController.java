@@ -36,4 +36,38 @@ public class ContactController {
 		   
 	   } , gson::toJson );
 	}
+
+	public static void getContactByName(String name, String contactType) {
+	    Gson gson = new Gson();
+	  
+	    System.out.println("Server started.");
+	
+	    Spark.get("/contacts/:name", (req,res)-> {
+		
+		Contact contact = ContactController.service.getContactByName(name, contactType);
+		
+		res.type("application/json");
+		   		   
+		return contact;
+		   
+	   } , gson::toJson );	
+	}
+
+    public void getContactByAddresId(String contactType, int address_id) {
+
+	    Gson gson = new Gson();
+	  
+	    System.out.println("Server started.");
+	
+	    Spark.get("/contacts/:addressId", (req,res)-> {
+		
+		Contact contact = ContactController.service.getContactByAddressId(contactType,address_id);
+		
+		res.type("application/json");
+		   		   
+		return contact;
+		   
+	   } , gson::toJson );	
+	}
+	 
 }

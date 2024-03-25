@@ -6,7 +6,7 @@ import uiass.gisiba.eia.java.entity.crm.Enterprise;
 import uiass.gisiba.eia.java.entity.crm.Person;
 
 
-public class UpdateManager {
+public class HQLQueryManager {
 
     // Checks if the given type is either Person or Enterpise
 	public static boolean contactTypeChecker(String contactType) {
@@ -44,6 +44,17 @@ public class UpdateManager {
             return "from  Person where concat(firstName,' ',lastName) = :fullName";
         }
         return "from  Enterprise where enterprise_name = :fullName";
+    }
+
+    public static String geContactsByCountryHQLQueryGenerator(String contactType, String country) {
+
+        String tableAlias = String.valueOf(contactType.charAt(0)).toLowerCase();
+         
+        String hql = "from " + contactType + " " + tableAlias + " , Address a where " + tableAlias 
+        
+        + ".address.addressId = a.addressId and a.country = :country";
+
+        return hql;       
     }
     
 

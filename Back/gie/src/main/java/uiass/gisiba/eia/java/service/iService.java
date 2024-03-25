@@ -5,6 +5,7 @@ import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
+import uiass.gisiba.eia.java.dao.exceptions.NoContactsFoundInCountry;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
 import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
@@ -37,7 +38,9 @@ public interface iService {
 
     Contact getContactByName(String name, String contactType) throws ContactNotFoundException, InvalidContactTypeException;
 
-    Contact getContactByAddresId(int address_id);
+    Contact getContactByAddressId(String contactType,int address_id);
+
+    List<Contact> getAllContactsByCountry(String contactType, String country) throws InvalidContactTypeException, NoContactsFoundInCountry;
 
     List<Contact> getAllContactsByType(String contactType) throws InvalidContactTypeException;
 

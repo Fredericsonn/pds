@@ -12,7 +12,7 @@ import javax.persistence.Enumerated;
 public class Enterprise extends Contact {
 	
     @Column(name="enterprise_name")
-    private String entrepriseName;
+    private String enterpriseName;
 
     @Enumerated(EnumType.STRING)
     private EntrepriseType type;
@@ -20,12 +20,12 @@ public class Enterprise extends Contact {
 
     // Constructors
     
-    public Enterprise(String entrepriseName, EntrepriseType type, String phoneNumber,
+    public Enterprise(String enterpriseName, EntrepriseType type, String phoneNumber,
     
     String email, Address address) {
         
         super(phoneNumber,email,address);
-        this.entrepriseName = entrepriseName;
+        this.enterpriseName = enterpriseName;
         this.type = type;
     }
 
@@ -37,16 +37,16 @@ public class Enterprise extends Contact {
 
     // Getters - Setters 
 
-    public String getEntrepriseName() {
-        return entrepriseName;
+    public String getenterpriseName() {
+        return enterpriseName;
     }
 
     public EntrepriseType getType() {
         return type;
     }
 
-    public void setEntrepriseName(String entrepriseName) {
-        this.entrepriseName = entrepriseName;
+    public void setenterpriseName(String enterpriseName) {
+        this.enterpriseName = enterpriseName;
     }
 
     public void setType(EntrepriseType type) {
@@ -55,7 +55,7 @@ public class Enterprise extends Contact {
 
 	@Override
 	public String toString() {
-		return "Enterprise Name : " + this.entrepriseName + ", type : " + type + ", id : " + this.getId() + ", phone number : " + 
+		return "Enterprise Name : " + this.enterpriseName + ", type : " + type + ", id : " + this.getId() + ", phone number : " + 
 		this.getPhoneNumber() + ", email : " + this.getEmail() + ", address : " + this.getAddress();
 	}
 
