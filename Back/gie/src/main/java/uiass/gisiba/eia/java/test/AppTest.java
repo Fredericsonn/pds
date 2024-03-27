@@ -24,42 +24,20 @@ public class AppTest {
 
         Service service = new Service();
 
-        try {
-            System.out.println((service.getAllContactsByCountry("Person","Morocco")));
-        } catch (InvalidContactTypeException | NoContactsFoundInCountry e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } 
 
-       /*  try {
-            service.addAddress("New York", "USA", "362", "Neighborhood 7", "Region 6", 71669);
-        } catch (AddressNotFoundException | DuplicatedAddressException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } */
-
-        /*Map<String, Object> columnsNewValues = new HashMap<String, Object>();
-
-        columnsNewValues.put("first_name", "Jeremy");
-        columnsNewValues.put("last_name", "Little");
+        System.out.println(service.getContactByAddressId("Person", 16));
+       /*  Map<String, Object> map = new HashMap<String, Object>();
+        map.put("country", "Germany");
+        map.put("city", "Munich");
 
         try {
-            service.updateContact(24, columnsNewValues, "Person");
-        } catch (ContactNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidContactTypeException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+            service.updateAddress(2, map);
+        } catch (AddressNotFoundException e) {
 
-    }*/
-       /*  try {
-            System.out.println(service.getAllContactsByType("Person"));
-        } catch (InvalidContactTypeException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }*/
+   
+        
 }
     
 }

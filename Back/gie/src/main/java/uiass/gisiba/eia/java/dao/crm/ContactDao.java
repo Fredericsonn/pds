@@ -121,10 +121,13 @@ public class ContactDao implements iContactDao {
 		if (HQLQueryManager.contactTypeChecker(contactType)) {
 
 			String hql = HQLQueryManager.getContactByNameHQLQueryGenerator(contactType);
+
 			Query query = em.createQuery(hql);
+			
 			query.setParameter("fullName", name);
 			
 			if (query.getSingleResult() != null) {
+
 				return (Contact) query.getSingleResult();
 			}
 
@@ -145,7 +148,9 @@ public class ContactDao implements iContactDao {
 
 		query.setParameter("address_id", address_id);
 
+		tr.begin();
 		Contact contact = (Contact) query.getSingleResult();
+		tr.commit();
 		
 		return contact;
 	}

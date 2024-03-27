@@ -15,15 +15,16 @@ public class HQLQueryManager {
 	}
 
     // this method dynamically generates the hql query according to the contact type and the selected columns to update
-    public static String UpdateHQLQueryGenerator(String contactType, Map<String,Object> columnsNewValues) {
+    public static String UpdateHQLQueryGenerator(String table, Map<String,Object> columnsNewValues) {
 
         List<String> columns = new ArrayList<>(columnsNewValues.keySet());
 
-        return columnsCollector(columns, contactType);
+        return columnsCollector(columns, table);
     }
 
     // this method is used to generate the hql from a columns update state map
     public static String columnsCollector(List<String> columns, String table) {
+        
         String hql = "UPDATE " + table + " set ";
 
         for (String column : columns) {
@@ -34,7 +35,9 @@ public class HQLQueryManager {
 
         hql = hql.substring(0, hql.length()-1);
 
-        hql += " where id = :id";
+        if (contactTypeChecker(table))  hql += " where id = :id";
+       
+        else  hql += " where address_id = :id";
         
         return hql;
     }
@@ -49,13 +52,12 @@ public class HQLQueryManager {
     public static String geContactsByCountryHQLQueryGenerator(String contactType, String country) {
 
         String tableAlias = String.valueOf(contactType.charAt(0)).toLowerCase();
-         
-        String hql = "from " + contactType + " " + tableAlias + " , Address a where " + tableAlias 
-        
-        + ".address.addressId = a.addressId and a.country = :country";
 
-        return hql;       
+        String hql = "from " + contactType + " " + tableAlias + " where " + tableAlias + ".address.country = :country";
+        
+        return hql;
     }
+    
     
 
     public static String checkAddressExistenceHQLQueryGnenerator() {
@@ -68,9 +70,9 @@ public class HQLQueryManager {
         
         String tableAlias = String.valueOf(contactType.charAt(0)).toLowerCase();
         
-        String hql = "from " + contactType + " " + tableAlias + " , Address a where " + tableAlias 
+        String hql = "from " + contactType + " " + tableAlias + " where " + tableAlias 
         
-        + ".address.addressId = a.addressId and a.addressId = :address_id";
+        + ".address.addressId = :address_id";
 
         return hql;
     }

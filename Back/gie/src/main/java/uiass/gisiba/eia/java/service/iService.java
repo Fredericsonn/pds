@@ -26,6 +26,9 @@ public interface iService {
 
     int existingAddressChecker(Address addressToCheck) throws AddressNotFoundException;
 
+    void updateAddress(int address_id, Map<String, Object> columns_new_values) throws AddressNotFoundException;
+
+
 /////////////////////////////////////////////////////// CONTACT ////////////////////////////////////////////////////////////////
 
     void addContact(String fname, String lname, String phoneNum, String email, Address address) throws AddressNotFoundException, DuplicatedAddressException;

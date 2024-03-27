@@ -53,6 +53,12 @@ public class Service implements iService {
         return adao.existingAddressChecker(addressToCheck);
     }
 
+    @Override
+    public void updateAddress(int address_id, Map<String, Object> columns_new_values) throws AddressNotFoundException {
+
+        adao.updateAddress(address_id, columns_new_values);
+    }
+
 /////////////////////////////////////////////////////// CONTACT ////////////////////////////////////////////////////////////////
 
     @Override
@@ -92,7 +98,7 @@ public class Service implements iService {
     @Override
     public Contact getContactByAddressId(String contactType, int address_id) {
 
-        return getContactByAddressId(contactType,address_id);
+        return cdao.getContactByAddressId(contactType,address_id);
     }
 
     @Override
