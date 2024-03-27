@@ -15,37 +15,35 @@ public class DeleteController {
 
     private static Service service = new Service();
 
-    public static void deleteContactController() {
+    public static void deleteContactController(String contactType) throws InvalidContactTypeException {
 
-        Spark.delete("contact/:contactType/:id", new Route()  {
+        if (HQLQueryManager.contactTypeChecker(contactType)) {
+
+            Spark.delete("/contact/:id", new Route()  {
 
                 
-            @Override
-            public String handle(Request request, Response response) throws InvalidContactTypeException  {
-
-                String contactType = String.valueOf(request.params(":contactType"));
-
-                int id = Integer.parseInt(request.params(":id"));
-
-                if (HQLQueryManager.contactTypeChecker(contactType)) {
-
-                    try {
-
-                        service.deleteContact(id, contactType);
+                @Override
+                public String handle(Request request, Response response) throws InvalidContactTypeException  {
     
-                        return "Contact deleted successfully.";
+                    int id = Integer.parseInt(request.params(":id"));
     
-                    } catch (ContactNotFoundException | InvalidContactTypeException e) {
+                        try {
     
-                        return e.getMessage();
-                    } 
+                            service.deleteContact(id, contactType);
+        
+                            return "Contact deleted successfully.";
+        
+                        } catch (ContactNotFoundException | InvalidContactTypeException e) {
+        
+                            return e.getMessage();
+                        }                 
                 }
-
-                else throw new InvalidContactTypeException(contactType);
             }
+    
+            );
         }
 
-        );
+        else throw new InvalidContactTypeException(contactType);
     }
 
     public static void removeAddressController() {

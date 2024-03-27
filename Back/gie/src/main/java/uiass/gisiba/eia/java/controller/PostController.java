@@ -45,7 +45,7 @@ public class PostController {
 
                 } catch (AddressNotFoundException | DuplicatedAddressException e) {
 
-                    return e.getMessage();
+                    return "The provided address is already linked to a contact.";
                 } 
 
                 return "Address created successfully.";
