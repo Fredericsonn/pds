@@ -15,16 +15,15 @@ public class DeleteController {
 
     private static Service service = new Service();
 
-    public static void deleteContactController(String contactType) throws InvalidContactTypeException {
+    public static void deleteContactController()  {
 
-        if (HQLQueryManager.contactTypeChecker(contactType)) {
+            Spark.delete("/contact/delete/:contactType/:id", new Route()  {
 
-            Spark.delete("/contact/:id", new Route()  {
-
-                
                 @Override
                 public String handle(Request request, Response response) throws InvalidContactTypeException  {
-    
+
+                    String contactType = String.valueOf(request.params(":contactType"));
+
                     int id = Integer.parseInt(request.params(":id"));
     
                         try {
@@ -40,10 +39,7 @@ public class DeleteController {
                 }
             }
     
-            );
-        }
-
-        else throw new InvalidContactTypeException(contactType);
+            );  
     }
 
     public static void removeAddressController() {

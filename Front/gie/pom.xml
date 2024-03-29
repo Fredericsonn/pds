@@ -1,25 +1,56 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>uiass.gisiba.eia</groupId>
+    <groupId>uiass.eia.gisiba</groupId>
     <artifactId>gie</artifactId>
     <version>3.9.6</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>13</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>13</version>
-        </dependency>
+<dependency>
+    <groupId>org.openjfx</groupId>
+    <artifactId>javafx-controls</artifactId>
+    <version>23-ea+3</version>
+</dependency>
+
+<dependency>
+    <groupId>org.openjfx</groupId>
+    <artifactId>javafx-fxml</artifactId>
+    <version>23-ea+3</version>
+</dependency>
+
+
+<dependency>
+    <groupId>com.squareup.okhttp3</groupId>
+    <artifactId>okhttp</artifactId>
+    <version>5.0.0-alpha.12</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/com.squareup.okio/okio -->
+<dependency>
+    <groupId>com.squareup.okio</groupId>
+    <artifactId>okio</artifactId>
+    <version>3.9.0</version>
+</dependency>
+
+<dependency>
+    <groupId>com.google.code.gson</groupId>
+    <artifactId>gson</artifactId>
+    <version>2.10.1</version>
+    <exclusions>
+        <exclusion>
+            <groupId>com.squareup.okio</groupId>
+            <artifactId>okio</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+
+
+
+
     </dependencies>
     <build>
         <plugins>
@@ -41,7 +72,7 @@
                         <!-- Usage: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>uiass.gisiba.eia.App</mainClass>
+                            <mainClass>uiass.eia.gisiba.App</mainClass>
                         </configuration>
                     </execution>
                 </executions>

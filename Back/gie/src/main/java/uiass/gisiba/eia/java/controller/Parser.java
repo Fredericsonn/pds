@@ -29,8 +29,6 @@ public class Parser {
 
     private static List<String> addressAttributes = Arrays.asList("addressId","houseNumber","neighborhood","city","zipCode","region","country");
 
-    private static List<String> addressColumns = Arrays.asList("house_number","neighborhood","city","zip_code","region","country");
-
 
     public static String responseBodyGenerator(String url) {
 

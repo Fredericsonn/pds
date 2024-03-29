@@ -91,7 +91,7 @@ public class UpdateController {
 
             Gson gson = GetGson.getGson();
 
-            Spark.put("/contact/:id", new Route() {
+            Spark.put("/contacts/" + contactType + "/put" + "/:id" , new Route() {
 
             @Override
             public String handle(Request request, Response response)  {
@@ -151,7 +151,7 @@ public class UpdateController {
 
         Gson gson = GetGson.getGson();
 
-        Spark.put("/address/:id", new Route() {
+        Spark.put("/addresses/put/:id", new Route() {
 
         @Override
         public String handle(Request request, Response response)  {
@@ -164,6 +164,8 @@ public class UpdateController {
             
             // We collect all the values to update from the request body in one list :
             List addressValues = addressValuesCollector(gson, body);
+
+            System.out.println(addressValues);
 
             // We select only the non null values with their corresponding columns :
             Map<String, Object> address_new_values = mapFormater(addressColumns, addressValues);

@@ -24,7 +24,7 @@ public class PostController {
 
     public static void postAddressController() {
 
-        Spark.post("/address", new Route() {
+        Spark.post("/address/post", new Route() {
 
             @Override
             public String handle(Request request, Response response)  {
@@ -62,7 +62,7 @@ public class PostController {
 
             Gson gson = GetGson.getGson();
 
-            Spark.post("/contact", new Route() {
+            Spark.post("/contact/" + contactType + "/post", new Route() {
 
             @Override
             public String handle(Request request, Response response)  {
@@ -113,7 +113,7 @@ public class PostController {
 
                 } catch (AddressNotFoundException | DuplicatedAddressException e) {
 
-                    return e.getMessage();
+                    return "The provided address is already linked to a contact.";
                 }
                  
                 return "Contact created successfully.";

@@ -7,8 +7,12 @@ public class App {
 
     public static void main(String [] args ) {
 
-
-        UpdateController.updateAddressController();
+        try {
+            UpdateController.updateContactController("Person");
+        } catch (InvalidContactTypeException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     
             
       
@@ -21,7 +25,10 @@ public class App {
         "\"country\": \"Japan\"" +
     "}";
 
-         DataSender.putDataSender(json, "address/2");;
+
+
+
+        
       
 
 

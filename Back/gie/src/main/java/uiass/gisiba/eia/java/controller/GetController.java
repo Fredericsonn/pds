@@ -18,13 +18,15 @@ public class GetController {
 
 	}
 
-	public static void getContactByIdController(String contactType) {
+	public static void getContactByIdController() {
 
 	    Gson gson = GetGson.getGson();
 	  
 	    System.out.println("Server started.");
 	
-	    Spark.get("/contacts/:id", (req,res)-> {
+	    Spark.get("/contacts/:contactType/byId/:id", (req,res)-> {
+
+		String contactType = String.valueOf(req.params(":contactType"));
 
 		int id = Integer.parseInt(req.params(":id"));
 
@@ -38,13 +40,15 @@ public class GetController {
 	   
 	}
 
-	public static void getContactByNameController(String contactType) {
+	public static void getContactByNameController() {
 
 	    Gson gson = GetGson.getGson();
 	  
 	    System.out.println("Server started.");
 	
-	    Spark.get("/contacts/:name", (req,res)-> {
+	    Spark.get("/contacts/:contactType/byName/:name", (req,res)-> {
+
+		String contactType = String.valueOf(req.params(":contactType"));
 
 		String name = String.valueOf(req.params(":name"));
 
@@ -63,7 +67,7 @@ public class GetController {
 	  
 	    System.out.println("Server started.");
 	
-	    Spark.get("/contacts/:id", (req,res)-> {
+	    Spark.get("/contacts/byAddress/:id", (req,res)-> {
 
 		int address_id = Integer.parseInt(req.params(":id"));
 
@@ -76,13 +80,15 @@ public class GetController {
 	   } , gson::toJson );
 	}
 
-	public static void getAllContactsByCountryController(String contactType) {
+	public static void getAllContactsByCountryController() {
 
 	    Gson gson = GetGson.getGson();
 	  
 	    System.out.println("Server started.");
 	
-	    Spark.get("/contacts/:country", (req,res)-> {
+	    Spark.get("/contacts/:contactType/byAddress/:country", (req,res)-> {
+
+		String contactType = String.valueOf(req.params(":contactType"));
 
 		String country = String.valueOf(req.params(":country"));
 
@@ -137,7 +143,7 @@ public class GetController {
 	  
 	    System.out.println("Server started.");
 	
-	    Spark.get("/address/:addressId", (req,res)-> {
+	    Spark.get("/addresses/:addressId", (req,res)-> {
 
 		int address_id = Integer.valueOf(req.params(":addressId"));
 

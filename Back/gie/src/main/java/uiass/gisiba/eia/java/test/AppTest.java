@@ -24,9 +24,16 @@ public class AppTest {
 
         Service service = new Service();
 
-
-        System.out.println(service.getContactByAddressId("Person", 16));
-       /*  Map<String, Object> map = new HashMap<String, Object>();
+        try {
+            service.deleteContact(1000, "Person");
+        } catch (ContactNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InvalidContactTypeException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        /*  Map<String, Object> map = new HashMap<String, Object>();
         map.put("country", "Germany");
         map.put("city", "Munich");
 

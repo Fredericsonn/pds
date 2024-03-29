@@ -3,21 +3,19 @@ package uiass.gisiba.eia.java.controller;
 import com.google.gson.Gson;
 
 public class GetGson {
-    
-    private static Gson gson;
+
+    private static volatile Gson gson;
 
     private GetGson() {}
 
     public static Gson getGson() {
-
         if (gson == null) {
-
-            gson = new Gson();
-
-            return gson;
+            synchronized (GetGson.class) {
+                if (gson == null) {
+                    gson = new Gson();
+                }
+            }
         }
-        
         return gson;
-
     }
 }
