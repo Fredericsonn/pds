@@ -7,8 +7,12 @@ public class App {
 
     public static void main(String [] args ) {
 
+        GetController.getContactByIdController();
+        GetController.getAllContactsByTypeController();
+        GetController.getAllAddressesController();
+        GetController.getAddressByIdController();
         try {
-            UpdateController.updateContactController("Person");
+            PostController.postContactController("Person");
         } catch (InvalidContactTypeException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

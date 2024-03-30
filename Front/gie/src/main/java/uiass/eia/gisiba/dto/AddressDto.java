@@ -11,16 +11,16 @@ public class AddressDto {
 
 //////////////////////////////////////////////////// GET METHODS /////////////////////////////////////////////////////////////
 
-    public static List getAddressById(int id) {
+    public static List<String> getAddressById(int id) {
 
         String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/addresses/" + id);
 
         return Parser.parseAddress(responseBody);
     }
     
-    public static List<List> getAllAddresses() {
+    public static List<List<String>> getAllAddresses() {
 
-        List<List> parsedAddresses = new ArrayList<List>();
+        List<List<String>> parsedAddresses = new ArrayList<List<String> >();
 
         String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/addresses");
 
@@ -36,6 +36,6 @@ public class AddressDto {
 
     public static void updateAddress(int id, String json) {
 
-        DataSender.putDataSender(json, "addresses/put/" + id );
+        if (json != "") DataSender.putDataSender(json, "addresses/put/" + id );
     }
 }

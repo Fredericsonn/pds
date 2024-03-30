@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="895.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uiass.eia.gisiba.Controller">
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="895.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uiass.eia.gisiba.MainController">
    <children>
       <AnchorPane fx:id="leftAnchorPane" prefHeight="539.0" prefWidth="170.0">
          <children>
@@ -17,8 +17,9 @@
             </Label>
             <SplitMenuButton fx:id="crmSplitMenu" layoutX="14.0" layoutY="85.0" mnemonicParsing="false" text="CRM">
               <items>
-                <MenuItem mnemonicParsing="false" text="Contacts" onAction = "#switchToPersonsScene" />
-                <MenuItem mnemonicParsing="false" text="Addresses" />
+                  <MenuItem fx:id="Person" mnemonicParsing="false" onAction="#loadPersonPane" text="Persons " />
+                <MenuItem fx:id="Enterprise" mnemonicParsing="false" onAction="#loadEnterprisePane" text="Enterprises" />
+                <MenuItem fx:id="Addresses" mnemonicParsing="false" onAction="#loadAddressPane" text="Addresses" />
               </items>
                <font>
                   <Font name="Georgia" size="15.0" />

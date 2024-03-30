@@ -12,7 +12,7 @@ public class ContactDto {
 //////////////////////////////////////////////////// GET METHODS /////////////////////////////////////////////////////////////
 
     // Find a contact by its id :
-    public static List getContactById(int id, String contactType) {
+    public static List<String> getContactById(int id, String contactType) {
 
         String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType + "/byId/" + id);
 
@@ -28,11 +28,11 @@ public class ContactDto {
     }
 
     // Find all the contacts (either all persons or all enterprises) :
-    public static List<List> getAllContactsByType(String contactType) {
+    public static List<List<String>> getAllContactsByType(String contactType) {
 
         String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType);
 
-        List<List> parsedContacts = new ArrayList<List>();
+        List<List<String>> parsedContacts = new ArrayList<List<String>>();
 
         JsonArray contacts = new JsonParser().parse(responseBody).getAsJsonArray();
 
@@ -43,11 +43,11 @@ public class ContactDto {
     }
 
     // Find all contacts (persons and enterprises) :
-    public static List<List> getAllContacts() {
+    public static List<List<String>> getAllContacts() {
 
-        List<List> persons = getAllContactsByType("Person");
+        List<List<String>> persons = getAllContactsByType("Person");
 
-        List<List> enterprises = getAllContactsByType("Enterprise");
+        List<List<String>> enterprises = getAllContactsByType("Enterprise");
 
         persons.addAll(enterprises);
 
@@ -73,6 +73,6 @@ public class ContactDto {
 
     public static void updateContact(int id, String contactType, String json) {
 
-        DataSender.putDataSender(json, "contacts/" + contactType + "/put" + "/" + id );
+        if (json != "") DataSender.putDataSender(json, "contacts/" + contactType + "/put" + "/" + id );
     }
 }

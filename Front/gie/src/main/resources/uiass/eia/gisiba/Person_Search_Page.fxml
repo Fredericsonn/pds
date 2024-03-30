@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="895.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uiass.eia.gisiba.Controller">
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="895.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane fx:id="leftAnchorPane" prefHeight="539.0" prefWidth="170.0">
          <children>
@@ -23,7 +23,7 @@
             </Label>
             <SplitMenuButton fx:id="crmSplitMenu" layoutX="14.0" layoutY="85.0" mnemonicParsing="false" text="CRM">
               <items>
-                  <MenuItem fx:id="personsMenuItem" mnemonicParsing="false" text="Persons" onAction = "#switchToPersonsScene" />
+                  <MenuItem fx:id="personsMenuItem" mnemonicParsing="false" onAction="#switchToPersonsScene" text="Persons" />
                 <MenuItem fx:id="enterprisesMenuItem" mnemonicParsing="false" text="Enterprises" />
                 <MenuItem fx:id="addressesMenuItem" mnemonicParsing="false" text="Addresses" />
               </items>

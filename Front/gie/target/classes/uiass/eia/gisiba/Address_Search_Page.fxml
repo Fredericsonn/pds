@@ -35,7 +35,7 @@
       </AnchorPane>
       <AnchorPane fx:id="centerAnchorPane" layoutX="170.0" prefHeight="541.0" prefWidth="530.0">
          <children>
-            <TableView fx:id="addressTable" layoutY="106.0" prefHeight="434.0" prefWidth="530.0">
+            <TableView fx:id="addressTable" layoutY="89.0" prefHeight="451.0" prefWidth="530.0">
               <columns>
                 <TableColumn fx:id="addressIdColumn" prefWidth="43.199981689453125" text="id" />
                 <TableColumn fx:id="houseNumberColumn" prefWidth="89.5999755859375" text="house number" />
@@ -46,8 +46,8 @@
                   <TableColumn fx:id="countryColumn" prefWidth="82.39999999999998" text="country" />
               </columns>
             </TableView>
-            <TextField fx:id="enterIdTextLabel" layoutX="14.0" layoutY="37.0" prefHeight="36.0" prefWidth="238.0" promptText="enter an id" />
-            <Button fx:id="searchBtn" layoutX="362.0" layoutY="37.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="86.0" text="SEARCH" />
+            <TextField fx:id="enterIdTextLabel" layoutX="14.0" layoutY="29.0" prefHeight="36.0" prefWidth="238.0" promptText="enter an id" />
+            <Button fx:id="searchBtn" layoutX="361.0" layoutY="29.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="86.0" text="SEARCH" />
          </children>
       </AnchorPane>
       <AnchorPane fx:id="rightAnchorPane" layoutX="700.0" prefHeight="539.0" prefWidth="200.0">
