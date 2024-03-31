@@ -19,11 +19,11 @@ public class AppTest {
         "    \"country\": \"United States\"\n" +
         "}";*/
         String json = "{\n" +
-    "    \"city\": \" madrid\",\n" +
+    "    \"city\": \" barcelona\",\n" +
     "    \"country\": \"Spain\"\n" +
     "}";
 
-        AddressDto.updateAddress(1, json);
+        System.out.println(ContactDto.getContactById(1000, "Enterprise"));
 
 
 

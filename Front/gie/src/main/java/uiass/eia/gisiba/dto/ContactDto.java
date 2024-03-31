@@ -20,7 +20,7 @@ public class ContactDto {
     }
 
     // Find a contact by its name :
-    public static List getContactByName(String name, String contactType) {
+    public static List<String> getContactByName(String name, String contactType) {
 
         String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType + "/byName/" + name);
 
@@ -57,22 +57,24 @@ public class ContactDto {
 //////////////////////////////////////////////////// POST METHOD /////////////////////////////////////////////////////////////
 
     // Create a new contact :
-    public static void postContact(String json, String contactType) {
+    public static String postContact(String json, String contactType) {
 
-        DataSender.postDataSender(json, "contact/" + contactType);
+        return DataSender.postDataSender(json, "contact/" + contactType);
     }
 
 //////////////////////////////////////////////////// Delete METHOD /////////////////////////////////////////////////////////////
 
-    public static void deleteContact(int id, String contactType) {
+    public static String deleteContact(int id, String contactType) {
 
-        DataSender.deleteDataSender("contact/delete/" + contactType + "/" + id);
+        return DataSender.deleteDataSender("contact/delete/" + contactType + "/" + id);
     }
 
 //////////////////////////////////////////////////// Put METHOD /////////////////////////////////////////////////////////////
 
-    public static void updateContact(int id, String contactType, String json) {
+    public static String updateContact(int id, String contactType, String json) {
 
-        if (json != "") DataSender.putDataSender(json, "contacts/" + contactType + "/put" + "/" + id );
+        if (json != "") return DataSender.putDataSender(json, "contacts/" + contactType + "/put" + "/" + id );
+
+        return "Please provide some new values to update.";
     }
 }

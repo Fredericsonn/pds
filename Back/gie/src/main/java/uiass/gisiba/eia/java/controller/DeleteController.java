@@ -42,28 +42,4 @@ public class DeleteController {
             );  
     }
 
-    public static void removeAddressController() {
-
-        Spark.delete("/address/:addressId", new Route() {
-
-            @Override
-            public String handle(Request request, Response response)  {
-
-                int addressId = Integer.parseInt(request.params(":addressId"));
-
-                try {
-
-                    service.removeAddress(addressId);
-
-                    return "Address deleted successfully.";
-
-                } catch (AddressNotFoundException  e) {
-
-                    return e.getMessage();
-                } 
-            }
-        }
-
-        );
-    }
 }

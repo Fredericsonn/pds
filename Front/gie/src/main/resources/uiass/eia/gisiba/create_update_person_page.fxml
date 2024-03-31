@@ -6,8 +6,8 @@
 
 <AnchorPane fx:id="createPageAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TextField fx:id="firstNameTextField" layoutX="52.0" layoutY="58.0" prefHeight="25.0" prefWidth="116.0" promptText="first name" />
-      <TextField fx:id="lastNameTextField" layoutX="239.0" layoutY="57.0" prefHeight="26.0" prefWidth="116.0" promptText="last name" />
+      <TextField fx:id="firstTextField" layoutX="52.0" layoutY="58.0" prefHeight="25.0" prefWidth="116.0" promptText="first name" />
+      <TextField fx:id="secondTextField" layoutX="239.0" layoutY="57.0" prefHeight="26.0" prefWidth="116.0" promptText="last name" />
       <TextField fx:id="phoneNumberTextField" layoutX="431.0" layoutY="57.0" prefHeight="26.0" prefWidth="116.0" promptText="phone number" />
       <TextField fx:id="emailTextField" layoutX="52.0" layoutY="148.0" prefHeight="26.0" prefWidth="116.0" promptText="email" />
       <TextField fx:id="houseNumberTextField" layoutX="239.0" layoutY="148.0" prefHeight="26.0" prefWidth="116.0" promptText="house number" />

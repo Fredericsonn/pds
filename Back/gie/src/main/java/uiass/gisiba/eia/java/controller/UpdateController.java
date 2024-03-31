@@ -161,6 +161,8 @@ public class UpdateController {
             int addressId = Integer.parseInt(request.params(":id"));  // We take the id of the contact to update from the url
 
             String body = request.body(); 
+
+            System.out.println(body);
             
             // We collect all the values to update from the request body in one list :
             List addressValues = addressValuesCollector(gson, body);

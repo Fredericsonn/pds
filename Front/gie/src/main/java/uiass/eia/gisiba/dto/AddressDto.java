@@ -15,6 +15,8 @@ public class AddressDto {
 
         String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/addresses/" + id);
 
+        System.out.println(responseBody);
+
         return Parser.parseAddress(responseBody);
     }
     
@@ -32,10 +34,21 @@ public class AddressDto {
         return parsedAddresses;
     }
 
+    public static String addressFormulater(int id) {
+
+        List attributes = getAddressById(id);
+
+
+        return String.valueOf(attributes.get(1)) + ", " + String.valueOf(attributes.get(2)) + ", "  + String.valueOf(attributes.get(3)) + ", "
+        + String.valueOf(attributes.get(4)) + ", " + String.valueOf(attributes.get(5)) + ", " + String.valueOf(attributes.get(6)) ;
+    }
+
 //////////////////////////////////////////////////// PUT METHOD /////////////////////////////////////////////////////////////
 
-    public static void updateAddress(int id, String json) {
+    public static String updateAddress(int id, String json) {
 
-        if (json != "") DataSender.putDataSender(json, "addresses/put/" + id );
+        if (json != "") return DataSender.putDataSender(json, "addresses/put/" + id );
+
+        return "Please enter the new values to update";
     }
 }

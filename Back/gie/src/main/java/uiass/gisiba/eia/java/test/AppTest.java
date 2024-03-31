@@ -25,11 +25,8 @@ public class AppTest {
         Service service = new Service();
 
         try {
-            service.deleteContact(1000, "Person");
-        } catch (ContactNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidContactTypeException e) {
+            System.out.println(service.getAddressById(1));
+        } catch (AddressNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

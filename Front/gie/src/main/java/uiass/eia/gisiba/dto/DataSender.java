@@ -36,75 +36,60 @@ public class DataSender {
         return body;
     }
     
-    public static void postDataSender(String json, String entity) {
+    public static String postDataSender(String json, String entity) {
 
-        // Create an instance of OkHttpClient
         OkHttpClient client = new OkHttpClient();
-
-        // Define the request body
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
 
-        // Define the POST request
         Request request = new Request.Builder()
                 .url("http://localhost:4567/" + entity + "/post")  
                 .post(requestBody)
                 .build();
 
-        // Execute the request asynchronously
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
+        try (Response response = client.newCall(request).execute()) {
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException("Unexpected code " + response);
-                }
+            if (!response.isSuccessful()) {
 
-                // Print the response body
-                System.out.println(response.body().string());
+                throw new IOException("Unexpected code " + response);
             }
-        });
+    
+            return response.body().string();
+
+        } catch (IOException e) {
+
+            return "Internal Server Error."; 
+        }
     }
 
-    public static void putDataSender(String json, String path) {
+    public static String putDataSender(String json, String path) {
 
-        // Create an instance of OkHttpClient
         OkHttpClient client = new OkHttpClient();
-
-        // Define the request body
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
 
-        // Define the POST request
         Request request = new Request.Builder()
-                .url("http://localhost:4567/" + path)  
+                .url("http://localhost:4567/" + path)
                 .put(requestBody)
                 .build();
+    
+        try (Response response = client.newCall(request).execute()) {
 
-        // Execute the request asynchronously
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
+            if (!response.isSuccessful()) {
+
+                throw new IOException("Unexpected code " + response);
             }
+    
+            return response.body().string();
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException("Unexpected code " + response);
-                }
+        } catch (IOException e) {
 
-                // Print the response body
-                System.out.println(response.body().string());
-            }
-        });
+            return e.getMessage(); 
+        }
     }
+    
 
-    public static void getDataSender(String path) {
+    public static String getDataSender(String path) {
 
         // Create an instance of OkHttpClient
         OkHttpClient client = new OkHttpClient();
@@ -114,53 +99,43 @@ public class DataSender {
                 .url("http://localhost:4567/" + path)  // Change the URL to your endpoint
                 .get()
                 .build();
+        try (Response response = client.newCall(request).execute()) {
 
-        // Execute the request asynchronously
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
+            if (!response.isSuccessful()) {
+
+                throw new IOException("Unexpected code " + response);
             }
+    
+            return "Data collected successfully";
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException("Unexpected code " + response);
-                }
+        } catch (IOException e) {
 
-                // Print the response body
-                System.out.println(response.body().string());
-            }
-        });
+            return "Internal Server Error."; 
+        }
     }
 
-    public static void deleteDataSender(String path) {
+    public static String deleteDataSender(String path) {
 
-        // Create an instance of OkHttpClient
         OkHttpClient client = new OkHttpClient();
 
-        // Define the POST request
         Request request = new Request.Builder()
-                .url("http://localhost:4567/" + path)  // Change the URL to your endpoint
+                .url("http://localhost:4567/" + path)  
                 .delete()
                 .build();
 
-        // Execute the request asynchronously
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
+        try (Response response = client.newCall(request).execute()) {
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException("Unexpected code " + response);
-                }
+            if (!response.isSuccessful()) {
 
-                // Print the response body
-                System.out.println(response.body().string());
+                throw new IOException("Unexpected code " + response);
             }
-        });
+    
+            return response.body().string();
+
+        } catch (IOException e) {
+
+            return "Internal Server Error."; 
+        }
     }
+    
 }

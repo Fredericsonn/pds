@@ -1,5 +1,7 @@
 package uiass.gisiba.eia.java.controller;
 
+import java.io.IOException;
+
 import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;               
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
 
@@ -7,16 +9,23 @@ public class App {
 
     public static void main(String [] args ) {
 
-        GetController.getContactByIdController();
-        GetController.getAllContactsByTypeController();
-        GetController.getAllAddressesController();
-        GetController.getAddressByIdController();
-        try {
-            PostController.postContactController("Person");
-        } catch (InvalidContactTypeException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+       GetController.getAllContactsByTypeController();
+       GetController.getContactByIdController();
+       GetController.getAllAddressesController();
+       GetController.getAddressByIdController();
+
+       try {
+        PostController.postContactController("Person");
+        PostController.postContactController("Enterprise");
+        DeleteController.deleteContactController();
+        UpdateController.updateContactController("Person");
+        UpdateController.updateContactController("Enterprise");
+    } catch (InvalidContactTypeException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    }
+     
+
     
             
       

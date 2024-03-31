@@ -61,23 +61,8 @@ public class GetController {
 	   } , gson::toJson );
 	}
 
-	public static void getContactByAddressIdController(String contactType) {
-
-	    Gson gson = GetGson.getGson();
-	  
-	    System.out.println("Server started.");
-	
-	    Spark.get("/contacts/byAddress/:id", (req,res)-> {
-
-		int address_id = Integer.parseInt(req.params(":id"));
-
-		Contact contact = GetController.service.getContactByAddressId(contactType, address_id);
+	public static void getContactByAddressIdController() {
 		
-		res.type("application/json");
-		   		   
-		return contact;
-		   
-	   } , gson::toJson );
 	}
 
 	public static void getAllContactsByCountryController() {
@@ -137,7 +122,7 @@ public class GetController {
 	   } , gson::toJson );
 	}
 
-	public static void getAddressByIdController() {
+	public static  void getAddressByIdController() {
 
 	    Gson gson = GetGson.getGson();
 	  
@@ -153,7 +138,8 @@ public class GetController {
 		   		   
 		return address;
 		   
-	   } , gson::toJson );
+	   } , gson::toJson);
+	   
 	   
 	}
 

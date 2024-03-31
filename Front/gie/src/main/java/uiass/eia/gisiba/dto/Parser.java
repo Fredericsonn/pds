@@ -31,9 +31,11 @@ public class Parser {
 
     public static List<String> addressAttributes = Arrays.asList("addressId","houseNumber","neighborhood","city","zipCode","region","country");
 
-    public static List<String> update_address_attributes = Arrays.asList("addressId","houseNumber","neighborhood","city","zipCode","region","country");
+    public static List<String> update_address_attributes = Arrays.asList("houseNumber","neighborhood","city","zipCode","region","country");
 
-    public static Map<String,Object> createContactMapGenerator(List values, String contactType) {
+    public static List<String> textFieldsReferences = Arrays.asList("first","second","phoneNumber","email","houseNumber","neighborhood","city","zipCode","region","country");
+
+    public static Map<String,Object> contactCreationMapGenerator(List values, String contactType) {
 
         Map<String,Object> map = new HashMap<String,Object>();
 
@@ -43,6 +45,45 @@ public class Parser {
         for (int i=0 ; i < attributes.size() ; i++) {
 
             map.put(attributes.get(i), values.get(i));
+
+        }
+
+        return map;
+    }
+    public static Map<String,Object> contactUpdateMapGenerator(List values, String contactType) {
+
+        Map<String,Object> map = new HashMap<String,Object>();
+
+        List<String> attributes = contact_update_columns_by_type_map.get(contactType);
+
+        
+        for (int i=0 ; i < attributes.size() ; i++) {
+
+            if (!((String) values.get(i)).equals("")) map.put(attributes.get(i), values.get(i));
+
+        }
+
+        return map;
+    }
+
+    public static Map<String,Object> addressMapGenerator(List values) {
+
+        Map<String,Object> map = new HashMap<String,Object>();
+
+        List<String> attributes = update_address_attributes;
+
+        
+        for (int i=0 ; i < attributes.size() ; i++) {
+                        
+            if (attributes.get(i).equals("houseNumber")) {
+
+                String value = String.valueOf(values.get(i));
+
+                if (Integer.parseInt(value) != 0) map.put(attributes.get(i), Integer.parseInt(value));
+            }
+
+            else if (!((String) values.get(i)).equals("")) map.put(attributes.get(i), values.get(i));
+            
 
         }
 
@@ -130,6 +171,7 @@ public class Parser {
 
         return Arrays.asList(addressId,houseNumber,neighborhood,city,zipCode,region,country);
     }
+
 
 
 }
