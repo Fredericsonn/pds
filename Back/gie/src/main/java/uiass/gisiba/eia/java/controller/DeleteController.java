@@ -28,14 +28,14 @@ public class DeleteController {
     
                         try {
     
-                            service.deleteContact(id, contactType);
-        
-                            return "Contact deleted successfully.";
+                            service.deleteContact(id, contactType);       
         
                         } catch (ContactNotFoundException | InvalidContactTypeException e) {
         
                             return e.getMessage();
-                        }                 
+                        }  
+                        
+                        return "Contact deleted successfully.";
                 }
             }
     

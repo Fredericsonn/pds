@@ -46,7 +46,6 @@ public class UpdateController {
             if (value != null) {
 
                 columns_new_values.put(column,value);
-                System.out.println(columns_new_values);
             }
         }
 

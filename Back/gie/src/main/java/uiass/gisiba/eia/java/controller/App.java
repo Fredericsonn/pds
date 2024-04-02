@@ -13,13 +13,16 @@ public class App {
        GetController.getContactByIdController();
        GetController.getAllAddressesController();
        GetController.getAddressByIdController();
+       GetController.getContactByAddressIdController();
 
+       DeleteController.deleteContactController();
        try {
         PostController.postContactController("Person");
         PostController.postContactController("Enterprise");
-        DeleteController.deleteContactController();
+        
         UpdateController.updateContactController("Person");
         UpdateController.updateContactController("Enterprise");
+
     } catch (InvalidContactTypeException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();

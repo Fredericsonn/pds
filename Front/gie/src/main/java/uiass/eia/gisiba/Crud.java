@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.stage.Stage;
 import uiass.eia.gisiba.dto.AddressDto;
 import uiass.eia.gisiba.dto.ContactDto;
@@ -132,6 +133,35 @@ public class Crud {
 
     }
 
+    public static void setTextFieldNumericFormatRule(TextField numericTextField) {
+
+        numericTextField.setTextFormatter(new TextFormatter<>(change -> {
+
+        String newText = change.getControlNewText();
+
+        if (newText.matches("\\d*")) { // Allow only digits
+
+            return change;
+
+        } else return null; // Reject the change
+            
+        }));
+    }
+
+    public static void setTextFieldEmailFormatRule(TextField numericTextField) {
+
+        numericTextField.setTextFormatter(new TextFormatter<>(change -> {
+
+        String newText = change.getControlNewText();
+
+        if (newText.matches("^[a-zA-Z0-9_+&*-]+(?:\\\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\\\.)+[a-zA-Z]{2,7}$")) { // Email Format
+
+            return change;
+
+        } else return null; // Reject the change
+            
+        }));
+    }
     // A method that generates alerts : 
     public static void showAlert(AlertType type, String title, String header, String message) {
 

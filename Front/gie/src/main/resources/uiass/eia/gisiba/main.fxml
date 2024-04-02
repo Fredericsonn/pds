@@ -17,7 +17,7 @@
             </Label>
             <SplitMenuButton fx:id="crmSplitMenu" layoutX="14.0" layoutY="85.0" mnemonicParsing="false" text="CRM">
               <items>
-                  <MenuItem fx:id="Person" mnemonicParsing="false" onAction="#loadPersonPane" text="Persons " />
+                  <MenuItem fx:id="Person" mnemonicParsing="false" onAction="#loadPersonPane" text="Persons" />
                 <MenuItem fx:id="Enterprise" mnemonicParsing="false" onAction="#loadEnterprisePane" text="Enterprises" />
                 <MenuItem fx:id="Addresses" mnemonicParsing="false" onAction="#loadAddressPane" text="Addresses" />
               </items>

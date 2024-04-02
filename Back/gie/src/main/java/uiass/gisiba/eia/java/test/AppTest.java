@@ -24,17 +24,28 @@ public class AppTest {
 
         Service service = new Service();
 
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("phoneNumber", "123456789");
+
+        
         try {
+            service.updateContact(5, map, "Enterprise");
+        } catch (ContactNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InvalidContactTypeException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        /*try {
             System.out.println(service.getAddressById(1));
         } catch (AddressNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-        /*  Map<String, Object> map = new HashMap<String, Object>();
-        map.put("country", "Germany");
-        map.put("city", "Munich");
+        }*/
 
-        try {
+
+        /*try {
             service.updateAddress(2, map);
         } catch (AddressNotFoundException e) {
 

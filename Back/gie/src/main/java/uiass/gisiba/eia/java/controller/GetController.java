@@ -12,7 +12,7 @@ import java.util.*;
 
 public class GetController {
 
-	private static Service service = new Service();
+	static Service service = new Service();
 
 	public GetController() {
 
@@ -63,6 +63,23 @@ public class GetController {
 
 	public static void getContactByAddressIdController() {
 		
+	    Gson gson = GetGson.getGson();
+	  
+	    System.out.println("Server started.");
+	
+	    Spark.get("/contacts/:contactType/byAddressId/:id", (req,res)-> {
+
+		String contactType = String.valueOf(req.params(":contactType"));
+
+		int id = Integer.parseInt(req.params(":id"));
+
+		Contact contact = GetController.service.getContactByAddressId(contactType, id);
+		
+		res.type("application/json");
+		   		   
+		return contact;
+		   
+	   } , gson::toJson );		
 	}
 
 	public static void getAllContactsByCountryController() {
@@ -71,7 +88,7 @@ public class GetController {
 	  
 	    System.out.println("Server started.");
 	
-	    Spark.get("/contacts/:contactType/byAddress/:country", (req,res)-> {
+	    Spark.get("/contacts/:contactType/byAddressCountry/:country", (req,res)-> {
 
 		String contactType = String.valueOf(req.params(":contactType"));
 
@@ -130,7 +147,7 @@ public class GetController {
 	
 	    Spark.get("/addresses/:addressId", (req,res)-> {
 
-		int address_id = Integer.valueOf(req.params(":addressId"));
+		int address_id = Integer.parseInt(req.params(":addressId"));
 
 		Address address = GetController.service.getAddressById(address_id);
 		

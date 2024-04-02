@@ -19,6 +19,23 @@ public class AddressDto {
 
         return Parser.parseAddress(responseBody);
     }
+
+        // Find a contact by its address id :
+        @SuppressWarnings("unchecked")
+        public static List<String> getAddressLongWay(int id, String contactType) {
+
+            String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType + "/byAddressId/" + id);
+    
+            List contact = Parser.parseContact(responseBody, contactType);
+
+            List address = new ArrayList<>();
+
+            for (int i = 5; i < contact.size(); i++) {
+                address.add(contact.get(i));
+            }
+
+            return address;
+        }
     
     public static List<List<String>> getAllAddresses() {
 
@@ -36,7 +53,7 @@ public class AddressDto {
 
     public static String addressFormulater(int id) {
 
-        List attributes = getAddressById(id);
+        List attributes = getAddressLongWay(id, "Person");
 
 
         return String.valueOf(attributes.get(1)) + ", " + String.valueOf(attributes.get(2)) + ", "  + String.valueOf(attributes.get(3)) + ", "
