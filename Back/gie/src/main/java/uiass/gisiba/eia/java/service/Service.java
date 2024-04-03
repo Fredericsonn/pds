@@ -96,7 +96,7 @@ public class Service implements iService {
     }
 
     @Override
-    public Contact getContactByAddressId(String contactType, int address_id) {
+    public Contact getContactByAddressId(String contactType, int address_id) throws AddressNotFoundException {
 
         return cdao.getContactByAddressId(contactType,address_id);
     }

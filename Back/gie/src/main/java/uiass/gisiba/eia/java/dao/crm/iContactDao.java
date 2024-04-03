@@ -20,7 +20,7 @@ public interface iContactDao {
 
     Contact getContactByName(String name, String contactType) throws ContactNotFoundException, InvalidContactTypeException;
 
-    Contact getContactByAddressId(String contactType, int address_id);
+    Contact getContactByAddressId(String contactType, int address_id) throws AddressNotFoundException;
 
     List<Contact> getAllContactsByCountry(String contactType, String country) throws InvalidContactTypeException, NoContactsFoundInCountry;
 

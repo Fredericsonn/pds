@@ -80,14 +80,20 @@ public class ContactDao implements iContactDao {
 
 				em.remove(contact);	
 				System.out.println("Contact removed successfully.");	
+				tr.commit();
 			}
 
-			tr.commit();
+			
 
-			throw new ContactNotFoundException(id);
+			else {
+
+				tr.commit();
+
+				throw new ContactNotFoundException(id);
+			}
 		}
 
-		throw new InvalidContactTypeException(contactType);
+		else throw new InvalidContactTypeException(contactType);
 
 	}
 
@@ -140,7 +146,7 @@ public class ContactDao implements iContactDao {
 	}
 
 	@Override
-	public Contact getContactByAddressId(String contactType, int address_id) {
+	public Contact getContactByAddressId(String contactType, int address_id) throws AddressNotFoundException {
 
 		String hql = HQLQueryManager.getContactByAddressIdHQLQueryGenerator(contactType);
 
@@ -152,7 +158,9 @@ public class ContactDao implements iContactDao {
 		Contact contact = (Contact) query.getSingleResult();
 		tr.commit();
 		
-		return contact;
+		if (contact != null )return contact;
+
+		throw new AddressNotFoundException(address_id);
 	}
 
 	@Override

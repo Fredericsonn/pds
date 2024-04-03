@@ -30,7 +30,7 @@ public class DataSender {
     	    }
     	       	  
     	  catch(IOException e ) {
-    		  System.out.println(e.getMessage());
+    		  return "Server Error.";
     	  }
 
         return body;
@@ -134,7 +134,7 @@ public class DataSender {
 
         } catch (IOException e) {
 
-            return "Internal Server Error."; 
+            return "IGNORE IT"; 
         }
     }
     

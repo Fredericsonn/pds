@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 
 
 import spark.Spark;
+import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
 import uiass.gisiba.eia.java.service.Service;
@@ -30,11 +32,20 @@ public class GetController {
 
 		int id = Integer.parseInt(req.params(":id"));
 
-		Contact contact = GetController.service.getContactById(id, contactType);
+		try {
+
+			Contact contact = GetController.service.getContactById(id, contactType);
 		
-		res.type("application/json");
+			res.type("application/json");
+
+			return contact;
+			
+		} catch(ContactNotFoundException e) {
+
+			return e.getMessage();
+		}
 		
-		return contact;
+		
 		   
 	   } , gson::toJson );
 	   
@@ -73,11 +84,18 @@ public class GetController {
 
 		int id = Integer.parseInt(req.params(":id"));
 
-		Contact contact = GetController.service.getContactByAddressId(contactType, id);
+		try {
+
+			Contact contact = GetController.service.getContactByAddressId(contactType, id);
 		
-		res.type("application/json");
-		   		   
-		return contact;
+			res.type("application/json");
+						  
+			return contact;
+
+		} catch(AddressNotFoundException e) {
+
+			return e.getMessage();
+		}
 		   
 	   } , gson::toJson );		
 	}

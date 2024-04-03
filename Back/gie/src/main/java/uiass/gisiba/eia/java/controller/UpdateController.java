@@ -43,9 +43,17 @@ public class UpdateController {
 
             Object value = values.get(i);
 
-            if (value != null) {
+            if (column.equals("houseNumber")) {
 
-                columns_new_values.put(column,value);
+                if ((int) value != 0) columns_new_values.put(column, value);
+            }
+
+            else {
+                
+                if (value != null) {
+
+                    columns_new_values.put(column,value);
+                }
             }
         }
 
@@ -82,47 +90,54 @@ public class UpdateController {
 
         return values;
     }
-    public static void updateContactController(String contactType) throws InvalidContactTypeException {
+    public static void updateContactController() throws InvalidContactTypeException {
 
-        if (HQLQueryManager.contactTypeChecker(contactType)) {
 
-            List<String> columns = contact_columns_by_type_map.get(contactType);  // A list of the contact table's columns
+              // A list of the contact table's columns
 
             Gson gson = GetGson.getGson();
 
-            Spark.put("/contacts/" + contactType + "/put" + "/:id" , new Route() {
+            Spark.put("/contacts/:contactType/put/:id" , new Route() {
 
             @Override
-            public String handle(Request request, Response response)  {
+            public String handle(Request request, Response response) throws InvalidContactTypeException  {
 
                 System.out.println("Server started.");
 
-                int id = Integer.parseInt(request.params(":id"));  // We take the id of the contact to update from the url
+                String contactType = String.valueOf(request.params(":contactType"));
 
-                String body = request.body();  
+                if (HQLQueryManager.contactTypeChecker(contactType)) {
 
-                // We collect all the values to update from the request body in one list :
-                List contactValues = contactValuesCollector(gson, body, contactType);
+                    int id = Integer.parseInt(request.params(":id"));  // We take the id of the contact to update from the url
 
-                // We select only the non null values with their corresponding columns :
-                Map<String, Object> contact_columns_new_values = mapFormater(columns, contactValues);
+                    String body = request.body(); 
+                    
+                    List<String> columns = contact_columns_by_type_map.get(contactType);
+    
+                    // We collect all the values to update from the request body in one list :
+                    List contactValues = contactValuesCollector(gson, body, contactType);
+    
+                    // We select only the non null values with their corresponding columns :
+                    Map<String, Object> contact_columns_new_values = mapFormater(columns, contactValues);
+    
+                    // And finally we update the contact :
+                    try {
+                            
+                        service.updateContact(id, contact_columns_new_values, contactType);;
+    
+                    } catch (ContactNotFoundException | InvalidContactTypeException  e) {
+    
+                        return e.getMessage();
+                    }
+                     
+                    return "Contact updated successfully.";
 
-                // And finally we update the contact :
-                try {
-                        
-                    service.updateContact(id, contact_columns_new_values, contactType);;
-
-                } catch (ContactNotFoundException | InvalidContactTypeException  e) {
-
-                    return e.getMessage();
-                }
-                 
-                return "Contact updated successfully.";
+                }  else throw new InvalidContactTypeException(contactType);
         }});
 
-        }
+        
 
-        else throw new InvalidContactTypeException(contactType);
+       
 
     }
 
@@ -130,7 +145,7 @@ public class UpdateController {
 
         JsonObject address = gson.fromJson(body, JsonObject.class);
 
-        int houseNumber = Parser.collectInt(address, "houseNumber");
+        int houseNumber = address.has("houseNumber") ?  Parser.collectInt(address, "houseNumber") : 0;
 
         String neighborhood = Parser.collectString(address, "neighborhood");
 
@@ -160,13 +175,9 @@ public class UpdateController {
             int addressId = Integer.parseInt(request.params(":id"));  // We take the id of the contact to update from the url
 
             String body = request.body(); 
-
-            System.out.println(body);
             
             // We collect all the values to update from the request body in one list :
             List addressValues = addressValuesCollector(gson, body);
-
-            System.out.println(addressValues);
 
             // We select only the non null values with their corresponding columns :
             Map<String, Object> address_new_values = mapFormater(addressColumns, addressValues);

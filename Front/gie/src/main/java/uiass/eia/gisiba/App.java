@@ -4,9 +4,11 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * JavaFX App
@@ -17,9 +19,15 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("main"));   //address_center_pane
+        scene = new Scene(loadFXML("main"));   
         scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
+        String iconPath = "/uiass/eia/gisiba/imgs/logo.jpeg";
+        InputStream inputStream = getClass().getResourceAsStream(iconPath);
+        Image icon = new Image(inputStream);
+
+        
         stage.setScene(scene);
+        stage.getIcons().add(icon);
         stage.setResizable(false);
         stage.show();
     }

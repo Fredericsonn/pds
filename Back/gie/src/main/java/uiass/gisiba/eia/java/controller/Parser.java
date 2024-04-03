@@ -60,6 +60,7 @@ public class Parser {
     }
 
     public static int collectInt(JsonObject jsObj, String attribute) {
+
         JsonElement element = jsObj.get(attribute);
 
         return element != null ? Integer.valueOf(element.getAsString()) : null;

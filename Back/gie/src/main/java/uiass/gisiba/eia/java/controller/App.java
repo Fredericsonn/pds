@@ -14,14 +14,15 @@ public class App {
        GetController.getAllAddressesController();
        GetController.getAddressByIdController();
        GetController.getContactByAddressIdController();
+       GetController.getAllContactsController();
 
        DeleteController.deleteContactController();
        try {
         PostController.postContactController("Person");
         PostController.postContactController("Enterprise");
         
-        UpdateController.updateContactController("Person");
-        UpdateController.updateContactController("Enterprise");
+        UpdateController.updateContactController();
+        UpdateController.updateAddressController();
 
     } catch (InvalidContactTypeException e) {
         // TODO Auto-generated catch block

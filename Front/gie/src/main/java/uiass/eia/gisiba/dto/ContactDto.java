@@ -16,7 +16,9 @@ public class ContactDto {
 
         String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType + "/byId/" + id);
 
-        return Parser.parseContact(responseBody, contactType);
+        if (!responseBody.equals("null")) return Parser.parseContact(responseBody, contactType);
+
+        return null;
     }
 
     // Find a contact by its name :
@@ -24,7 +26,9 @@ public class ContactDto {
 
         String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType + "/byName/" + name);
 
-        return Parser.parseContact(responseBody, contactType);
+        if (!responseBody.equals("null")) return Parser.parseContact(responseBody, contactType);
+
+        return null;
     }
 
     // Find all the contacts (either all persons or all enterprises) :

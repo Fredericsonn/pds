@@ -3,7 +3,6 @@ package uiass.eia.gisiba;
 import java.io.IOException;
 import java.util.*;
 
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,8 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
@@ -43,16 +41,17 @@ public class MainController {
         App.setRoot("Person_Search_Page");
     }
     
+    @SuppressWarnings("unchecked")
     @FXML
     private void loadPersonPane() {
 
-        loadFXML("person_center_pane.fxml", centerAnchorPane);
+        loadFXML("contact_center_pane.fxml", centerAnchorPane);
         loadFXML("person_right_pane.fxml", rightAnchorPane);
         rightAnchorPane.setVisible(false);
         
         // Buttons
         Button search = Crud.getButton(centerAnchorPane, "searchBtn");
-        Button createNew = Crud.getButton(centerAnchorPane, "createNewPersonBtn");
+        Button createNew = Crud.getButton(centerAnchorPane, "createNewContactBtn");
         Button update = Crud.getButton(rightAnchorPane, "updateBtn");
         Button delete = Crud.getButton(rightAnchorPane, "deleteBtn");
 
@@ -65,21 +64,22 @@ public class MainController {
         Label phoneNumberLabel = Crud.getLabel(rightAnchorPane, "phoneNumberLabel");
         Label emailLabel = Crud.getLabel(rightAnchorPane, "emailLabel");
         Label addressLabel = Crud.getLabel(rightAnchorPane, "addressLabel");
+        addressLabel.setWrapText(true);
 
-        // Table
-        TableView<List<String>> table = (TableView<List<String>>) centerAnchorPane.lookup("#personTable");
+        // List
+        ListView list = (ListView) centerAnchorPane.lookup("#contactListView");
 
-        table.setOnMouseClicked(event -> {
-            if (!table.getSelectionModel().isEmpty()) {
+        list.setOnMouseClicked(event ->  {
+            if (!list.getSelectionModel().isEmpty()) {
 
                 // We get the selected row and extract the values
-                List<String> selectedItem = table.getSelectionModel().getSelectedItem();
+                List<String> selectedItem = (List<String>) list.getSelectionModel().getSelectedItem();
                 int contactId = Integer.parseInt(selectedItem.get(0));
                 String fullName = selectedItem.get(1) + " " + selectedItem.get(2);
                 String phoneNumber = selectedItem.get(3);
                 String email = selectedItem.get(4);
                 int addressId = Integer.parseInt(selectedItem.get(5));
-                String address =AddressDto.addressFormulater(addressId);
+                String address = AddressDto.addressFormulater(addressId);
 
                 // We use the extracted values to fill the labels
                 fullNameLabel.setText(fullName);
@@ -98,45 +98,51 @@ public class MainController {
         } 
             
         });
-        
-        
+    
         ObservableList<List<String>> data = FXCollections.observableArrayList(); // We define the observable list that will be used to fill the table rows
         List<List<String>> contacts = ContactDto.getAllContactsByType("Person");  // We get all the contacts from the database
         contacts.forEach(contact -> data.add(contact)); // add all the contacts to observale 
         
-
-        table.setItems(data); // fill the table with the contacts via the observable list
-
+        list.setItems(data);
+        
+        
         search.setOnAction(event -> {
             
 
             try {
+
                 int contactId = Integer.parseInt(txtField.getText());
                 List<String> info = ContactDto.getContactById(contactId, "Person");
 
-                String firstName = String.valueOf(info.get(1));
-                String lastName = String.valueOf(info.get(2));
-                String phoneNumber = String.valueOf(info.get(3));
-                String email = String.valueOf(info.get(4));
-                int addressId = Integer.parseInt(info.get(5));
-    
-                //String address = AddressDto.addressFormulater(addressId);
-    
-                fullNameLabel.setText(firstName + " " + lastName);
-                phoneNumberLabel.setText(phoneNumber);
-                emailLabel.setText(email);
-                addressLabel.setText(String.valueOf(addressId));
-                rightAnchorPane.setVisible(true);
-    
-                update.setOnAction(update_event -> {
-                    this.goToUpdateContactPage("Person", contactId, addressId);
-                });
-    
-                delete.setOnAction(delete_event -> Crud.deleteContact("Person", contactId));
+                if (info != null) {
+
+                    String firstName = String.valueOf(info.get(1));
+                    String lastName = String.valueOf(info.get(2));
+                    String phoneNumber = String.valueOf(info.get(3));
+                    String email = String.valueOf(info.get(4));
+                    int addressId = Integer.parseInt(info.get(5));
+        
+                    //String address = AddressDto.addressFormulater(addressId);
+        
+                    fullNameLabel.setText(firstName + " " + lastName);
+                    phoneNumberLabel.setText(phoneNumber);
+                    emailLabel.setText(email);
+                    addressLabel.setText(String.valueOf(addressId));
+                    rightAnchorPane.setVisible(true);
+        
+                    update.setOnAction(update_event -> {
+                        this.goToUpdateContactPage("Person", contactId, addressId);
+                    });
+        
+                    delete.setOnAction(delete_event -> Crud.deleteContact("Person", contactId));
+                }
+                
+                else Crud.showAlert(AlertType.ERROR, "Invalid Id", "Contact Not Found", contactId + " doesn't correspond to any existing contact.");
+                 
             }
 
             catch(NumberFormatException e) {
-                Crud.showAlert(AlertType.ERROR, "Empty Id Field", "No Id was provided.", "Please provide an Id.");
+                Crud.showAlert(AlertType.ERROR, "Invalid Id", "Empty Id Field", "Please provide an Id.");
             }
         });
 
@@ -150,13 +156,13 @@ public class MainController {
     @FXML
     private void loadEnterprisePane() {
 
-        loadFXML("enterprise_center_pane.fxml", centerAnchorPane);
+        loadFXML("contact_center_pane.fxml", centerAnchorPane);
         loadFXML("enterprise_right_pane.fxml", rightAnchorPane);
         rightAnchorPane.setVisible(false);
 
         // Buttons
         Button search = Crud.getButton(centerAnchorPane, "searchBtn");
-        Button createNew = Crud.getButton(centerAnchorPane, "createNewEnterpriseBtn");
+        Button createNew = Crud.getButton(centerAnchorPane, "createNewContactBtn");
         Button update = Crud.getButton(rightAnchorPane, "updateBtn");
         Button delete = Crud.getButton(rightAnchorPane, "deleteBtn");
 
@@ -169,14 +175,17 @@ public class MainController {
         Label phoneNumberLabel = Crud.getLabel(rightAnchorPane, "phoneNumberLabel");
         Label emailLabel = Crud.getLabel(rightAnchorPane, "emailLabel");
         Label addressLabel = Crud.getLabel(rightAnchorPane, "addressLabel");
+        addressLabel.setWrapText(true);
 
-        // Table
-        TableView<List<String>> table = (TableView<List<String>>) centerAnchorPane.lookup("#enterpriseTable");
-        table.setOnMouseClicked(event -> {
-            if (!table.getSelectionModel().isEmpty()) {
+        // List
+        ListView list = (ListView) centerAnchorPane.lookup("#contactListView");
 
+        list.setOnMouseClicked(event ->  {
+
+            if (!list.getSelectionModel().isEmpty()) {
+       
                 // We get the selected row and extract the values
-                List<String> selectedItem = table.getSelectionModel().getSelectedItem();
+                List<String> selectedItem = (List<String>) list.getSelectionModel().getSelectedItem();
                 int contactId = Integer.parseInt(selectedItem.get(0));
                 String enterpriseName = selectedItem.get(1);
                 String enterpriseType = selectedItem.get(2);
@@ -201,14 +210,15 @@ public class MainController {
                 });
     
                 delete.setOnAction(delete_event -> Crud.deleteContact("Enterprise", contactId));
-           
-        } 
-            
+                  
+               } 
+                   
         });
+            
         ObservableList<List<String>> data = FXCollections.observableArrayList(); // We define the observable list that will be used to fill the table rows
         List<List<String>> contacts = ContactDto.getAllContactsByType("Enterprise");  // We get all the contacts from the database
         contacts.forEach(contact -> data.add(contact)); // We add all the contacts to observale list
-        table.setItems(data); // We fill the table with the contacts via the observable list
+        list.setItems(data); // We fill the table with the contacts via the observable list
 
         search.setOnAction(event -> {
 
@@ -216,28 +226,33 @@ public class MainController {
                 int contactId = Integer.parseInt(txtField.getText());
                 List<String> info = ContactDto.getContactById(contactId, "Enterprise");
 
-                String enterpriseName = info.get(1);
-                String enterpriseType = info.get(2);
-                String phoneNumber = info.get(3);
-                String email = info.get(4);
-                int addressId = Integer.parseInt(info.get(5));
+                if (info != null) {
 
-                // We get the full address using the address id :
-                String address = AddressDto.addressFormulater(addressId);
+                    String enterpriseName = info.get(1);
+                    String enterpriseType = info.get(2);
+                    String phoneNumber = info.get(3);
+                    String email = info.get(4);
+                    int addressId = Integer.parseInt(info.get(5));
+    
+                    // We get the full address using the address id :
+                    String address = AddressDto.addressFormulater(addressId);
+    
+                    // We use the extracted values to fill the labels
+                    enterpriseNameLabel.setText(enterpriseName);
+                    enterpriseTypeLabel.setText(enterpriseType);
+                    phoneNumberLabel.setText(phoneNumber);
+                    emailLabel.setText(email);
+                    addressLabel.setText(String.valueOf(address));
+                    rightAnchorPane.setVisible(true);
+        
+                    update.setOnAction(update_event -> {
+                        this.goToUpdateContactPage("Enterprise", contactId, addressId);
+                    });
+        
+                    delete.setOnAction(delete_event -> Crud.deleteContact("Enterprise", contactId));
+                }
 
-                // We use the extracted values to fill the labels
-                enterpriseNameLabel.setText(enterpriseName);
-                enterpriseTypeLabel.setText(enterpriseType);
-                phoneNumberLabel.setText(phoneNumber);
-                emailLabel.setText(email);
-                addressLabel.setText(String.valueOf(address));
-                rightAnchorPane.setVisible(true);
-    
-                update.setOnAction(update_event -> {
-                    this.goToUpdateContactPage("Person", contactId, addressId);
-                });
-    
-                delete.setOnAction(delete_event -> Crud.deleteContact("Person", contactId));
+                else Crud.showAlert(AlertType.ERROR, "Invalid Id", "Contact Not Found", contactId + " doesn't correspond to any existing contact.");
             }
 
             catch(NumberFormatException e) {
@@ -268,23 +283,27 @@ public class MainController {
         TextField txtField = (TextField) centerAnchorPane.lookup("#enterIdTextField");
         Crud.setTextFieldNumericFormatRule(txtField);
 
-        // Labels :
-        Label houseNumberLabel = (Label) rightAnchorPane.lookup("#houseNumberLabel");
-        Label neighborhoodLabel = (Label) rightAnchorPane.lookup("#neighborhoodLabel");
-        Label cityZipCodeLabel = (Label) rightAnchorPane.lookup("#city_zipCodeLabel");
-        Label regionLabel = (Label) rightAnchorPane.lookup("#regionLabel");
-        Label countryLabel = (Label) rightAnchorPane.lookup("#countryLabel");
+        // Labels
+        Label houseNumberLabel = Crud.getLabel(rightAnchorPane, "houseNumberLabel");
+        Label neighborhoodLabel = Crud.getLabel(rightAnchorPane, "neighborhoodLabel");
+        Label cityZipCodeLabel = Crud.getLabel(rightAnchorPane, "city_zipCodeLabel");  
+        Label regionLabel = Crud.getLabel(rightAnchorPane, "regionLabel"); 
+        Label countryLabel = Crud.getLabel(rightAnchorPane, "countryLabel"); 
 
-        // Table
-        TableView<List<String>> table = (TableView<List<String>>) centerAnchorPane.lookup("#addressTable");
+        // Radio Buttons 
+        RadioButton personRadioButton = Crud.getRadioButton(centerAnchorPane, "personRdBtn");
+        RadioButton enterpriseRadioButton = Crud.getRadioButton(centerAnchorPane, "enterpriseRdBtn");
 
-        // We set an event listener for when we click a row :
-        table.setOnMouseClicked(event -> {
+        // List
+        ListView list = (ListView) centerAnchorPane.lookup("#listView");
 
-            if (!table.getSelectionModel().isEmpty()) {
+        // We set an event listener for when we select an item :
+        list.setOnMouseClicked(event ->  {
 
+            if (!list.getSelectionModel().isEmpty()) {
+               
                 // We get the selected row and extract the values
-                List<String> selectedItem = table.getSelectionModel().getSelectedItem();
+                List<String> selectedItem = (List<String>) list.getSelectionModel().getSelectedItem();
                 
                 String houseNumber = selectedItem.get(1);
                 String neighborhood = selectedItem.get(2);
@@ -292,48 +311,70 @@ public class MainController {
                 String zipCode = selectedItem.get(4);
                 String region = selectedItem.get(5);
                 String country = selectedItem.get(6);
-               
-
+                
+ 
                 // We use the extracted values to fill the labels
                 houseNumberLabel.setText(houseNumber);
                 neighborhoodLabel.setText(neighborhood);
                 cityZipCodeLabel.setText(city + ", " + zipCode);
                 regionLabel.setText(region);
                 countryLabel.setText(country);
-
+ 
                 // We show the right anchor pane 
                 rightAnchorPane.setVisible(true);
-            }
-        });
-        
+                          
+            } 
+                           
+        });   
         ObservableList<List<String>> data = FXCollections.observableArrayList(); // a container to display data within a table
         List<List<String>> contacts = AddressDto.getAllAddresses(); // We send a request to collect all the addresses
         contacts.forEach(contact -> data.add(contact)); // We add every address separately to the observable list
-        table.setItems(data); // We add the observable list to the table
+        list.setItems(data); // We add the observable list to the table
 
         // When we click on search :
         search.setOnAction(event -> {
 
-            int id = Integer.parseInt(txtField.getText()); // We get the value entered by the user
-            List<String> info = AddressDto.getAddressLongWay(id, "Person"); // We search for the address using the add
+            try {
+                int id = Integer.parseInt(txtField.getText()); // We get the value entered by the user
+            
+                if (personRadioButton.isSelected() || enterpriseRadioButton.isSelected()) {
+                    
+                    
+    
+                    // We collect the contact type from the radio buttons :
+                    String contactType = personRadioButton.isSelected() ? "Person" : "Enterprise"; 
+        
+                    List<String> info = AddressDto.getAddressLongWay(id, contactType); // We search for the address using the id
 
-            // We extract all the values from the list (Address object received from the server)
-            String houseNumber = String.valueOf(info.get(1));
-            String neighborhood = String.valueOf(info.get(2));
-            String city = String.valueOf(info.get(3));
-            String zipCode = String.valueOf(info.get(4));
-            String region = String.valueOf(info.get(5));
-            String country = String.valueOf(info.get(6));
+                    if (info != null) {
 
-            // We use the extracted values to fill the labels
-            houseNumberLabel.setText(houseNumber);
-            neighborhoodLabel.setText(neighborhood);
-            cityZipCodeLabel.setText(city + ", " + zipCode);
-            regionLabel.setText(region);
-            countryLabel.setText(country);
+                        // We extract all the values from the list (Address object received from the server)
+                        String houseNumber = String.valueOf(info.get(1));
+                        String neighborhood = String.valueOf(info.get(2));
+                        String city = String.valueOf(info.get(3));
+                        String zipCode = String.valueOf(info.get(4));
+                        String region = String.valueOf(info.get(5));
+                        String country = String.valueOf(info.get(6));
+        
+                        // We use the extracted values to fill the labels
+                        houseNumberLabel.setText(houseNumber);
+                        neighborhoodLabel.setText(neighborhood);
+                        cityZipCodeLabel.setText(city + ", " + zipCode);
+                        regionLabel.setText(region);
+                        countryLabel.setText(country);
+        
+                        // We show the right anchor pane 
+                        rightAnchorPane.setVisible(true);
+                    }
 
-            // We show the right anchor pane 
-            rightAnchorPane.setVisible(true);
+                    else Crud.showAlert(AlertType.ERROR, "Invalid Id", "Address Not Found", id + " doesn't correspond to any existing address.");
+                }
+                else  Crud.showAlert(AlertType.ERROR, "Type Error", "No type was selected.", "Please Select a type.");
+                    
+
+            } catch(NumberFormatException e) {
+                Crud.showAlert(AlertType.ERROR, "Empty Id Field", "No Id was provided.", "Please provide an Id.");
+            }
         });
     }
 

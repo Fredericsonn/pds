@@ -32,7 +32,7 @@ public class DeleteController {
         
                         } catch (ContactNotFoundException | InvalidContactTypeException e) {
         
-                            return e.getMessage();
+                            return "e.getMessage()";
                         }  
                         
                         return "Contact deleted successfully.";

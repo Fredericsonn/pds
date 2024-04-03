@@ -25,17 +25,23 @@ public class AddressDto {
         public static List<String> getAddressLongWay(int id, String contactType) {
 
             String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType + "/byAddressId/" + id);
+
+            if (!responseBody.equals("<html><body><h2>500 Internal Server Error</h2></body></html>")) {
+
+                List contact = Parser.parseContact(responseBody, contactType);
+
+                List address = new ArrayList<>();
     
-            List contact = Parser.parseContact(responseBody, contactType);
-
-            List address = new ArrayList<>();
-
-            for (int i = 5; i < contact.size(); i++) {
-                address.add(contact.get(i));
+                for (int i = 5; i < contact.size(); i++) {
+                    address.add(contact.get(i));
+                }
+    
+                return address;
             }
-
-            return address;
+            return null;
         }
+
+            
     
     public static List<List<String>> getAllAddresses() {
 
