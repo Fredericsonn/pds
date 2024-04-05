@@ -1,6 +1,9 @@
 package uiass.gisiba.eia.java.service;
 
 import java.util.*;
+
+import javax.mail.MessagingException;
+
 import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
@@ -50,5 +53,7 @@ public interface iService {
     List<Contact> getAllContacts() throws InvalidContactTypeException;
 
     void updateContact(int id, Map<String,Object> columnsNewValues,String contactType) throws ContactNotFoundException,InvalidContactTypeException;
+
+    void notifyContact(String email, String subject, String body) throws MessagingException;
 
 }

@@ -3,6 +3,7 @@ package uiass.gisiba.eia.java.controller;
 import java.io.IOException;
 import java.util.*;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -13,6 +14,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
+import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
 import uiass.gisiba.eia.java.entity.crm.Person;
 
 public class Parser {
@@ -21,14 +23,97 @@ public class Parser {
         put("Person", Arrays.asList("firstName","lastName","id","phoneNumber","email"));
         put("Enterprise", Arrays.asList("enterpriseName","type","id","phoneNumber","email"));
     }};
-
-    private static Map<String, List<String>> columns_by_type_map = new HashMap<String, List<String>>() {{
-        put("Person", Arrays.asList("first_name","last_name","id","phone_number","email"));
-        put("Enterprise", Arrays.asList("enterprise_name","type","id","phone_number","email"));
+    
+    public static Map<String, List<String>> contact_update_columns_by_type_map = new HashMap<String, List<String>>() {{
+        put("Person", Arrays.asList("first_name","last_name","phone_number","email"));
+        put("Enterprise", Arrays.asList("enterprise_name","type","phone_number","email"));
     }};
+
+    public static List<String> address_update_columns = Arrays.asList("house_number","neighborhood","city","zip_code","region","country");
 
     private static List<String> addressAttributes = Arrays.asList("addressId","houseNumber","neighborhood","city","zipCode","region","country");
 
+        // Columns filter 
+        public static Map<String, Object> mapFormater(List<String> columns, List values) {
+
+            Map<String, Object> columns_new_values = new HashMap<String, Object>();
+    
+            for (int i = 0; i < columns.size() ; i++) {
+    
+                String column = columns.get(i);
+    
+                Object value = values.get(i);
+    
+                if (column.equals("houseNumber")) {
+    
+                    if ((int) value != 0) columns_new_values.put(column, value);
+                }
+    
+                else {
+                    
+                    if (value != null) {
+    
+                        columns_new_values.put(column,value);
+                    }
+                }
+            }
+    
+            return columns_new_values;
+        }
+    
+        @SuppressWarnings("unchecked")
+        // A method that collects contact data from a json :
+        public static List contactValuesCollector(Gson gson, String body, String contactType) {
+
+        List values = new ArrayList<>();
+
+        JsonObject contact = gson.fromJson(body, JsonObject.class);
+
+        String first_or_enterprise_name = contactType.equals("Person") ? Parser.collectString(contact, "firstName") 
+        
+        : Parser.collectString(contact, "enterpriseName") ; 
+
+        String last_name_or_enterprise_type = contactType.equals("Person") ? Parser.collectString(contact, "lastName") 
+        
+        : Parser.collectString(contact, "type");
+
+        String phoneNumber = Parser.collectString(contact, "phoneNumber");
+
+        String email = Parser.collectString(contact, "email");
+
+        // we put the collected contact values in the contact values list :
+        values.addAll(Arrays.asList(first_or_enterprise_name, last_name_or_enterprise_type, phoneNumber, email));
+
+        // We adapt the second value type wether it's the String last_name for Person or the Enumeration type for Enterprise :
+        if (last_name_or_enterprise_type != null) {
+
+                values.set(1, contactType.equals("Person") ? last_name_or_enterprise_type : EntrepriseType.valueOf(last_name_or_enterprise_type));
+
+        }
+
+        return values;
+    }
+
+    // A method that address contact data from a json :
+    public static List addressValuesCollector(Gson gson, String body) {
+
+        JsonObject address = gson.fromJson(body, JsonObject.class);
+
+        int houseNumber = address.has("houseNumber") ?  Parser.collectInt(address, "houseNumber") : 0;
+
+        String neighborhood = Parser.collectString(address, "neighborhood");
+
+        String city = Parser.collectString(address, "city");
+
+        String zipCode = Parser.collectString(address, "zipCode");
+
+        String region = Parser.collectString(address, "region");
+
+        String country = Parser.collectString(address, "country");
+
+        return Arrays.asList(houseNumber,neighborhood,city,zipCode,region,country);
+
+    }
 
     public static String responseBodyGenerator(String url) {
 

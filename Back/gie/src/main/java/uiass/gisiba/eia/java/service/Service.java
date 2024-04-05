@@ -3,8 +3,11 @@ package uiass.gisiba.eia.java.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.MessagingException;
+
 import uiass.gisiba.eia.java.dao.crm.AddressDao;
 import uiass.gisiba.eia.java.dao.crm.ContactDao;
+import uiass.gisiba.eia.java.dao.crm.EmailSender;
 import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
@@ -18,6 +21,7 @@ public class Service implements iService {
 
     private ContactDao cdao = new ContactDao();
     private AddressDao adao = new AddressDao();
+    private EmailSender es = new EmailSender();
 
 /////////////////////////////////////////////////////// ADDRESS ////////////////////////////////////////////////////////////////
 
@@ -127,6 +131,12 @@ public class Service implements iService {
             throws ContactNotFoundException, InvalidContactTypeException {
 
         cdao.updateContact(id, columnsNewValues, contactType);
+    }
+
+    @Override
+    public void notifyContact(String email, String subject, String body) throws MessagingException {
+
+        es.sendEmail(email, subject, body);
     }
 
 

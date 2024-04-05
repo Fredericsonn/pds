@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import uiass.gisiba.eia.java.dao.crm.ContactDao;
+import uiass.gisiba.eia.java.dao.crm.EmailSender;
 import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
@@ -24,34 +25,22 @@ public class AppTest {
 
         Service service = new Service();
 
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("phoneNumber", "123456789");
+        Map<String,Object> map = new HashMap<String,Object>();
 
-        
-        try {
-            service.updateContact(5, map, "Enterprise");
-        } catch (ContactNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidContactTypeException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        /*try {
-            System.out.println(service.getAddressById(1));
-        } catch (AddressNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }*/
+        map.put("houseNumber", 2);
 
-
-        /*try {
-            service.updateAddress(2, map);
-        } catch (AddressNotFoundException e) {
-
-            e.printStackTrace();
-        }*/
    
+            try {
+                service.updateAddress(5, map);
+            } catch (AddressNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        
+
+        //EmailSender.sendEmail("oudra.ayoub.21@gmail.com");
+
+
         
 }
     

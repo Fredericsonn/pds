@@ -16,7 +16,7 @@ public class ContactDto {
 
         String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType + "/byId/" + id);
 
-        if (!responseBody.equals("null")) return Parser.parseContact(responseBody, contactType);
+        if (!responseBody.equals("Server Error.")) return Parser.parseContact(responseBody, contactType);
 
         return null;
     }
@@ -26,7 +26,7 @@ public class ContactDto {
 
         String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType + "/byName/" + name);
 
-        if (!responseBody.equals("null")) return Parser.parseContact(responseBody, contactType);
+        if (!responseBody.equals("Internal Server Error")) return Parser.parseContact(responseBody, contactType);
 
         return null;
     }
@@ -58,19 +58,25 @@ public class ContactDto {
         return persons;
     }
 
-//////////////////////////////////////////////////// POST METHOD /////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////// POST METHODS /////////////////////////////////////////////////////////////
 
     // Create a new contact :
     public static String postContact(String json, String contactType) {
 
-        return DataSender.postDataSender(json, "contact/" + contactType);
+        return DataSender.postDataSender(json, "contacts/" + contactType);
+    }
+
+    // Send an email to a contact :
+    public static String postEmail(String json) {
+        
+        return DataSender.postDataSender(json, "email");
     }
 
 //////////////////////////////////////////////////// Delete METHOD /////////////////////////////////////////////////////////////
 
     public static String deleteContact(int id, String contactType) {
 
-        return DataSender.deleteDataSender("contact/delete/" + contactType + "/" + id);
+        return DataSender.deleteDataSender("contacts/delete/" + contactType + "/" + id);
     }
 
 //////////////////////////////////////////////////// Put METHOD /////////////////////////////////////////////////////////////

@@ -23,7 +23,7 @@ public class AppTest {
     "    \"country\": \"Spain\"\n" +
     "}";
 
-        System.out.println(ContactDto.getContactById(1000, "Enterprise"));
+        System.out.println(DataSender.getDataSender("contacts/Person/byAddressId/23"));
 
 
 

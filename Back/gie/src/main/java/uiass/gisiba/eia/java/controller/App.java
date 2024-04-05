@@ -9,25 +9,26 @@ public class App {
 
     public static void main(String [] args ) {
 
-       GetController.getAllContactsByTypeController();
-       GetController.getContactByIdController();
-       GetController.getAllAddressesController();
-       GetController.getAddressByIdController();
-       GetController.getContactByAddressIdController();
-       GetController.getAllContactsController();
+        ContactController.getContactByIdController();
+        ContactController.getContactByNameController();
+        ContactController.getAllContactsByTypeController();
+        ContactController.getContactByAddressIdController();
 
-       DeleteController.deleteContactController();
-       try {
-        PostController.postContactController("Person");
-        PostController.postContactController("Enterprise");
+        ContactController.postContactController();
+        ContactController.updateContactController();
+        ContactController.deleteContactController();
+
+        AddressController.updateAddressController();
+
+        ContactController.postEmailController();
+
+
+            
+
         
-        UpdateController.updateContactController();
-        UpdateController.updateAddressController();
+        
 
-    } catch (InvalidContactTypeException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-    }
+
      
 
     

@@ -35,6 +35,8 @@ public class Parser {
 
     public static List<String> textFieldsReferences = Arrays.asList("first","second","phoneNumber","email","houseNumber","neighborhood","city","zipCode","region","country");
 
+    public static List<String> email_sending_attributes = Arrays.asList("receiver","subject","body");
+
     public static Map<String,Object> contactCreationMapGenerator(List values, String contactType) {
 
         Map<String,Object> map = new HashMap<String,Object>();
@@ -89,6 +91,25 @@ public class Parser {
 
         return map;
     }
+
+    public static Map<String,Object> emailSendingMapGenerator(List values) {
+
+        Map<String,Object> map = new HashMap<String,Object>();
+
+        List attributes = email_sending_attributes;
+
+        for (int i = 0 ; i < attributes.size() ; i++) {
+
+            String attribute = String.valueOf(attributes.get(i));
+
+            String value = String.valueOf(values.get(i));
+
+            map.put(attribute, value);
+        }
+
+        return map;
+    }
+
     public static String jsonGenerator(Map<String,Object> attributes) {
 
         Gson gson = GetGson.getGson();

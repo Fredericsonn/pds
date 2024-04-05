@@ -15,9 +15,9 @@ public class AddressDto {
 
         String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/addresses/" + id);
 
-        System.out.println(responseBody);
+        if (!responseBody.equals("Server Error.")) return Parser.parseAddress(responseBody);
 
-        return Parser.parseAddress(responseBody);
+        return null;
     }
 
         // Find a contact by its address id :
@@ -26,7 +26,7 @@ public class AddressDto {
 
             String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType + "/byAddressId/" + id);
 
-            if (!responseBody.equals("<html><body><h2>500 Internal Server Error</h2></body></html>")) {
+            if (!responseBody.equals("Internal Server Error")) {
 
                 List contact = Parser.parseContact(responseBody, contactType);
 

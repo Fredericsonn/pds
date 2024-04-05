@@ -20,6 +20,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import uiass.eia.gisiba.dto.AddressDto;
 import uiass.eia.gisiba.dto.ContactDto;
+import uiass.eia.gisiba.dto.Parser;
 
 public class MainController {
 
@@ -54,6 +55,7 @@ public class MainController {
         Button createNew = Crud.getButton(centerAnchorPane, "createNewContactBtn");
         Button update = Crud.getButton(rightAnchorPane, "updateBtn");
         Button delete = Crud.getButton(rightAnchorPane, "deleteBtn");
+        Button notify = Crud.getButton(rightAnchorPane, "notifyBtn");
 
         // Search text field
         TextField txtField = Crud.getTextField(centerAnchorPane, "enterIdTextField");
@@ -150,6 +152,15 @@ public class MainController {
             this.goToCreateContactPage("Person");
             
         });
+
+        notify.setOnAction(event -> {
+
+            String receiverEmail = Crud.getLabel(rightAnchorPane, "emailLabel").getText();
+
+            this.goToSendEmailPage(receiverEmail);
+        });
+
+
  
     }
 
@@ -165,6 +176,7 @@ public class MainController {
         Button createNew = Crud.getButton(centerAnchorPane, "createNewContactBtn");
         Button update = Crud.getButton(rightAnchorPane, "updateBtn");
         Button delete = Crud.getButton(rightAnchorPane, "deleteBtn");
+        Button notify = Crud.getButton(rightAnchorPane, "notifyBtn");
 
         // Search text field
         TextField txtField = Crud.getTextField(centerAnchorPane, "enterIdTextField");
@@ -264,118 +276,14 @@ public class MainController {
             this.goToCreateContactPage("Enterprise");
             
         });
-    
-    }
 
-    @FXML
-    private void loadAddressPane() {
+        notify.setOnAction(event -> {
 
-        loadFXML("address_center_pane.fxml", centerAnchorPane);
-        loadFXML("address_right_pane.fxml", rightAnchorPane);
-
-        // We hide the right anchor pane until we select or search for an address :
-        rightAnchorPane.setVisible(false);
-
-        // Buttons
-        Button search = (Button) centerAnchorPane.lookup("#searchBtn");
-
-        // TextFields
-        TextField txtField = (TextField) centerAnchorPane.lookup("#enterIdTextField");
-        Crud.setTextFieldNumericFormatRule(txtField);
-
-        // Labels
-        Label houseNumberLabel = Crud.getLabel(rightAnchorPane, "houseNumberLabel");
-        Label neighborhoodLabel = Crud.getLabel(rightAnchorPane, "neighborhoodLabel");
-        Label cityZipCodeLabel = Crud.getLabel(rightAnchorPane, "city_zipCodeLabel");  
-        Label regionLabel = Crud.getLabel(rightAnchorPane, "regionLabel"); 
-        Label countryLabel = Crud.getLabel(rightAnchorPane, "countryLabel"); 
-
-        // Radio Buttons 
-        RadioButton personRadioButton = Crud.getRadioButton(centerAnchorPane, "personRdBtn");
-        RadioButton enterpriseRadioButton = Crud.getRadioButton(centerAnchorPane, "enterpriseRdBtn");
-
-        // List
-        ListView list = (ListView) centerAnchorPane.lookup("#listView");
-
-        // We set an event listener for when we select an item :
-        list.setOnMouseClicked(event ->  {
-
-            if (!list.getSelectionModel().isEmpty()) {
-               
-                // We get the selected row and extract the values
-                List<String> selectedItem = (List<String>) list.getSelectionModel().getSelectedItem();
-                
-                String houseNumber = selectedItem.get(1);
-                String neighborhood = selectedItem.get(2);
-                String city = selectedItem.get(3);
-                String zipCode = selectedItem.get(4);
-                String region = selectedItem.get(5);
-                String country = selectedItem.get(6);
-                
- 
-                // We use the extracted values to fill the labels
-                houseNumberLabel.setText(houseNumber);
-                neighborhoodLabel.setText(neighborhood);
-                cityZipCodeLabel.setText(city + ", " + zipCode);
-                regionLabel.setText(region);
-                countryLabel.setText(country);
- 
-                // We show the right anchor pane 
-                rightAnchorPane.setVisible(true);
-                          
-            } 
-                           
-        });   
-        ObservableList<List<String>> data = FXCollections.observableArrayList(); // a container to display data within a table
-        List<List<String>> contacts = AddressDto.getAllAddresses(); // We send a request to collect all the addresses
-        contacts.forEach(contact -> data.add(contact)); // We add every address separately to the observable list
-        list.setItems(data); // We add the observable list to the table
-
-        // When we click on search :
-        search.setOnAction(event -> {
-
-            try {
-                int id = Integer.parseInt(txtField.getText()); // We get the value entered by the user
+            String receiverEmail = Crud.getLabel(rightAnchorPane, "emailLabel").getText();
             
-                if (personRadioButton.isSelected() || enterpriseRadioButton.isSelected()) {
-                    
-                    
-    
-                    // We collect the contact type from the radio buttons :
-                    String contactType = personRadioButton.isSelected() ? "Person" : "Enterprise"; 
-        
-                    List<String> info = AddressDto.getAddressLongWay(id, contactType); // We search for the address using the id
-
-                    if (info != null) {
-
-                        // We extract all the values from the list (Address object received from the server)
-                        String houseNumber = String.valueOf(info.get(1));
-                        String neighborhood = String.valueOf(info.get(2));
-                        String city = String.valueOf(info.get(3));
-                        String zipCode = String.valueOf(info.get(4));
-                        String region = String.valueOf(info.get(5));
-                        String country = String.valueOf(info.get(6));
-        
-                        // We use the extracted values to fill the labels
-                        houseNumberLabel.setText(houseNumber);
-                        neighborhoodLabel.setText(neighborhood);
-                        cityZipCodeLabel.setText(city + ", " + zipCode);
-                        regionLabel.setText(region);
-                        countryLabel.setText(country);
-        
-                        // We show the right anchor pane 
-                        rightAnchorPane.setVisible(true);
-                    }
-
-                    else Crud.showAlert(AlertType.ERROR, "Invalid Id", "Address Not Found", id + " doesn't correspond to any existing address.");
-                }
-                else  Crud.showAlert(AlertType.ERROR, "Type Error", "No type was selected.", "Please Select a type.");
-                    
-
-            } catch(NumberFormatException e) {
-                Crud.showAlert(AlertType.ERROR, "Empty Id Field", "No Id was provided.", "Please provide an Id.");
-            }
+            this.goToSendEmailPage(receiverEmail);
         });
+    
     }
 
     public void goToCreateContactPage(String contactType) {
@@ -412,6 +320,23 @@ public class MainController {
         stage.setResizable(false);
         stage.show();
 
+    }
+
+    public void goToSendEmailPage(String receiverEmail) {
+        
+        Stage stage = new Stage();
+        AnchorPane pane = new AnchorPane();
+        Scene scene = new Scene(pane);
+        loadFXML("send_email_pane.fxml", pane);
+
+        Button send = Crud.getButton(pane, "sendEmailBtn");
+
+        Crud.sendEmail(pane, send, receiverEmail);
+
+        stage.setScene(scene);
+        stage.setTitle("Email Sending");
+        stage.setResizable(false);
+        stage.show();
     }
 
 

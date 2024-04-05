@@ -26,14 +26,16 @@ public class DataSender {
     	try (Response response = client.newCall(request).execute()) {
     	   
     		  body = response.body().string();
+
+              if (response.isSuccessful()) return body;
     		  
     	    }
     	       	  
     	  catch(IOException e ) {
-    		  return "Server Error.";
+    		  return e.getMessage();
     	  }
 
-        return body;
+        return "Server Error.";
     }
     
     public static String postDataSender(String json, String entity) {
@@ -103,14 +105,14 @@ public class DataSender {
 
             if (!response.isSuccessful()) {
 
-                throw new IOException("Unexpected code " + response);
+                return "Internal Serval Error";
             }
-    
-            return "Data collected successfully";
 
+            else return  response.body().string();
+            
         } catch (IOException e) {
 
-            return "Internal Server Error."; 
+            return "Internal Serval Error"; 
         }
     }
 

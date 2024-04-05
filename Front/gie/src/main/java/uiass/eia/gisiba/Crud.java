@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.stage.Stage;
@@ -192,6 +193,45 @@ public class Crud {
 
     }
 
+    // sending an email to a contact :
+    public static void sendEmail(Parent pane, Button button, String receiverEmail) {
+
+        button.setOnAction(event -> {
+
+            // We get the email subject and body entered by the user :
+            String subject = Crud.getTextField(pane, "subjectTextField").getText();
+            String emailBody = Crud.getTextArea(pane, "bodyTextArea").getText();
+
+            // if both subject and body were provided :
+            if (subject != "" && emailBody != "") {
+
+                // We put the receiver, subject and body in a list 
+                List<String> values = Arrays.asList(receiverEmail, subject, emailBody); 
+
+                // We call the Parser class to generate the corresponding map
+                Map<String,Object> emailSendingMap = Parser.emailSendingMapGenerator(values);
+
+                // We convert the map to json
+                String json = Parser.jsonGenerator(emailSendingMap);
+
+                // Finally we send the json in a post request to the corresponding endpoint 
+                String emailSendingResult = ContactDto.postEmail(json);
+    
+                // We display the sending result :
+                if (emailSendingResult.equals("Email Sent Successfully."))
+            
+                showAlert(AlertType.CONFIRMATION, "Sending Status", "Result :", emailSendingResult);
+        
+                else showAlert(AlertType.ERROR, "Sending Status", "Result :", emailSendingResult);
+
+                ((Stage) button.getScene().getWindow()).close(); // We close the sending page after sending the email
+            }
+
+            // if one field or more are missing
+            else showAlert(AlertType.ERROR, "Missing Data", "Empty Fields :", "Please fill all the required fields.");
+        });
+    }
+
     // validate a creation :
     public static boolean validCreationChecker(List<TextField> textFields) {
 
@@ -253,7 +293,7 @@ public class Crud {
     }
 
 
-        public static TextField getTextField(Parent pane, String id) {
+    public static TextField getTextField(Parent pane, String id) {
         return (TextField) pane.lookup("#"+id);
     }
 
@@ -271,5 +311,10 @@ public class Crud {
 
     public static RadioButton getRadioButton(Parent pane, String id) {
         return (RadioButton) pane.lookup("#" + id);
+    } 
+
+    public static TextArea getTextArea(Parent pane, String id) {
+
+        return (TextArea) pane.lookup("#" + id);
     } 
 }
