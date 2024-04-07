@@ -1,4 +1,4 @@
-package uiass.gisiba.eia.java.controller;
+package uiass.gisiba.eia.java.controller.crm;
 
 import java.util.*;
 
@@ -12,7 +12,9 @@ import com.google.gson.JsonStreamParser;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import spark.Spark;
+import static spark.Spark.*;
+import uiass.gisiba.eia.java.controller.GetGson;
+import uiass.gisiba.eia.java.controller.Parser;
 import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
@@ -37,7 +39,7 @@ public class ContactController {
 	  
 	    System.out.println("Server started.");
 	
-	    Spark.get("/contacts/:contactType/byId/:id", (req,res)-> {
+	    get("/contacts/:contactType/byId/:id", (req,res)-> {
 
 		String contactType = String.valueOf(req.params(":contactType"));
 
@@ -60,7 +62,7 @@ public class ContactController {
 	  
 	    System.out.println("Server started.");
 	
-	    Spark.get("/contacts/:contactType/byName/:name", (req,res)-> {
+	    get("/contacts/:contactType/byName/:name", (req,res)-> {
 
 		String contactType = String.valueOf(req.params(":contactType"));
 
@@ -81,7 +83,7 @@ public class ContactController {
 	  
 	    System.out.println("Server started.");
 	
-	    Spark.get("/contacts/:contactType/byAddressId/:id", (req,res)-> {
+	    get("/contacts/:contactType/byAddressId/:id", (req,res)-> {
 
 		String contactType = String.valueOf(req.params(":contactType"));
 
@@ -103,7 +105,7 @@ public class ContactController {
 	  
 	    System.out.println("Server started.");
 	
-	    Spark.get("/contacts/:contactType/byAddressCountry/:country", (req,res)-> {
+	    get("/contacts/:contactType/byAddressCountry/:country", (req,res)-> {
 
 		String contactType = String.valueOf(req.params(":contactType"));
 
@@ -124,7 +126,7 @@ public class ContactController {
 	  
 	    System.out.println("Server started.");
 	
-	    Spark.get("/contacts/:contactType", (req,res)-> {
+	    get("/contacts/:contactType", (req,res)-> {
 
 		String contactType = String.valueOf(req.params(":contactType"));
 
@@ -143,7 +145,7 @@ public class ContactController {
 	  
 	    System.out.println("Server started.");
 	
-	    Spark.get("/contacts", (req,res)-> {
+	    get("/contacts", (req,res)-> {
 
 		List<Contact> contactsList = service.getAllContacts();
 		
@@ -162,7 +164,7 @@ public static void postContactController() {
 
     System.out.println("Server started.");
 
-    Spark.post("/contacts/:contactType/post", new Route() {
+    post("/contacts/:contactType/post", new Route() {
 
     @Override
     public String handle(Request request, Response response)  {
@@ -231,7 +233,7 @@ public static void postContactController() {
 
         System.out.println("Server Started.");
 
-        Spark.post("/email/post", new Route() {
+        post("/email/post", new Route() {
 
             @Override
             public String handle(Request request, Response response) throws Exception {
@@ -241,8 +243,6 @@ public static void postContactController() {
                 JsonObject emailContent = gson.fromJson(body, JsonObject.class);
 
                 String email = Parser.collectString(emailContent, "receiver");
-
-                System.out.println(email);
 
                 String subject = Parser.collectString(emailContent, "subject");
 
@@ -271,7 +271,7 @@ public static void postContactController() {
 
         System.out.println("Server started.");
 
-            Spark.delete("/contacts/delete/:contactType/:id", new Route()  {
+            delete("/contacts/delete/:contactType/:id", new Route()  {
 
                 @Override
                 public String handle(Request request, Response response) throws InvalidContactTypeException  {
@@ -305,7 +305,7 @@ public static void postContactController() {
 
 		System.out.println("Server started.");
 
-        Spark.put("/contacts/:contactType/put/:id" , new Route() {
+        put("/contacts/:contactType/put/:id" , new Route() {
 
             @Override
             public String handle(Request request, Response response)   {

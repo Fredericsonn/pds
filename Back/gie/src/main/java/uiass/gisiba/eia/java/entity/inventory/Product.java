@@ -15,22 +15,30 @@ public class Product {
     @Column(name = "product_name")
     private String productName;
 
+    @Column(name = "description")
+    private String description;
+
     @Enumerated(EnumType.STRING)
     private ProductCatagory category;
 
     @Enumerated(EnumType.STRING)
     private ProductBrand brand;
+
+    @Column
+    private int quantity;
     
     @Column(name = "unit_price")
     private double unitPrice;
 
     // Constructors
 
-    public Product(String ref, String productName, ProductCatagory category, ProductBrand brand, double unitPrice) {
+    public Product(String ref, String productName, String description, ProductCatagory category, ProductBrand brand, int quantity, double unitPrice) {
         this.ref = ref;
         this.productName = productName;
+        this.description = description;
         this.category = category;
         this.brand = brand;
+        this.quantity = quantity;
         this.unitPrice = unitPrice;
     }
 
@@ -56,6 +64,14 @@ public class Product {
         this.productName = productName;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public ProductCatagory getCategory() {
         return category;
     }
@@ -72,6 +88,14 @@ public class Product {
         this.brand = brand;
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    } 
+
     public double getUnitPrice() {
         return unitPrice;
     }
@@ -80,11 +104,17 @@ public class Product {
         this.unitPrice = unitPrice;
     }
 
+    
+
     @Override
     public String toString() {
         return "ref : " + this.ref + ", name : " + this.productName + ", category : " + this.category 
         + ", brand : " + this.brand + ", unit price: " + this.unitPrice;
     }
+
+
+
+
 
     
     

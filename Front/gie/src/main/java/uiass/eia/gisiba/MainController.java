@@ -13,14 +13,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import uiass.eia.gisiba.dto.AddressDto;
 import uiass.eia.gisiba.dto.ContactDto;
-import uiass.eia.gisiba.dto.Parser;
 
 public class MainController {
 
@@ -39,34 +37,33 @@ public class MainController {
     @FXML
     private void switchToScene() throws IOException {
         // Call the method to switch to the "Person_Search_Page" scene
-        App.setRoot("Person_Search_Page");
+        Main.setRoot("Person_Search_Page");
     }
-    
     @SuppressWarnings("unchecked")
     @FXML
-    private void loadPersonPane() {
+    private void loadContactPane(String contactType) {
 
         loadFXML("contact_center_pane.fxml", centerAnchorPane);
-        loadFXML("person_right_pane.fxml", rightAnchorPane);
+        loadFXML(contactType.toLowerCase() + "_right_pane.fxml", rightAnchorPane);
+
         rightAnchorPane.setVisible(false);
+
+        List<String> labelIds = FXManager.ids_per_contact_type_map.get(contactType);
         
         // Buttons
-        Button search = Crud.getButton(centerAnchorPane, "searchBtn");
-        Button createNew = Crud.getButton(centerAnchorPane, "createNewContactBtn");
-        Button update = Crud.getButton(rightAnchorPane, "updateBtn");
-        Button delete = Crud.getButton(rightAnchorPane, "deleteBtn");
-        Button notify = Crud.getButton(rightAnchorPane, "notifyBtn");
+        Button search = FXManager.getButton(centerAnchorPane, "searchBtn");
+        Button createNew = FXManager.getButton(centerAnchorPane, "createNewContactBtn");
+        Button update = FXManager.getButton(rightAnchorPane, "updateBtn");
+        Button delete = FXManager.getButton(rightAnchorPane, "deleteBtn");
+        Button notify = FXManager.getButton(rightAnchorPane, "notifyBtn");
 
         // Search text field
-        TextField txtField = Crud.getTextField(centerAnchorPane, "enterIdTextField");
-        Crud.setTextFieldNumericFormatRule(txtField);  // a rule that denies any non numeric input
+        TextField txtField = FXManager.getTextField(centerAnchorPane, "enterIdTextField");
+        FXManager.setTextFieldNumericFormatRule(txtField);  // a rule that denies any non numeric input
 
         // Labels
-        Label fullNameLabel = Crud.getLabel(rightAnchorPane, "fullNameLabel");
-        Label phoneNumberLabel = Crud.getLabel(rightAnchorPane, "phoneNumberLabel");
-        Label emailLabel = Crud.getLabel(rightAnchorPane, "emailLabel");
-        Label addressLabel = Crud.getLabel(rightAnchorPane, "addressLabel");
-        addressLabel.setWrapText(true);
+        List<Label> labels = FXManager.labelsCollector(rightAnchorPane, labelIds);
+
 
         // List
         ListView list = (ListView) centerAnchorPane.lookup("#contactListView");
@@ -77,32 +74,32 @@ public class MainController {
                 // We get the selected row and extract the values
                 List<String> selectedItem = (List<String>) list.getSelectionModel().getSelectedItem();
                 int contactId = Integer.parseInt(selectedItem.get(0));
-                String fullName = selectedItem.get(1) + " " + selectedItem.get(2);
+                String firstAttribute = selectedItem.get(1);
+                String secondAttribute = selectedItem.get(2);
                 String phoneNumber = selectedItem.get(3);
                 String email = selectedItem.get(4);
                 int addressId = Integer.parseInt(selectedItem.get(5));
                 String address = AddressDto.addressFormulater(addressId);
 
+                List<String> values = Arrays.asList(firstAttribute,secondAttribute,phoneNumber,email,address);
+
                 // We use the extracted values to fill the labels
-                fullNameLabel.setText(fullName);
-                phoneNumberLabel.setText(phoneNumber);
-                emailLabel.setText(email);
-                addressLabel.setText(String.valueOf(address));
+                FXManager.contactLabelsFiller(labels, values, contactType);
 
                 // We show the right pane
                 rightAnchorPane.setVisible(true);
                 update.setOnAction(update_event -> {
-                    this.goToUpdateContactPage("Person", contactId, addressId);
+                    this.goToUpdateContactPage(contactType, contactId, addressId);
                 });
     
-                delete.setOnAction(delete_event -> Crud.deleteContact("Person", contactId));
+                delete.setOnAction(delete_event -> Crud.deleteContact(contactType, contactId));
            
         } 
             
         });
     
         ObservableList<List<String>> data = FXCollections.observableArrayList(); // We define the observable list that will be used to fill the table rows
-        List<List<String>> contacts = ContactDto.getAllContactsByType("Person");  // We get all the contacts from the database
+        List<List<String>> contacts = ContactDto.getAllContactsByType(contactType);  // We get all the contacts from the database
         contacts.forEach(contact -> data.add(contact)); // add all the contacts to observale 
         
         list.setItems(data);
@@ -114,48 +111,48 @@ public class MainController {
             try {
 
                 int contactId = Integer.parseInt(txtField.getText());
-                List<String> info = ContactDto.getContactById(contactId, "Person");
+                List<String> info = ContactDto.getContactById(contactId, contactType);
 
                 if (info != null) {
 
-                    String firstName = String.valueOf(info.get(1));
-                    String lastName = String.valueOf(info.get(2));
-                    String phoneNumber = String.valueOf(info.get(3));
-                    String email = String.valueOf(info.get(4));
+                    String firstAttribute = info.get(1);
+                    String secondAttribute = info.get(2);
+                    String phoneNumber = info.get(3);
+                    String email = info.get(4);
                     int addressId = Integer.parseInt(info.get(5));
-        
-                    //String address = AddressDto.addressFormulater(addressId);
-        
-                    fullNameLabel.setText(firstName + " " + lastName);
-                    phoneNumberLabel.setText(phoneNumber);
-                    emailLabel.setText(email);
-                    addressLabel.setText(String.valueOf(addressId));
+                    String address = AddressDto.addressFormulater(addressId);
+    
+                    List<String> values = Arrays.asList(firstAttribute,secondAttribute,phoneNumber,email,address);
+    
+                    // We use the extracted values to fill the labels
+                    FXManager.contactLabelsFiller(labels, values, contactType);
+
                     rightAnchorPane.setVisible(true);
         
                     update.setOnAction(update_event -> {
-                        this.goToUpdateContactPage("Person", contactId, addressId);
+                        this.goToUpdateContactPage(contactType, contactId, addressId);
                     });
         
-                    delete.setOnAction(delete_event -> Crud.deleteContact("Person", contactId));
+                    delete.setOnAction(delete_event -> Crud.deleteContact(contactType, contactId));
                 }
                 
-                else Crud.showAlert(AlertType.ERROR, "Invalid Id", "Contact Not Found", contactId + " doesn't correspond to any existing contact.");
+                else FXManager.showAlert(AlertType.ERROR, "Invalid Id", "Contact Not Found", contactId + " doesn't correspond to any existing contact.");
                  
             }
 
             catch(NumberFormatException e) {
-                Crud.showAlert(AlertType.ERROR, "Invalid Id", "Empty Id Field", "Please provide an Id.");
+                FXManager.showAlert(AlertType.ERROR, "Invalid Id", "Empty Id Field", "Please provide an Id.");
             }
         });
 
         createNew.setOnAction(event -> {
-            this.goToCreateContactPage("Person");
+            this.goToCreateContactPage(contactType);
             
         });
 
         notify.setOnAction(event -> {
 
-            String receiverEmail = Crud.getLabel(rightAnchorPane, "emailLabel").getText();
+            String receiverEmail = FXManager.getLabel(rightAnchorPane, "emailLabel").getText();
 
             this.goToSendEmailPage(receiverEmail);
         });
@@ -165,127 +162,15 @@ public class MainController {
     }
 
     @FXML
-    private void loadEnterprisePane() {
-
-        loadFXML("contact_center_pane.fxml", centerAnchorPane);
-        loadFXML("enterprise_right_pane.fxml", rightAnchorPane);
-        rightAnchorPane.setVisible(false);
-
-        // Buttons
-        Button search = Crud.getButton(centerAnchorPane, "searchBtn");
-        Button createNew = Crud.getButton(centerAnchorPane, "createNewContactBtn");
-        Button update = Crud.getButton(rightAnchorPane, "updateBtn");
-        Button delete = Crud.getButton(rightAnchorPane, "deleteBtn");
-        Button notify = Crud.getButton(rightAnchorPane, "notifyBtn");
-
-        // Search text field
-        TextField txtField = Crud.getTextField(centerAnchorPane, "enterIdTextField");
-
-        // Labels
-        Label enterpriseTypeLabel = Crud.getLabel(rightAnchorPane, "enterpriseTypeLabel");
-        Label enterpriseNameLabel = Crud.getLabel(rightAnchorPane, "enterpriseNameLabel");
-        Label phoneNumberLabel = Crud.getLabel(rightAnchorPane, "phoneNumberLabel");
-        Label emailLabel = Crud.getLabel(rightAnchorPane, "emailLabel");
-        Label addressLabel = Crud.getLabel(rightAnchorPane, "addressLabel");
-        addressLabel.setWrapText(true);
-
-        // List
-        ListView list = (ListView) centerAnchorPane.lookup("#contactListView");
-
-        list.setOnMouseClicked(event ->  {
-
-            if (!list.getSelectionModel().isEmpty()) {
-       
-                // We get the selected row and extract the values
-                List<String> selectedItem = (List<String>) list.getSelectionModel().getSelectedItem();
-                int contactId = Integer.parseInt(selectedItem.get(0));
-                String enterpriseName = selectedItem.get(1);
-                String enterpriseType = selectedItem.get(2);
-                String phoneNumber = selectedItem.get(3);
-                String email = selectedItem.get(4);
-                int addressId = Integer.parseInt(selectedItem.get(5));
-
-                // We get the full address using the address id :
-                String address = AddressDto.addressFormulater(addressId);
-
-                // We use the extracted values to fill the labels
-                enterpriseNameLabel.setText(enterpriseName);
-                enterpriseTypeLabel.setText(enterpriseType);
-                phoneNumberLabel.setText(phoneNumber);
-                emailLabel.setText(email);
-                addressLabel.setText(String.valueOf(address));
-
-                // We show the right pane
-                rightAnchorPane.setVisible(true);
-                update.setOnAction(update_event -> {
-                    this.goToUpdateContactPage("Enterprise", contactId, addressId);
-                });
-    
-                delete.setOnAction(delete_event -> Crud.deleteContact("Enterprise", contactId));
-                  
-               } 
-                   
-        });
-            
-        ObservableList<List<String>> data = FXCollections.observableArrayList(); // We define the observable list that will be used to fill the table rows
-        List<List<String>> contacts = ContactDto.getAllContactsByType("Enterprise");  // We get all the contacts from the database
-        contacts.forEach(contact -> data.add(contact)); // We add all the contacts to observale list
-        list.setItems(data); // We fill the table with the contacts via the observable list
-
-        search.setOnAction(event -> {
-
-            try {
-                int contactId = Integer.parseInt(txtField.getText());
-                List<String> info = ContactDto.getContactById(contactId, "Enterprise");
-
-                if (info != null) {
-
-                    String enterpriseName = info.get(1);
-                    String enterpriseType = info.get(2);
-                    String phoneNumber = info.get(3);
-                    String email = info.get(4);
-                    int addressId = Integer.parseInt(info.get(5));
-    
-                    // We get the full address using the address id :
-                    String address = AddressDto.addressFormulater(addressId);
-    
-                    // We use the extracted values to fill the labels
-                    enterpriseNameLabel.setText(enterpriseName);
-                    enterpriseTypeLabel.setText(enterpriseType);
-                    phoneNumberLabel.setText(phoneNumber);
-                    emailLabel.setText(email);
-                    addressLabel.setText(String.valueOf(address));
-                    rightAnchorPane.setVisible(true);
-        
-                    update.setOnAction(update_event -> {
-                        this.goToUpdateContactPage("Enterprise", contactId, addressId);
-                    });
-        
-                    delete.setOnAction(delete_event -> Crud.deleteContact("Enterprise", contactId));
-                }
-
-                else Crud.showAlert(AlertType.ERROR, "Invalid Id", "Contact Not Found", contactId + " doesn't correspond to any existing contact.");
-            }
-
-            catch(NumberFormatException e) {
-                Crud.showAlert(AlertType.ERROR, "Empty Id Field", "No Id was provided.", "Please provide an Id.");
-            }
-        });
-
-        createNew.setOnAction(event -> {
-            this.goToCreateContactPage("Enterprise");
-            
-        });
-
-        notify.setOnAction(event -> {
-
-            String receiverEmail = Crud.getLabel(rightAnchorPane, "emailLabel").getText();
-            
-            this.goToSendEmailPage(receiverEmail);
-        });
-    
+    private void loadPersonPane() {
+        loadContactPane("Person");
     }
 
+    @FXML
+    private void loadEnterprisePane() {
+        loadContactPane("Enterprise");
+    }
+ 
     public void goToCreateContactPage(String contactType) {
 
         Stage stage = new Stage();
@@ -294,7 +179,7 @@ public class MainController {
         loadFXML("create_update_person_page.fxml", pane);
         
 
-        Button confirm = Crud.getButton(pane, "confirmBtn");
+        Button confirm = FXManager.getButton(pane, "confirmBtn");
 
         Crud.create_contact(pane, confirm, contactType);
         stage.setScene(scene);
@@ -312,7 +197,7 @@ public class MainController {
         loadFXML("create_update_person_page.fxml", pane);
         
 
-        Button confirm = Crud.getButton(pane, "confirmBtn");
+        Button confirm = FXManager.getButton(pane, "confirmBtn");
 
         Crud.update_contact(pane, confirm, contactType, contactId, addressId);
         stage.setScene(scene);
@@ -329,7 +214,7 @@ public class MainController {
         Scene scene = new Scene(pane);
         loadFXML("send_email_pane.fxml", pane);
 
-        Button send = Crud.getButton(pane, "sendEmailBtn");
+        Button send = FXManager.getButton(pane, "sendEmailBtn");
 
         Crud.sendEmail(pane, send, receiverEmail);
 

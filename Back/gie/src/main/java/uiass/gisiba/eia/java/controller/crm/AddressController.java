@@ -1,4 +1,4 @@
-package uiass.gisiba.eia.java.controller;
+package uiass.gisiba.eia.java.controller.crm;
 
 import java.util.*;
 
@@ -7,7 +7,9 @@ import com.google.gson.Gson;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import spark.Spark;
+import static spark.Spark.*;
+import uiass.gisiba.eia.java.controller.GetGson;
+import uiass.gisiba.eia.java.controller.Parser;
 import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.service.Service;
@@ -24,7 +26,7 @@ public class AddressController {
 	  
 	    System.out.println("Server started.");
 	
-	    Spark.get("/addresses/:addressId", (req,res)-> {
+	    get("/addresses/:addressId", (req,res)-> {
 
 		int address_id = Integer.parseInt(req.params(":addressId"));
 
@@ -45,7 +47,7 @@ public class AddressController {
 	  
 	    System.out.println("Server started.");
 	
-	    Spark.get("/addresses", (req,res)-> {
+	    get("/addresses", (req,res)-> {
 
 		List<Address> addresses = service.getAllAddresses();
 		
@@ -64,7 +66,7 @@ public class AddressController {
 
         System.out.println("Server started.");
 
-        Spark.put("/addresses/put/:id", new Route() {
+        put("/addresses/put/:id", new Route() {
 
         @Override
         public String handle(Request request, Response response)  {

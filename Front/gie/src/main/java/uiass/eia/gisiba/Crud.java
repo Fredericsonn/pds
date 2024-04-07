@@ -1,27 +1,20 @@
 package uiass.eia.gisiba;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
+
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.stage.Stage;
 import uiass.eia.gisiba.dto.AddressDto;
 import uiass.eia.gisiba.dto.ContactDto;
 import uiass.eia.gisiba.dto.Parser;
 
 public class Crud {
+
 
     @SuppressWarnings("unchecked")
 
@@ -35,21 +28,21 @@ public class Crud {
         List<String> attributes = Parser.textFieldsReferences;
 
         // We change the prompt text if the contact is an enterprise : 
-        TextField firstTextField= getTextField(pane, "firstTextField");
+        TextField firstTextField= FXManager.getTextField(pane, "firstTextField");
         if (contactType.equals("Enterprise")) firstTextField.setPromptText("enterprise name");
-        TextField secondTextField = getTextField(pane, "secondTextField");
+        TextField secondTextField = FXManager.getTextField(pane, "secondTextField");
         if (contactType.equals("Enterprise")) secondTextField.setPromptText("type");
-        TextField phoneNumberTextField = getTextField(pane, "phoneNumberTextField");
-        TextField emailTextField = getTextField(pane, "emailTextField");
-        setTextFieldEmailFormatRule(emailTextField);
-        TextField houseNumberTextField = getTextField(pane, "houseNumberTextField");
-        setTextFieldNumericFormatRule(houseNumberTextField);
-        TextField neighborhoodTextField = getTextField(pane, "neighborhoodTextField");
-        TextField cityTextField = getTextField(pane, "cityTextField");
-        TextField zipCodeTextField = getTextField(pane, "zipCodeTextField");
-        setTextFieldNumericFormatRule(zipCodeTextField);
-        TextField regionTextField = getTextField(pane, "regionTextField");
-        TextField countryTextField = getTextField(pane, "countryTextField");
+        TextField phoneNumberTextField = FXManager.getTextField(pane, "phoneNumberTextField");
+        TextField emailTextField = FXManager.getTextField(pane, "emailTextField");
+        FXManager.setTextFieldEmailFormatRule(emailTextField);
+        TextField houseNumberTextField = FXManager.getTextField(pane, "houseNumberTextField");
+        FXManager.setTextFieldNumericFormatRule(houseNumberTextField);
+        TextField neighborhoodTextField = FXManager.getTextField(pane, "neighborhoodTextField");
+        TextField cityTextField = FXManager.getTextField(pane, "cityTextField");
+        TextField zipCodeTextField = FXManager.getTextField(pane, "zipCodeTextField");
+        FXManager.setTextFieldNumericFormatRule(zipCodeTextField);
+        TextField regionTextField = FXManager.getTextField(pane, "regionTextField");
+        TextField countryTextField = FXManager.getTextField(pane, "countryTextField");
 
         // We put all the text fields in a list to check if all the fields got input :
         List<TextField> textFields = Arrays.asList(firstTextField,secondTextField,phoneNumberTextField,emailTextField,
@@ -63,7 +56,7 @@ public class Crud {
 
                 attributes.forEach(attribute -> {
 
-                    String value = getTextField(pane, attribute + "TextField").getText(); // We collect the value of the text field entered by the user
+                    String value = FXManager.getTextField(pane, attribute + "TextField").getText(); // We collect the value of the text field entered by the user
     
                     if (attribute.equals("houseNumber")) values.add(value != "" ? Integer.parseInt(value) : 0); // We must save the house number as an integer.
                     
@@ -81,15 +74,15 @@ public class Crud {
     
                 // We display the creation result :
                 if (contactCreationResult.equals("Contact created successfully."))
-                showAlert(AlertType.CONFIRMATION, "Creation Status", "Result :", contactCreationResult);
+                FXManager.showAlert(AlertType.CONFIRMATION, "Creation Status", "Result :", contactCreationResult);
     
-                else showAlert(AlertType.ERROR, "Creation Status", "Result :", contactCreationResult);
+                else FXManager.showAlert(AlertType.ERROR, "Creation Status", "Result :", contactCreationResult);
     
                 ((Stage) button.getScene().getWindow()).close(); // We close the create page after confirming the creation
             
             }
 
-            else showAlert(AlertType.ERROR, "Empty Fields", "Missing Data", "Please enter all the required information.");
+            else FXManager.showAlert(AlertType.ERROR, "Empty Fields", "Missing Data", "Please enter all the required information.");
         });
     }
 
@@ -110,21 +103,21 @@ public class Crud {
         List addressValues = new ArrayList<>();
 
         // We change the prompt text if the contact is an enterprise : 
-        TextField firstTextField= getTextField(pane, "firstTextField");
+        TextField firstTextField= FXManager.getTextField(pane, "firstTextField");
         if (contactType.equals("Enterprise")) firstTextField.setPromptText("enterprise name");
-        TextField secondTextField = getTextField(pane, "secondTextField");
+        TextField secondTextField = FXManager.getTextField(pane, "secondTextField");
         if (contactType.equals("Enterprise")) secondTextField.setPromptText("type");
-        TextField phoneNumberTextField = getTextField(pane, "phoneNumberTextField");
-        TextField emailTextField = getTextField(pane, "emailTextField");
-        setTextFieldEmailFormatRule(emailTextField);
-        TextField houseNumberTextField = getTextField(pane, "houseNumberTextField");
-        setTextFieldNumericFormatRule(houseNumberTextField);
-        TextField neighborhoodTextField = getTextField(pane, "neighborhoodTextField");
-        TextField cityTextField = getTextField(pane, "cityTextField");
-        TextField zipCodeTextField = getTextField(pane, "zipCodeTextField");
-        setTextFieldNumericFormatRule(zipCodeTextField);
-        TextField regionTextField = getTextField(pane, "regionTextField");
-        TextField countryTextField = getTextField(pane, "countryTextField");
+        TextField phoneNumberTextField = FXManager.getTextField(pane, "phoneNumberTextField");
+        TextField emailTextField = FXManager.getTextField(pane, "emailTextField");
+        FXManager.setTextFieldEmailFormatRule(emailTextField);
+        TextField houseNumberTextField = FXManager.getTextField(pane, "houseNumberTextField");
+        FXManager.setTextFieldNumericFormatRule(houseNumberTextField);
+        TextField neighborhoodTextField = FXManager.getTextField(pane, "neighborhoodTextField");
+        TextField cityTextField = FXManager.getTextField(pane, "cityTextField");
+        TextField zipCodeTextField = FXManager.getTextField(pane, "zipCodeTextField");
+        FXManager.setTextFieldNumericFormatRule(zipCodeTextField);
+        TextField regionTextField = FXManager.getTextField(pane, "regionTextField");
+        TextField countryTextField = FXManager.getTextField(pane, "countryTextField");
 
         // We put all the text fields in a list to check if all the fields got input :
         List<TextField> textFields = Arrays.asList(firstTextField,secondTextField,phoneNumberTextField,emailTextField,
@@ -138,14 +131,14 @@ public class Crud {
 
                 contactAttributes.forEach(attribute -> {
 
-                    String value = getTextField(pane, attribute + "TextField").getText(); // We collect the value of the text field entered by the user
+                    String value = FXManager.getTextField(pane, attribute + "TextField").getText(); // We collect the value of the text field entered by the user
     
                     contactValues.add(value); // for every other attribute we just save the value as string
                 });
     
                 addressAttributes.forEach(attribute -> {
     
-                    String value = getTextField(pane, attribute + "TextField").getText(); // We collect the value of the text field entered by the user
+                    String value = FXManager.getTextField(pane, attribute + "TextField").getText(); // We collect the value of the text field entered by the user
     
                     // We must save the house number as an integer :
                     if (attribute.equals("houseNumber")) addressValues.add(!value.equals("") ? Integer.parseInt(value) : 0); 
@@ -169,13 +162,13 @@ public class Crud {
     
                 // We display the update result :
                 if (contactUpdateResult.equals("Contact updated successfully."))
-                showAlert(AlertType.CONFIRMATION, "Update Status", "Result :", contactUpdateResult);
+                FXManager.showAlert(AlertType.CONFIRMATION, "Update Status", "Result :", contactUpdateResult);
     
-                else showAlert(AlertType.ERROR, "Update Status", "Result :", contactUpdateResult);
+                else FXManager.showAlert(AlertType.ERROR, "Update Status", "Result :", contactUpdateResult);
                 ((Stage) button.getScene().getWindow()).close(); // We close the update page after confirming the update
             }
 
-            else showAlert(AlertType.ERROR, "Empty Fields", "Missing Data", "At least one value is required for the update"); 
+            else FXManager.showAlert(AlertType.ERROR, "Empty Fields", "Missing Data", "At least one value is required for the update"); 
         });
     }
 
@@ -187,9 +180,9 @@ public class Crud {
         // We display the deletion result :
         if (contactDeletionResult.equals("Contact deleted successfully."))
         
-        showAlert(AlertType.CONFIRMATION, "Deletion Status", "Result :", contactDeletionResult);
+        FXManager.showAlert(AlertType.CONFIRMATION, "Deletion Status", "Result :", contactDeletionResult);
 
-        else showAlert(AlertType.ERROR, "Deletion Status", "Result :", contactDeletionResult);
+        else FXManager.showAlert(AlertType.ERROR, "Deletion Status", "Result :", contactDeletionResult);
 
     }
 
@@ -199,8 +192,8 @@ public class Crud {
         button.setOnAction(event -> {
 
             // We get the email subject and body entered by the user :
-            String subject = Crud.getTextField(pane, "subjectTextField").getText();
-            String emailBody = Crud.getTextArea(pane, "bodyTextArea").getText();
+            String subject = FXManager.getTextField(pane, "subjectTextField").getText();
+            String emailBody = FXManager.getTextArea(pane, "bodyTextArea").getText();
 
             // if both subject and body were provided :
             if (subject != "" && emailBody != "") {
@@ -220,15 +213,15 @@ public class Crud {
                 // We display the sending result :
                 if (emailSendingResult.equals("Email Sent Successfully."))
             
-                showAlert(AlertType.CONFIRMATION, "Sending Status", "Result :", emailSendingResult);
+                FXManager.showAlert(AlertType.CONFIRMATION, "Sending Status", "Result :", emailSendingResult);
         
-                else showAlert(AlertType.ERROR, "Sending Status", "Result :", emailSendingResult);
+                else FXManager.showAlert(AlertType.ERROR, "Sending Status", "Result :", emailSendingResult);
 
                 ((Stage) button.getScene().getWindow()).close(); // We close the sending page after sending the email
             }
 
             // if one field or more are missing
-            else showAlert(AlertType.ERROR, "Missing Data", "Empty Fields :", "Please fill all the required fields.");
+            else FXManager.showAlert(AlertType.ERROR, "Missing Data", "Empty Fields :", "Please fill all the required fields.");
         });
     }
 
@@ -256,65 +249,5 @@ public class Crud {
         return false;
     }
 
-    public static void setTextFieldNumericFormatRule(TextField numericTextField) {
 
-        numericTextField.setTextFormatter(new TextFormatter<>(change -> {
-
-        String newText = change.getControlNewText();
-
-        if (newText.matches("\\d*")) { // Allow only digits
-
-            return change;
-
-        } else return null; // Reject the change
-            
-        }));
-    }
-
-    public static void setTextFieldEmailFormatRule(TextField emailTextField) {
-        emailTextField.setTextFormatter(new TextFormatter<>(change -> {
-            String newText = change.getControlNewText();
-            if (newText.isEmpty() || newText.matches("[a-zA-Z0-9_+&*-]*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*")) {
-                // Allow the change
-                return change;
-            } else {
-                return change;
-            }
-        }));
-    }
-    // A method that generates alerts : 
-    public static void showAlert(AlertType type, String title, String header, String message) {
-
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(header); 
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-
-    public static TextField getTextField(Parent pane, String id) {
-        return (TextField) pane.lookup("#"+id);
-    }
-
-    public static Button getButton(Parent pane, String id) {
-        return (Button) pane.lookup("#"+id);
-    }
-
-    public static Label getLabel(Parent pane, String id) {
-        return (Label) pane.lookup("#"+id);
-    }
-
-    public static ListView getListView(Parent pane, String id) {
-        return (ListView) pane.lookup("#" + id);
-    }
-
-    public static RadioButton getRadioButton(Parent pane, String id) {
-        return (RadioButton) pane.lookup("#" + id);
-    } 
-
-    public static TextArea getTextArea(Parent pane, String id) {
-
-        return (TextArea) pane.lookup("#" + id);
-    } 
 }
