@@ -10,7 +10,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 
 @Entity
-public class Model implements Serializable{
+public class Model implements Serializable {
 
     @Id
     @Enumerated(EnumType.STRING)

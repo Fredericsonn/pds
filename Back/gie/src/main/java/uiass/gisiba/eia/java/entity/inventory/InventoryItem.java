@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 @Entity(name="Inventory")
 public class InventoryItem {
@@ -13,6 +14,7 @@ public class InventoryItem {
     @Id
     private int id;
 
+    @OneToOne
     @JoinColumn(name = "ref")
     private Product product;
 

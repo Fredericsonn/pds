@@ -3,13 +3,16 @@ package uiass.gisiba.eia.java.entity.delivery;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
 
 public class SupplierDelivery extends Delivery {
 
-    @Column(name="pickup_address")
+    @OneToOne
+    @JoinColumn(name = "address_id")
     private Address pickupAddress;
 
     // Constructors

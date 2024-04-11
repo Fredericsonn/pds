@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
@@ -11,7 +13,8 @@ import uiass.gisiba.eia.java.entity.crm.Contact;
 @Entity
 public class CustomerDelivery extends Delivery {
 
-    @Column(name="delivery_address")
+    @OneToOne
+    @JoinColumn(name = "address_id")
     private Address deliveryAddress;
 
     // Constructors
