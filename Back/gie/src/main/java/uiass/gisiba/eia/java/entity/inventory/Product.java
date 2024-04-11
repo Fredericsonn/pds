@@ -5,8 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 
-@Entity
+@Entity(name="Catalog")
 public class Product {
 
     @Id
@@ -21,24 +24,24 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private ProductCatagory category;
 
-    @Enumerated(EnumType.STRING)
-    private ProductBrand brand;
-
-    @Column
-    private int quantity;
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(name="brand", referencedColumnName="brand"),
+        @JoinColumn(name="model", referencedColumnName="model")
+    })
+    private Model model;
     
     @Column(name = "unit_price")
     private double unitPrice;
 
     // Constructors
 
-    public Product(String ref, String productName, String description, ProductCatagory category, ProductBrand brand, int quantity, double unitPrice) {
+    public Product(String ref, String productName, String description, ProductCatagory category, Model model, double unitPrice) {
         this.ref = ref;
         this.productName = productName;
         this.description = description;
         this.category = category;
-        this.brand = brand;
-        this.quantity = quantity;
+        this.model = model;
         this.unitPrice = unitPrice;
     }
 
@@ -65,7 +68,7 @@ public class Product {
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public void setDescription(String description) {
@@ -73,28 +76,20 @@ public class Product {
     }
 
     public ProductCatagory getCategory() {
-        return category;
+        return this.category;
     }
 
     public void setCategory(ProductCatagory category) {
         this.category = category;
     }
 
-    public ProductBrand getBrand() {
-        return brand;
+    public Model getModel() {
+        return model;
     }
 
-    public void setBrand(ProductBrand brand) {
-        this.brand = brand;
+    public void setModel(Model model) {
+        this.model = model;
     }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    } 
 
     public double getUnitPrice() {
         return unitPrice;
@@ -109,8 +104,10 @@ public class Product {
     @Override
     public String toString() {
         return "ref : " + this.ref + ", name : " + this.productName + ", category : " + this.category 
-        + ", brand : " + this.brand + ", unit price: " + this.unitPrice;
+        + ", brand : " + this.model.getBrand() + ", model : " + this.model.getModel() + ", unit price: " + this.unitPrice;
     }
+
+
 
 
 

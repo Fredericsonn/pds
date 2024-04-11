@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
@@ -39,8 +40,10 @@ public class MainController {
         // Call the method to switch to the "Person_Search_Page" scene
         Main.setRoot("Person_Search_Page");
     }
-    @SuppressWarnings("unchecked")
+
+    
     @FXML
+    // A generic fx method that controls the crm interface depending on the contact type
     private void loadContactPane(String contactType) {
 
         loadFXML("contact_center_pane.fxml", centerAnchorPane);
@@ -48,7 +51,7 @@ public class MainController {
 
         rightAnchorPane.setVisible(false);
 
-        List<String> labelIds = FXManager.ids_per_contact_type_map.get(contactType);
+        List<String> labelIds = FXManager.labels_ids_per_contact_type_map.get(contactType);
         
         // Buttons
         Button search = FXManager.getButton(centerAnchorPane, "searchBtn");
@@ -64,94 +67,110 @@ public class MainController {
         // Labels
         List<Label> labels = FXManager.labelsCollector(rightAnchorPane, labelIds);
 
+        // Tables
+        TableView<List<String>> contactsTable = FXManager.getTableView(centerAnchorPane, "contactsTableView");
 
-        // List
-        ListView list = (ListView) centerAnchorPane.lookup("#contactListView");
-
-        list.setOnMouseClicked(event ->  {
-            if (!list.getSelectionModel().isEmpty()) {
+        contactsTable.setOnMouseClicked(event -> {
+            if (!contactsTable.getSelectionModel().isEmpty()) {
 
                 // We get the selected row and extract the values
-                List<String> selectedItem = (List<String>) list.getSelectionModel().getSelectedItem();
+                List<String> selectedItem = (List<String>) contactsTable.getSelectionModel().getSelectedItem();
                 int contactId = Integer.parseInt(selectedItem.get(0));
                 String firstAttribute = selectedItem.get(1);
                 String secondAttribute = selectedItem.get(2);
                 String phoneNumber = selectedItem.get(3);
                 String email = selectedItem.get(4);
                 int addressId = Integer.parseInt(selectedItem.get(5));
-                String address = AddressDto.addressFormulater(addressId);
+                String address = AddressDto.addressFormulator(addressId, contactType); // We formulate the full address using its id
 
+                // We put all the values in one list that we'll use to fill the labels
                 List<String> values = Arrays.asList(firstAttribute,secondAttribute,phoneNumber,email,address);
 
                 // We use the extracted values to fill the labels
                 FXManager.contactLabelsFiller(labels, values, contactType);
 
-                // We show the right pane
+                // We finally show the right pane
                 rightAnchorPane.setVisible(true);
+
+                // When the update button is clicked
                 update.setOnAction(update_event -> {
                     this.goToUpdateContactPage(contactType, contactId, addressId);
                 });
-    
+
+                // When the delete button is clicked
                 delete.setOnAction(delete_event -> Crud.deleteContact(contactType, contactId));
            
         } 
             
         });
-    
-        ObservableList<List<String>> data = FXCollections.observableArrayList(); // We define the observable list that will be used to fill the table rows
-        List<List<String>> contacts = ContactDto.getAllContactsByType(contactType);  // We get all the contacts from the database
-        contacts.forEach(contact -> data.add(contact)); // add all the contacts to observale 
-        
-        list.setItems(data);
-        
-        
+
+        // We send an http get request to get all the contacts of the given type
+        List<List<String>> data = ContactDto.getAllContactsByType(contactType);  
+
+        // We populate the table using those collected contacts
+        FXManager.populateTableView(contactsTable, data, contactType);
+
+        // When we press the search button
         search.setOnAction(event -> {
             
 
             try {
 
+                // We collect the entered id (we suppose it's a number)
                 int contactId = Integer.parseInt(txtField.getText());
+
+                // We get the contact using that id
                 List<String> info = ContactDto.getContactById(contactId, contactType);
 
-                if (info != null) {
+                if (info != null) {  // if there is a contact with the given id
 
+                    // We extract each attribute's value from the retrieved contact
                     String firstAttribute = info.get(1);
                     String secondAttribute = info.get(2);
                     String phoneNumber = info.get(3);
                     String email = info.get(4);
                     int addressId = Integer.parseInt(info.get(5));
-                    String address = AddressDto.addressFormulater(addressId);
-    
+                    String address = AddressDto.addressFormulator(addressId, contactType);
+
+                    // We put all the values in one list that we'll use to fill the labels
                     List<String> values = Arrays.asList(firstAttribute,secondAttribute,phoneNumber,email,address);
     
                     // We use the extracted values to fill the labels
                     FXManager.contactLabelsFiller(labels, values, contactType);
 
+                    // We finally show the right pane
                     rightAnchorPane.setVisible(true);
-        
+
+                    // When the update button is clicked
                     update.setOnAction(update_event -> {
                         this.goToUpdateContactPage(contactType, contactId, addressId);
                     });
-        
+
+                    // When the delete button is clicked
                     delete.setOnAction(delete_event -> Crud.deleteContact(contactType, contactId));
                 }
                 
+                // if no contact corresponds to the provided id we show an error alert
                 else FXManager.showAlert(AlertType.ERROR, "Invalid Id", "Contact Not Found", contactId + " doesn't correspond to any existing contact.");
                  
             }
 
+            // if the text field is empty and the search button is clicked
             catch(NumberFormatException e) {
                 FXManager.showAlert(AlertType.ERROR, "Invalid Id", "Empty Id Field", "Please provide an Id.");
             }
         });
 
+        // When the create new button is clicked
         createNew.setOnAction(event -> {
             this.goToCreateContactPage(contactType);
             
         });
 
+        // When the notify button is clicked
         notify.setOnAction(event -> {
 
+            // We collect the receiver's email from the email label
             String receiverEmail = FXManager.getLabel(rightAnchorPane, "emailLabel").getText();
 
             this.goToSendEmailPage(receiverEmail);
@@ -162,26 +181,32 @@ public class MainController {
     }
 
     @FXML
+    // The person controller
     private void loadPersonPane() {
         loadContactPane("Person");
     }
 
     @FXML
+    // The enterprise controller
     private void loadEnterprisePane() {
         loadContactPane("Enterprise");
     }
  
     public void goToCreateContactPage(String contactType) {
 
+        // We create the stage that will contain the creation page
         Stage stage = new Stage();
         AnchorPane pane = new AnchorPane();
         Scene scene = new Scene(pane);
-        loadFXML("create_update_person_page.fxml", pane);
+        loadFXML("create_update_person_page.fxml", pane);  // here we load the creation page fxml file
         
-
+        // We collect the confirm button from the fxml file
         Button confirm = FXManager.getButton(pane, "confirmBtn");
 
+        // We add the corresponding event listener to the button
         Crud.create_contact(pane, confirm, contactType);
+        
+        // We add the stage info and show it
         stage.setScene(scene);
         stage.setTitle(contactType.equals("Person") ? "Create Person" : "Create Enterprise");
         stage.setResizable(false);
@@ -191,15 +216,19 @@ public class MainController {
 
     public void goToUpdateContactPage(String contactType, int contactId, int addressId) {
 
+        // We create the stage that will contain the update page
         Stage stage = new Stage();
         AnchorPane pane = new AnchorPane();
         Scene scene = new Scene(pane);
-        loadFXML("create_update_person_page.fxml", pane);
+        loadFXML("create_update_person_page.fxml", pane); // here we load the update page fxml file
         
-
+        // We collect the confirm button from the fxml file
         Button confirm = FXManager.getButton(pane, "confirmBtn");
 
+        // We add the corresponding event listener to the button
         Crud.update_contact(pane, confirm, contactType, contactId, addressId);
+
+        // We add the stage info and show it
         stage.setScene(scene);
         stage.setTitle(contactType.equals("Person") ? "Update Person" : "Update Enterprise");
         stage.setResizable(false);
@@ -208,24 +237,27 @@ public class MainController {
     }
 
     public void goToSendEmailPage(String receiverEmail) {
-        
+
+        // We create the stage that will contain the email sending page
         Stage stage = new Stage();
         AnchorPane pane = new AnchorPane();
         Scene scene = new Scene(pane);
-        loadFXML("send_email_pane.fxml", pane);
+        loadFXML("send_email_pane.fxml", pane); // here we load the email sending page fxml file
 
+        // We collect the send button from the fxml file
         Button send = FXManager.getButton(pane, "sendEmailBtn");
 
+        // We add the corresponding event listener to the butto
         Crud.sendEmail(pane, send, receiverEmail);
 
+        // We add the stage info and show it
         stage.setScene(scene);
         stage.setTitle("Email Sending");
         stage.setResizable(false);
         stage.show();
     }
 
-
-
+    // A method that loads an fxml file into a pane
     private void loadFXML(String fxmlFile, AnchorPane pane) {
         
         try {

@@ -152,13 +152,14 @@ public class Parser {
     
         JsonObject addressObject = contact.has("address") ? contact.get("address").getAsJsonObject() : null;
             
-        contactIntInfo.add(collectInt(addressObject, "addressId"));
-        contactIntInfo.add(collectInt(addressObject, "houseNumber"));
-        contactStringInfo.add(collectString(addressObject, "neighborhood"));
-        contactStringInfo.add(collectString(addressObject, "city"));
-        contactStringInfo.add(collectString(addressObject, "zipCode"));
-        contactStringInfo.add(collectString(addressObject, "region"));
-        contactStringInfo.add(collectString(addressObject, "country"));
+        for (String attribute : addressAttributes) {
+
+            if (attribute.equals("addressId") || attribute.equals("houseNumber")) {
+                
+                contactIntInfo.add(collectInt(addressObject, attribute));
+            }
+            else contactStringInfo.add(collectString(addressObject, attribute));
+        }
         
         String first_or_enterprise_name = contactStringInfo.get(0); 
         String last_name_or_enterprise_type = contactStringInfo.get(1);
@@ -174,7 +175,9 @@ public class Parser {
         String region = String.valueOf(contactStringInfo.get(7));
         String country = String.valueOf(contactStringInfo.get(8));
 
-        return Arrays.asList(id,first_or_enterprise_name,last_name_or_enterprise_type,phoneNumber,email,addressId,houseNumber,neighborhood,city,zipCode,region,country);
+        return Arrays.asList(id,first_or_enterprise_name,last_name_or_enterprise_type,phoneNumber,email,addressId, houseNumber + " " + neighborhood
+        
+        + " " + city + " " + zipCode + " " + region + " " + country);
     }
 
     public static List<String> parseAddress(String responseBody) {

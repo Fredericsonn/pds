@@ -29,6 +29,7 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.getIcons().add(icon);
         stage.setResizable(false);
+        stage.setTitle("GIE");
         stage.show();
     }
 
