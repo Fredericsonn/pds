@@ -15,15 +15,15 @@ public class HQLQueryManager {
 	}
 
     // this method dynamically generates the hql query according to the contact type and the selected columns to update
-    public static String UpdateHQLQueryGenerator(String table, Map<String,Object> columnsNewValues) {
+    public static String UpdateHQLQueryGenerator(String table, Map<String,Object> columnsNewValues, String primary_key) {
 
         List<String> columns = new ArrayList<>(columnsNewValues.keySet());
 
-        return columnsCollector(columns, table);
+        return columnsCollector(columns, table, primary_key);
     }
 
     // this method is used to generate the hql from a columns update state map
-    public static String columnsCollector(List<String> columns, String table) {
+    public static String columnsCollector(List<String> columns, String table, String primary_key) {
         
         String hql = "UPDATE " + table + " set ";
 
@@ -35,9 +35,7 @@ public class HQLQueryManager {
 
         hql = hql.substring(0, hql.length()-1);
 
-        if (contactTypeChecker(table))  hql += " where id = :id";
-       
-        else  hql += " where address_id = :id";
+        hql += " where " +  primary_key +  "= :" + primary_key;
         
         return hql;
     }

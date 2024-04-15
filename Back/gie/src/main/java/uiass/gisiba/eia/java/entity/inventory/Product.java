@@ -15,9 +15,6 @@ public class Product {
     @Id
     private String ref;
 
-    @Column(name = "product_name")
-    private String productName;
-
     @Column(name = "description")
     private String description;
 
@@ -36,9 +33,8 @@ public class Product {
 
     // Constructors
 
-    public Product(String ref, String productName, String description, ProductCatagory category, Model model, double unitPrice) {
+    public Product(String ref, String description, ProductCatagory category, Model model, double unitPrice) {
         this.ref = ref;
-        this.productName = productName;
         this.description = description;
         this.category = category;
         this.model = model;
@@ -57,14 +53,6 @@ public class Product {
 
     public void setRef(String ref) {
         this.ref = ref;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
     }
 
     public String getDescription() {
@@ -103,8 +91,10 @@ public class Product {
 
     @Override
     public String toString() {
-        return "ref : " + this.ref + ", name : " + this.productName + ", category : " + this.category 
-        + ", brand : " + this.model.getBrand() + ", model : " + this.model.getModel() + ", unit price: " + this.unitPrice;
+
+        return "ref : " + this.ref + ", category : " + this.category  + ", brand : " + this.model.getBrand() + 
+        
+        ", model : " + this.model.getModelName() + ", unit price: " + this.unitPrice;
     }
 
 

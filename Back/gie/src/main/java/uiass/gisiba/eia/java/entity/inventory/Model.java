@@ -17,16 +17,17 @@ public class Model implements Serializable {
     private ProductBrand brand;
 
     @Id
-    private String model;
+    @Column(name="model")
+    private String modelName;
 
     @Column(name="release_date")
     private LocalDate releaseDate;
 
     // Constructors
 
-    public Model(ProductBrand brand, String model, LocalDate releaseDate) {
+    public Model(ProductBrand brand, String modelName, LocalDate releaseDate) {
         this.brand = brand;
-        this.model = model;
+        this.modelName = modelName;
         this.releaseDate = releaseDate;
     }
 
@@ -44,12 +45,12 @@ public class Model implements Serializable {
         this.brand = brand;
     }
 
-    public String getModel() {
-        return model;
+    public String getModelName() {
+        return modelName;
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    public void setModel(String modelName) {
+        this.modelName = modelName;
     }
 
     public LocalDate getReleaseDate() {

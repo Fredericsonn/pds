@@ -138,7 +138,7 @@ public class AddressDao implements iAddressDao {
 
 		tr.commit();
         // We dynamically create the hql body of the query
-		String hql = HQLQueryManager.UpdateHQLQueryGenerator("Address", columns_new_values);
+		String hql = HQLQueryManager.UpdateHQLQueryGenerator("Address", columns_new_values, "address_id");
 
 		// We create the query
 		Query query = em.createQuery(hql);

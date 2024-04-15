@@ -79,7 +79,6 @@ public class ContactDao implements iContactDao {
 			if (contact != null) { 
 
 				em.remove(contact);	
-				System.out.println("Contact removed successfully.");	
 				tr.commit();
 			}
 
@@ -221,7 +220,7 @@ public class ContactDao implements iContactDao {
 		Contact contact = this.getContactById(id,contactType);
 
 		//dynamically generate the corresponding hql string :
-		String hql = HQLQueryManager.UpdateHQLQueryGenerator(contactType, columnsNewValues);
+		String hql = HQLQueryManager.UpdateHQLQueryGenerator(contactType, columnsNewValues, "id");
 
 		// create the query using the generated hql :
 		Query query = em.createQuery(hql);
