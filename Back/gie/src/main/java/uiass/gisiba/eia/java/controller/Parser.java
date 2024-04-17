@@ -1,6 +1,7 @@
 package uiass.gisiba.eia.java.controller;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 
 import com.google.gson.Gson;
@@ -16,6 +17,9 @@ import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
 import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
 import uiass.gisiba.eia.java.entity.crm.Person;
+import uiass.gisiba.eia.java.entity.inventory.Product;
+import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
+import uiass.gisiba.eia.java.entity.inventory.ProductCatagory;
 
 public class Parser {
  
@@ -24,14 +28,18 @@ public class Parser {
         put("Enterprise", Arrays.asList("enterpriseName","type","id","phoneNumber","email"));
     }};
     
-    public static Map<String, List<String>> contact_update_columns_by_type_map = new HashMap<String, List<String>>() {{
+    public static Map<String, List<String>> contact_columns_by_type_map = new HashMap<String, List<String>>() {{
         put("Person", Arrays.asList("first_name","last_name","phone_number","email"));
         put("Enterprise", Arrays.asList("enterprise_name","type","phone_number","email"));
     }};
 
-    public static List<String> address_update_columns = Arrays.asList("house_number","neighborhood","city","zip_code","region","country");
+    public static List<String> address_columns = Arrays.asList("house_number","neighborhood","city","zip_code","region","country");
 
     private static List<String> addressAttributes = Arrays.asList("addressId","houseNumber","neighborhood","city","zipCode","region","country");
+
+    private static List<String> productAttributes = Arrays.asList("ref","category","brand","model","description","unitPrice");
+
+    private static List<String> product_columns = Arrays.asList("ref","category","brand","model","description","unitPrice");
 
         // Columns filter 
         public static Map<String, Object> mapFormater(List<String> columns, List values) {
@@ -115,29 +123,6 @@ public class Parser {
 
     }
 
-    public static String responseBodyGenerator(String url) {
-
-        OkHttpClient client = new OkHttpClient();
-    	
-    	String body=null;
-    	
-    	Request request = new Request.Builder()
-    	      .url(url)
-    	      .build();
-
-    	try (Response response = client.newCall(request).execute()) {
-    	   
-    		  body = response.body().string();
-    		  
-    	    }
-    	       	  
-    	  catch(IOException e ) {
-    		  System.out.println(e.getMessage());
-    	  }
-
-        return body;
-    }
-
     public static String collectString(JsonObject jsObj, String attribute) {
         JsonElement element = jsObj.get(attribute);
 
@@ -151,7 +136,21 @@ public class Parser {
         return element != null ? Integer.valueOf(element.getAsString()) : null;
     }
 
+    public static double collectDouble(JsonObject jsObj, String attribute) {
 
+        JsonElement element = jsObj.get(attribute);
+
+        return element != null ? Double.valueOf(element.getAsString()) : null;
+    }
+
+    public static LocalDate collectDate(JsonObject jsObj, String attribute) {
+
+        JsonElement element = jsObj.get(attribute);
+
+        return element != null ? LocalDate.parse(element.getAsString()) : null;
+    }
+
+/////////////////////////////// a method that parses a contact object from a json ///////////////////////////////////////////////
     public static Contact parseContact(String responseBody, String contactType) {
     		
     	JsonObject contact = new JsonParser().parse(responseBody).getAsJsonObject();
@@ -207,6 +206,7 @@ public class Parser {
 
 					 
     }
+/////////////////////////////// a method that parses a list of contact objects from a json /////////////////////////////////////////
 
     public static List<Contact> parseContacts(String responseBody, String contactType) {
 
@@ -225,6 +225,8 @@ public class Parser {
 
         return contacts;
     }
+
+    /////////////////////////////// a method that parses an address object from a json ///////////////////////////////////////////////
 
     public static Address parseAddress(String responseBody) {
 
@@ -256,6 +258,7 @@ public class Parser {
 
         return address;
     }
+/////////////////////////////// a method that parses a list of address objects from a json /////////////////////////////////////////
 
     public static List<Address> parseAddresses(String responseBody) {
 
@@ -275,5 +278,50 @@ public class Parser {
         return addresses;
 
     }
+
+/////////////////////////////// a method that parses a product object from a json //////////////////////////////////////////////////
+public static Product parseProduct(String responseBody) {
+    		
+    JsonObject productObject = new JsonParser().parse(responseBody).getAsJsonObject();
+
+    List<String> productStringInfo = new ArrayList<String>();
+    
+    List<Double> productDoubleInfo = new ArrayList<Double>();
+
+    // The list containing attributes names used to parse the json
+    List<String> attributes = productAttributes;
+
+    // We iterate through our attributes and call the collectors to collect the values from the json
+    for (String attribute : attributes) {
+
+        if (attribute.equals("unitPrice")) {
+            
+            productDoubleInfo.add(collectDouble(productObject, attribute));
+        }
+        else productStringInfo.add(collectString(productObject, attribute));
+    }
+
+    String ref = productStringInfo.get(0); 
+
+    String categoryString = productStringInfo.get(1);
+
+    String brandString = productStringInfo.get(2);
+
+    String model = productStringInfo.get(3);
+
+    String description = productStringInfo.get(4);
+
+    double unitPrice = productDoubleInfo.get(0);
+
+    ProductCatagory category = ProductCatagory.valueOf(categoryString);
+
+    ProductBrand brand = ProductBrand.valueOf(brandString);
+
+    Product product = new Product(ref, category, brand, model, description, unitPrice);
+
+    return product;
+                 
+}
+
 }
 

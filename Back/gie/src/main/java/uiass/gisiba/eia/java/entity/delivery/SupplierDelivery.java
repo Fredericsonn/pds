@@ -22,7 +22,7 @@ public class SupplierDelivery extends Delivery {
     
             Address pickupAddress, Purchase purchase) {
 
-        super(ref, pickupDate, deliveryDate, stakeholder);
+        super(ref, pickupDate, deliveryDate);
 
         this.pickupAddress = pickupAddress;
 

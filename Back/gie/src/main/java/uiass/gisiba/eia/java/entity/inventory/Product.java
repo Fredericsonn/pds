@@ -5,9 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
+
 
 @Entity(name="Catalog")
 public class Product {
@@ -15,29 +13,29 @@ public class Product {
     @Id
     private String ref;
 
-    @Column(name = "description")
-    private String description;
-
     @Enumerated(EnumType.STRING)
     private ProductCatagory category;
 
-    @ManyToOne
-    @JoinColumns({
-        @JoinColumn(name="brand", referencedColumnName="brand"),
-        @JoinColumn(name="model", referencedColumnName="model")
-    })
-    private Model model;
+    @Enumerated(EnumType.STRING)
+    private ProductBrand brand;
+
+    @Column(name="model")
+    private String model;
+
+    @Column(name = "description")
+    private String description;
     
     @Column(name = "unit_price")
     private double unitPrice;
 
     // Constructors
 
-    public Product(String ref, String description, ProductCatagory category, Model model, double unitPrice) {
+    public Product(String ref, ProductCatagory category, ProductBrand brand, String model, String description, double unitPrice) {
         this.ref = ref;
-        this.description = description;
         this.category = category;
+        this.brand = brand;
         this.model = model;
+        this.description = description;
         this.unitPrice = unitPrice;
     }
 
@@ -55,14 +53,6 @@ public class Product {
         this.ref = ref;
     }
 
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public ProductCatagory getCategory() {
         return this.category;
     }
@@ -71,12 +61,28 @@ public class Product {
         this.category = category;
     }
 
-    public Model getModel() {
+    public ProductBrand getBrand() {
+        return brand;
+    }
+
+    public void setBrand(ProductBrand brand) {
+        this.brand = brand;
+    }
+
+    public String getModel() {
         return model;
     }
 
-    public void setModel(Model model) {
+    public void setModel(String model) {
         this.model = model;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public double getUnitPrice() {
@@ -87,14 +93,12 @@ public class Product {
         this.unitPrice = unitPrice;
     }
 
-    
-
     @Override
     public String toString() {
 
-        return "ref : " + this.ref + ", category : " + this.category  + ", brand : " + this.model.getBrand() + 
+        return "ref : " + this.ref + ", category : " + this.category  + ", model : "  + this.model +  ", brand : " + this.model + 
         
-        ", model : " + this.model.getModelName() + ", unit price: " + this.unitPrice;
+         ", description : " + this.description + ", unit price: " + this.unitPrice;
     }
 
 

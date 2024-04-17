@@ -1,5 +1,7 @@
 package uiass.gisiba.eia.java.entity.sales;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -9,7 +11,7 @@ import uiass.gisiba.eia.java.entity.inventory.Order;
 import uiass.gisiba.eia.java.entity.inventory.Product;
 
 @Entity(name="Sale_Order")
-public class SaleOrder extends Order {
+public class SaleOrder extends Order implements Serializable {
 
     @Id
     @OneToOne

@@ -5,6 +5,9 @@ import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+
+import uiass.gisiba.eia.java.entity.crm.Contact;
 
 @Entity
 public class Purchase {
@@ -12,6 +15,10 @@ public class Purchase {
     @Id
     @Column(name="purchase_id")
     private int purchaseId;
+
+    @OneToOne
+    @Column(name="supplier_id")
+    private Contact supplier;
 
     @Column(name="purchase_date")
     private LocalDate purchaseDate;
@@ -21,10 +28,12 @@ public class Purchase {
 
     // Constructors
 
-    public Purchase(int purchaseId, LocalDate purchaseDate, double total) {
+    public Purchase(int purchaseId, LocalDate purchaseDate, double total, Contact supplier) {
         this.purchaseId = purchaseId;
+        this.supplier = supplier;
         this.purchaseDate = purchaseDate;
         this.total = total;
+
     }
 
     public Purchase() {
@@ -39,6 +48,14 @@ public class Purchase {
 
     public void setPurchaseId(int purchaseId) {
         this.purchaseId = purchaseId;
+    }
+
+    public Contact getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(Contact supplier) {
+        this.supplier = supplier;
     }
 
     public LocalDate getPurchaseDate() {
@@ -56,6 +73,13 @@ public class Purchase {
     public void setTotal(double total) {
         this.total = total;
     }
+
+
+
+    
+
+
+    
 
     
 

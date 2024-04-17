@@ -6,8 +6,7 @@ import javax.mail.MessagingException;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonStreamParser;
+
 
 import spark.Request;
 import spark.Response;
@@ -319,7 +318,7 @@ public static void postContactController() {
                 String body = request.body(); // We get the json containing update information as string
                     
                 // The corresponding list of attribute (used to parse the json)
-                List<String> columns = Parser.contact_update_columns_by_type_map.get(contactType);
+                List<String> columns = Parser.contact_columns_by_type_map.get(contactType);
     
                 // We collect all the values to update from the request body in one list :
                 List contactValues = Parser.contactValuesCollector(gson, body, contactType);

@@ -7,30 +7,24 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
-import uiass.gisiba.eia.java.entity.crm.Contact;
-
 @MappedSuperclass
 public class Delivery implements Serializable {
 
     @Id
-    private String ref;
+    private String deliveryRef;
 
     @Column(name="pickup_date")
     private LocalDate pickupDate;
 
     @Column(name="delivery_date")
     private LocalDate deliveryDate;
-
-    @Column(name="stakeholder")
-    private Contact stakeholder;
     
     // Constructors
 
-    public Delivery(String ref, LocalDate pickupDate, LocalDate deliveryDate, Contact stakeholder) {
-        this.ref = ref;
+    public Delivery(String deliveryRef, LocalDate pickupDate, LocalDate deliveryDate) {
+        this.deliveryRef = deliveryRef;
         this.pickupDate = pickupDate;
         this.deliveryDate = deliveryDate;
-        this.stakeholder = stakeholder;
     }
 
     public Delivery() {
@@ -39,12 +33,12 @@ public class Delivery implements Serializable {
 
     // Getters - Setters
 
-    public String getRef() {
-        return ref;
+    public String getDeliveryRef() {
+        return deliveryRef;
     }
 
-    public void setRef(String ref) {
-        this.ref = ref;
+    public void setDeliveryRef(String deliveryRef) {
+        this.deliveryRef = deliveryRef;
     }
 
     public LocalDate getPickupDate() {
@@ -59,21 +53,13 @@ public class Delivery implements Serializable {
         return deliveryDate;
     }
 
-    public void setdeliveryDate(LocalDate deliveryDate) {
-        this.deliveryDate = deliveryDate;
-    }
-
     public void setDeliveryDate(LocalDate deliveryDate) {
         this.deliveryDate = deliveryDate;
     }
 
-    public Contact getStakeholder() {
-        return stakeholder;
-    }
 
-    public void setStakeholder(Contact stakeholder) {
-        this.stakeholder = stakeholder;
-    }
+
+    
 
     
 

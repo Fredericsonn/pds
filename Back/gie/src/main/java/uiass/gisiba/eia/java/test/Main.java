@@ -15,7 +15,6 @@ import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
 import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
 import uiass.gisiba.eia.java.entity.crm.Address;
-import uiass.gisiba.eia.java.entity.inventory.Model;
 import uiass.gisiba.eia.java.entity.inventory.Product;
 import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
 import uiass.gisiba.eia.java.entity.inventory.ProductCatagory;
@@ -28,8 +27,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-
-        Service service = new Service();
 
         ContactController.getContactByIdController();
         ContactController.getContactByNameController();

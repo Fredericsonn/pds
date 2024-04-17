@@ -10,8 +10,8 @@ import javax.persistence.Query;
 import uiass.gisiba.eia.java.dao.crm.HQLQueryManager;
 import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
-import uiass.gisiba.eia.java.entity.inventory.Model;
 import uiass.gisiba.eia.java.entity.inventory.Product;
+import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
 import uiass.gisiba.eia.java.entity.inventory.ProductCatagory;
 
 public class ProductDao implements iProductDao {
@@ -25,9 +25,9 @@ public class ProductDao implements iProductDao {
     }
 
     @Override
-    public void addProduct(String ref, String description, ProductCatagory category, Model model, double unitPrice) {
+    public void addProduct(String ref, ProductCatagory category, ProductBrand brand, String model, String description, double unitPrice) {
 
-        Product product = new Product(ref, description, category, model, unitPrice);
+        Product product = new Product(ref, category, brand, model,description, unitPrice);
 
         tr.begin();
         em.persist(product);
