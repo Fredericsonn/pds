@@ -68,6 +68,7 @@ public class DataSender {
 
         OkHttpClient client = new OkHttpClient();
 
+        @SuppressWarnings("deprecation")
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
 
         Request request = new Request.Builder()

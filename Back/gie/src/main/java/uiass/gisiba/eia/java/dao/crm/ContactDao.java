@@ -234,6 +234,8 @@ public class ContactDao implements iContactDao {
 		query.setParameter("id", id);
 
         query.executeUpdate();
+		
+		em.refresh(contact);
 
 		tr.commit();
     }

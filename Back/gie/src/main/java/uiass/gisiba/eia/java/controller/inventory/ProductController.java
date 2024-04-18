@@ -2,7 +2,7 @@ package uiass.gisiba.eia.java.controller.inventory;
 
 import static spark.Spark.*;
 
-import java.util.List;
+import java.util.*;
 
 import com.google.gson.Gson;
 
@@ -10,6 +10,7 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 import uiass.gisiba.eia.java.controller.GetGson;
+import uiass.gisiba.eia.java.controller.Parser;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.Product;
 import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
@@ -131,4 +132,9 @@ public static void deleteProductController()  {
 
 		);  
 }
+
+/////////////////////////////////////////////////// PUT METHODS //////////////////////////////////////////////////////////////////
+
+
+
 }
