@@ -1,6 +1,21 @@
 package uiass.gisiba.eia.java.entity.inventory;
 
 public enum ProductBrand {
-    Samsung, Nike, IKEA, Toyota, Adidas, L_Oréal, AmazonBasics, LEGO, Johnson_Johnson, Purina, KitchenAid, HP,
-     Tiffany_Co, Gerber, Ashley_Furniture, Scotts, DEWALT, Yamaha, Sony, Singer, Microsoft, Apple
+
+    Dell, // Laptop, Desktop PC, Printer
+    Hp, // Laptop, Desktop PC, Printer
+    Asus, // Laptop, Desktop PC
+    Lenovo, // Laptop, Desktop PC
+    Acer, // Laptop, Desktop PC
+    Samsung, // Phone, Laptop, Tablet, Smartwatch, Monitor, Speaker, Camera, Gaming Console, Router, Modem, Storage Device, Projector, Scanner, Webcam
+    Canon, // Printer
+    Epson, // Printer
+    Brother, // Printer
+    Nikon, // Camera
+    Sony, // Phone, Camera, Gaming Console, Speaker
+    Panasonic, // TV, Speaker, Camera
+    Fujifilm, // Camera
+    Olympus, // Camera
+    Polaroid // Camera
+
 }

@@ -1,6 +1,6 @@
 package uiass.gisiba.eia.java.dao.crm;
 
-import java.util.List;
+import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -9,9 +9,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
-import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
-import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
 import uiass.gisiba.eia.java.entity.crm.Address;
 
 public class AddressDao implements iAddressDao {
@@ -95,7 +93,7 @@ public class AddressDao implements iAddressDao {
 		tr.begin();
 
 		// Generate the hql to find any matching addresses 
-		String hql = UpdateManager.checkAddressExistenceHQLQueryGnenerator();
+		String hql = HQLQueryManager.checkAddressExistenceHQLQueryGnenerator();
 		TypedQuery<Integer> query = em.createQuery(hql, Integer.class);
 
 		// Get the address attributes to fill the query's parameters
@@ -130,6 +128,35 @@ public class AddressDao implements iAddressDao {
 
 		return id;
 		
+	}
+	
+	@Override
+	public void updateAddress(int address_id, Map<String, Object> columns_new_values) throws AddressNotFoundException {
+		
+		// We get the address to update by its id
+		Address address = this.getAddressById(address_id);
+
+		tr.commit();
+        // We dynamically create the hql body of the query
+		String hql = HQLQueryManager.UpdateHQLQueryGenerator("Address", columns_new_values, "address_id");
+
+		// We create the query
+		Query query = em.createQuery(hql);
+
+		// set the query parameters
+		for (String column : columns_new_values.keySet()) {
+
+			Object new_value = columns_new_values.get(column);
+
+			query.setParameter(column, new_value);
+		}
+
+		query.setParameter("id", address_id);
+
+		tr.begin();
+		query.executeUpdate();
+
+		tr.commit();
 	}
 
 }

@@ -6,31 +6,37 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 
-@Entity
+
+@Entity(name="Catalog")
 public class Product {
 
     @Id
-    private String ref;
-
-    @Column(name = "product_name")
-    private String productName;
+    @Column(name="product_ref")
+    private String productRef;
 
     @Enumerated(EnumType.STRING)
     private ProductCatagory category;
 
     @Enumerated(EnumType.STRING)
     private ProductBrand brand;
+
+    @Column(name="model")
+    private String model;
+
+    @Column(name = "description")
+    private String description;
     
     @Column(name = "unit_price")
     private double unitPrice;
 
     // Constructors
 
-    public Product(String ref, String productName, ProductCatagory category, ProductBrand brand, double unitPrice) {
-        this.ref = ref;
-        this.productName = productName;
+    public Product(String productRef, ProductCatagory category, ProductBrand brand, String model, String description, double unitPrice) {
+        this.productRef = productRef;
         this.category = category;
         this.brand = brand;
+        this.model = model;
+        this.description = description;
         this.unitPrice = unitPrice;
     }
 
@@ -40,24 +46,16 @@ public class Product {
 
     // Getters - Setters
 
-    public String getRef() {
-        return ref;
+    public String getProductRef() {
+        return productRef;
     }
 
-    public void setRef(String ref) {
-        this.ref = ref;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setProductRef(String productRef) {
+        this.productRef = productRef;
     }
 
     public ProductCatagory getCategory() {
-        return category;
+        return this.category;
     }
 
     public void setCategory(ProductCatagory category) {
@@ -72,6 +70,22 @@ public class Product {
         this.brand = brand;
     }
 
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public double getUnitPrice() {
         return unitPrice;
     }
@@ -82,9 +96,17 @@ public class Product {
 
     @Override
     public String toString() {
-        return "ref : " + this.ref + ", name : " + this.productName + ", category : " + this.category 
-        + ", brand : " + this.brand + ", unit price: " + this.unitPrice;
+
+        return "ref : " + this.productRef + ", category : " + this.category  + ", model : "  + this.model +  ", brand : " + this.model + 
+        
+         ", description : " + this.description + ", unit price: " + this.unitPrice;
     }
+
+
+
+
+
+
 
     
     

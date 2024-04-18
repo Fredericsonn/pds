@@ -1,13 +1,21 @@
 package uiass.gisiba.eia.java.service;
 
 import java.util.*;
+
+import javax.mail.MessagingException;
+
 import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
+import uiass.gisiba.eia.java.dao.exceptions.NoContactsFoundInCountry;
+import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
 import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
+import uiass.gisiba.eia.java.entity.inventory.Product;
+import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
+import uiass.gisiba.eia.java.entity.inventory.ProductCatagory;
 
 public interface iService {
 
@@ -25,6 +33,9 @@ public interface iService {
 
     int existingAddressChecker(Address addressToCheck) throws AddressNotFoundException;
 
+    void updateAddress(int address_id, Map<String, Object> columns_new_values) throws AddressNotFoundException;
+
+
 /////////////////////////////////////////////////////// CONTACT ////////////////////////////////////////////////////////////////
 
     void addContact(String fname, String lname, String phoneNum, String email, Address address) throws AddressNotFoundException, DuplicatedAddressException;
@@ -37,7 +48,9 @@ public interface iService {
 
     Contact getContactByName(String name, String contactType) throws ContactNotFoundException, InvalidContactTypeException;
 
-    Contact getContactByAddresId(int address_id);
+    Contact getContactByAddressId(String contactType,int address_id) throws AddressNotFoundException;
+
+    List<Contact> getAllContactsByCountry(String contactType, String country) throws InvalidContactTypeException, NoContactsFoundInCountry;
 
     List<Contact> getAllContactsByType(String contactType) throws InvalidContactTypeException;
 
@@ -45,4 +58,23 @@ public interface iService {
 
     void updateContact(int id, Map<String,Object> columnsNewValues,String contactType) throws ContactNotFoundException,InvalidContactTypeException;
 
+    void notifyContact(String email, String subject, String body) throws MessagingException;
+
+/////////////////////////////////////////////////////// PRODUCT ////////////////////////////////////////////////////////////////
+
+    void addProduct(String ref, ProductCatagory category, ProductBrand brand, String model, 
+    
+    String description, double unitPrice);
+
+    Product getProductById(String ref) throws ProductNotFoundException;
+
+    void deleteProduct(String ref) throws ProductNotFoundException;
+
+    List<Product> getAllProducts();
+
+    List<ProductCatagory> getAllCategories(); 
+
+    List<ProductBrand> getAllBrandsByCategory(ProductCatagory category); 
+
+    void updateProduct(String ref, Map<String,Object> columnsNewValues) throws ProductNotFoundException;
 }

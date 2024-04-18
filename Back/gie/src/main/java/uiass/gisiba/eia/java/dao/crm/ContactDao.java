@@ -6,9 +6,7 @@ import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 
 import uiass.gisiba.eia.java.dao.exceptions.*;
@@ -69,7 +67,7 @@ public class ContactDao implements iContactDao {
 	@Override
 	public void deleteContact(int id, String contactType) throws ContactNotFoundException, InvalidContactTypeException {
 
-		if (UpdateManager.contactTypeChecker(contactType)) {
+		if (HQLQueryManager.contactTypeChecker(contactType)) {
 
 			tr.begin();
 
@@ -78,15 +76,20 @@ public class ContactDao implements iContactDao {
 			if (contact != null) { 
 
 				em.remove(contact);	
-				System.out.println("Contact removed successfully.");	
+				tr.commit();
 			}
 
-			tr.commit();
+			
 
-			throw new ContactNotFoundException(id);
+			else {
+
+				tr.commit();
+
+				throw new ContactNotFoundException(id);
+			}
 		}
 
-		throw new InvalidContactTypeException(contactType);
+		else throw new InvalidContactTypeException(contactType);
 
 	}
 
@@ -117,13 +120,16 @@ public class ContactDao implements iContactDao {
 	@Override
 	public Contact getContactByName(String name, String contactType) throws ContactNotFoundException, InvalidContactTypeException {
 
-		if (UpdateManager.contactTypeChecker(contactType)) {
+		if (HQLQueryManager.contactTypeChecker(contactType)) {
 
-			String hql = UpdateManager.getContactByNameHQLQueryGenerator(contactType);
+			String hql = HQLQueryManager.getContactByNameHQLQueryGenerator(contactType);
+
 			Query query = em.createQuery(hql);
+			
 			query.setParameter("fullName", name);
 			
 			if (query.getSingleResult() != null) {
+
 				return (Contact) query.getSingleResult();
 			}
 
@@ -136,23 +142,51 @@ public class ContactDao implements iContactDao {
 	}
 
 	@Override
-	public Contact getContactByAddresId(String contactType, int address_id) {
+	public Contact getContactByAddressId(String contactType, int address_id) throws AddressNotFoundException {
 
-		String hql = UpdateManager.getContactByAddressIdHQLQueryGenerator(contactType);
+		String hql = HQLQueryManager.getContactByAddressIdHQLQueryGenerator(contactType);
 
 		Query query = em.createQuery(hql);
 
 		query.setParameter("address_id", address_id);
 
+		tr.begin();
 		Contact contact = (Contact) query.getSingleResult();
+		tr.commit();
 		
-		return contact;
+		if (contact != null )return contact;
+
+		throw new AddressNotFoundException(address_id);
+	}
+
+	@Override
+	public List<Contact> getAllContactsByCountry(String contactType, String country) throws InvalidContactTypeException, NoContactsFoundInCountry {
+
+		if (HQLQueryManager.contactTypeChecker(contactType)) {
+
+			String hql = HQLQueryManager.geContactsByCountryHQLQueryGenerator(contactType, country);
+
+			Query query = em.createQuery(hql);
+
+			query.setParameter("country", country);
+
+			List<Contact> contacts = query.getResultList();
+
+			if (!contacts.isEmpty()) {
+
+				return contacts;
+			}
+
+			throw new NoContactsFoundInCountry(country);
+		}
+		
+		throw new InvalidContactTypeException(contactType);
 	}
 
 	@Override
 	public List<Contact> getAllContactsByType(String contactType) throws InvalidContactTypeException {
 
-		if (UpdateManager.contactTypeChecker(contactType)) {
+		if (HQLQueryManager.contactTypeChecker(contactType)) {
 			
 			Query query = em.createQuery("from " + contactType);
 
@@ -183,7 +217,7 @@ public class ContactDao implements iContactDao {
 		Contact contact = this.getContactById(id,contactType);
 
 		//dynamically generate the corresponding hql string :
-		String hql = UpdateManager.UpdateHQLQueryGenerator(contactType, columnsNewValues);
+		String hql = HQLQueryManager.UpdateHQLQueryGenerator(contactType, columnsNewValues, "id");
 
 		// create the query using the generated hql :
 		Query query = em.createQuery(hql);
@@ -200,9 +234,13 @@ public class ContactDao implements iContactDao {
 		query.setParameter("id", id);
 
         query.executeUpdate();
+		
+		em.refresh(contact);
 
 		tr.commit();
     }
+
+
 
 
 
