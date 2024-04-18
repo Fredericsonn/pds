@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -33,9 +34,13 @@ public class Parser {
 
     public static List<String> update_address_attributes = Arrays.asList("houseNumber","neighborhood","city","zipCode","region","country");
 
-    public static List<String> textFieldsReferences = Arrays.asList("first","second","phoneNumber","email","houseNumber","neighborhood","city","zipCode","region","country");
+    public static List<String> contactTextFieldsReferences = Arrays.asList("first","second","phoneNumber","email","houseNumber","neighborhood","city","zipCode","region","country");
 
     public static List<String> email_sending_attributes = Arrays.asList("receiver","subject","body");
+
+    private static List<String> productAttributes = Arrays.asList("productRef","category","brand","model","description","unitPrice");
+
+    private static List<String> product_columns = Arrays.asList("category","brand","model","description","unit_price");
 
     public static Map<String,Object> contactCreationMapGenerator(List values, String contactType) {
 
@@ -52,6 +57,23 @@ public class Parser {
 
         return map;
     }
+
+    public static Map<String,String> productCreationMapGenerator(List<String> values) {
+
+        Map<String,String> map = new HashMap<String,String>();
+
+        List<String> attributes = productAttributes;
+
+        
+        for (int i=0 ; i < attributes.size() ; i++) {
+
+            map.put(attributes.get(i), values.get(i));
+
+        }
+
+        return map;
+    }
+
     public static Map<String,Object> contactUpdateMapGenerator(List values, String contactType) {
 
         Map<String,Object> map = new HashMap<String,Object>();
@@ -92,6 +114,22 @@ public class Parser {
         return map;
     }
 
+    public static Map<String,String> productUpdateMapGenerator(List<String> values) {
+
+        Map<String,String> map = new HashMap<String,String>();
+
+        List<String> attributes = product_columns;
+
+        
+        for (int i=0 ; i < attributes.size() ; i++) {
+
+            map.put(attributes.get(i), values.get(i));
+
+        }
+
+        return map;
+    }
+
     public static Map<String,Object> emailSendingMapGenerator(List values) {
 
         Map<String,Object> map = new HashMap<String,Object>();
@@ -109,6 +147,8 @@ public class Parser {
 
         return map;
     }
+
+    
 
     public static String jsonGenerator(Map<String,Object> attributes) {
 
@@ -129,6 +169,14 @@ public class Parser {
         return element != null ? Integer.valueOf(element.getAsString()) : null;
     }
 
+    public static double collectDouble(JsonObject jsObj, String attribute) {
+
+        JsonElement element = jsObj.get(attribute);
+
+        return element != null ? Double.valueOf(element.getAsString()) : null;
+    }
+
+    // Contact parser
     public static List<String> parseContact(String responseBody, String contactType) {
 
     	JsonObject contact = new JsonParser().parse(responseBody).getAsJsonObject();
@@ -180,6 +228,7 @@ public class Parser {
         + " " + city + " " + zipCode + " " + region + " " + country);
     }
 
+    // Address parser
     public static List<String> parseAddress(String responseBody) {
 
     	JsonObject addressObject = new JsonParser().parse(responseBody).getAsJsonObject();
@@ -207,6 +256,59 @@ public class Parser {
 
         return Arrays.asList(addressId,houseNumber,neighborhood,city,zipCode,region,country);
     }
+
+    public static List<String> parseProduct(String responseBody) {
+    		
+        JsonObject productObject = new JsonParser().parse(responseBody).getAsJsonObject();
+    
+        List<String> productStringInfo = new ArrayList<String>();
+        
+        List<Double> productDoubleInfo = new ArrayList<Double>();
+    
+        // The list containing attributes names used to parse the json
+        List<String> attributes = productAttributes;
+    
+        // We iterate through our attributes and call the collectors to collect the values from the json
+        for (String attribute : attributes) {
+    
+            if (attribute.equals("unitPrice")) {
+                
+                productDoubleInfo.add(collectDouble(productObject, attribute));
+            }
+            else productStringInfo.add(collectString(productObject, attribute));
+        }
+    
+        String ref = productStringInfo.get(0); 
+    
+        String category = productStringInfo.get(1);
+    
+        String brand = productStringInfo.get(2);
+    
+        String model = productStringInfo.get(3);
+    
+        String description = productStringInfo.get(4);
+    
+        String unitPrice = String.valueOf(productDoubleInfo.get(0)) + "$";
+
+        return Arrays.asList(ref, category, brand, model, description, unitPrice);
+                     
+    }
+
+    public static List<String> parseProductCharacteristics(String responseBody) {
+
+        List<String> characteristics = new ArrayList<String>();
+
+        JsonArray characteristicsArray = new JsonParser().parse(responseBody).getAsJsonArray();
+
+        characteristicsArray.forEach(jsonElt -> characteristics.add(String.valueOf(jsonElt.getAsString())));
+
+        return characteristics;
+
+
+
+    }
+
+    
 
 
 

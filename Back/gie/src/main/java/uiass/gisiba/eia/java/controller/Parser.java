@@ -37,9 +37,9 @@ public class Parser {
 
     private static List<String> addressAttributes = Arrays.asList("addressId","houseNumber","neighborhood","city","zipCode","region","country");
 
-    private static List<String> productAttributes = Arrays.asList("ref","category","brand","model","description","unitPrice");
+    private static List<String> productAttributes = Arrays.asList("product_ref","category","brand","model","description","unitPrice");
 
-    private static List<String> product_columns = Arrays.asList("ref","category","brand","model","description","unitPrice");
+    private static List<String> product_columns = Arrays.asList("product_ref","category","brand","model","description","unit_price");
 
         // Columns filter 
         public static Map<String, Object> mapFormater(List<String> columns, List values) {
@@ -323,5 +323,25 @@ public static Product parseProduct(String responseBody) {
                  
 }
 
+/////////////////////////////// a method that parses a list of product objects from a json /////////////////////////////////////////
+
+public static List<Product> parseProducts(String responseBody) {
+
+    List<Product> products = new ArrayList<Product>();
+
+    JsonArray productsArray = new JsonParser().parse(responseBody).getAsJsonArray();
+
+    for (int i = 0 ; i < productsArray.size() ; i++) {
+
+        String productJsonBody = productsArray.get(i).toString();
+
+        Product product = parseProduct(productJsonBody);
+
+        products.add(product);
+    }
+
+    return products;
+
+}
 }
 

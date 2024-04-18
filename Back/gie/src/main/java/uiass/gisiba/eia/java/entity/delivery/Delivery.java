@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
@@ -11,6 +12,7 @@ import javax.persistence.MappedSuperclass;
 public class Delivery implements Serializable {
 
     @Id
+    @Column(name="devilery_ref")
     private String deliveryRef;
 
     @Column(name="pickup_date")

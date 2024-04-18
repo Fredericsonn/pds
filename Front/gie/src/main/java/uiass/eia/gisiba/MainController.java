@@ -20,6 +20,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import uiass.eia.gisiba.dto.AddressDto;
 import uiass.eia.gisiba.dto.ContactDto;
+import uiass.eia.gisiba.dto.ProductDto;
 
 public class MainController {
 
@@ -35,13 +36,14 @@ public class MainController {
     @FXML
     private MenuItem personsMenuItem;
 
-    @FXML
+    /*@FXML
     private void switchToScene() throws IOException {
         // Call the method to switch to the "Person_Search_Page" scene
         Main.setRoot("Person_Search_Page");
-    }
+    }*/
 
     
+
     @FXML
     // A generic fx method that controls the crm interface depending on the contact type
     private void loadContactPane(String contactType) {
@@ -98,7 +100,7 @@ public class MainController {
                 });
 
                 // When the delete button is clicked
-                delete.setOnAction(delete_event -> Crud.deleteContact(contactType, contactId));
+                delete.setOnAction(delete_event -> ContactCrud.deleteContact(contactType, contactId));
            
         } 
             
@@ -108,7 +110,8 @@ public class MainController {
         List<List<String>> data = ContactDto.getAllContactsByType(contactType);  
 
         // We populate the table using those collected contacts
-        FXManager.populateTableView(contactsTable, data, contactType);
+        List<String> columns = FXManager.columns_names_per_contact_type.get(contactType);
+        FXManager.populateTableView(contactsTable, columns, data);
 
         // When we press the search button
         search.setOnAction(event -> {
@@ -147,7 +150,7 @@ public class MainController {
                     });
 
                     // When the delete button is clicked
-                    delete.setOnAction(delete_event -> Crud.deleteContact(contactType, contactId));
+                    delete.setOnAction(delete_event -> ContactCrud.deleteContact(contactType, contactId));
                 }
                 
                 // if no contact corresponds to the provided id we show an error alert
@@ -191,6 +194,128 @@ public class MainController {
     private void loadEnterprisePane() {
         loadContactPane("Enterprise");
     }
+
+    @FXML
+    // An fx method that controls the catalog 
+    private void loadProductPane() {
+
+        loadFXML("catalog_center_pane.fxml", centerAnchorPane);
+        loadFXML("catalog_right_pane.fxml", rightAnchorPane);
+
+        rightAnchorPane.setVisible(false);
+
+        List<String> labelIds = FXManager.catalog_labels_ids;
+        
+        // Buttons
+        Button search = FXManager.getButton(centerAnchorPane, "searchBtn");
+        Button createNew = FXManager.getButton(centerAnchorPane, "createNewProductBtn");
+        Button update = FXManager.getButton(rightAnchorPane, "updateBtn");
+        Button delete = FXManager.getButton(rightAnchorPane, "deleteBtn");
+
+        // Search text field
+        TextField txtField = FXManager.getTextField(centerAnchorPane, "enterRefTextField");
+        FXManager.setTextFieldAlphanumericFormatRule(txtField); // We block any non alphanumeric input
+
+        // Labels
+        List<Label> labels = FXManager.labelsCollector(rightAnchorPane, labelIds);
+
+        // Tables
+        TableView<List<String>> contactsTable = FXManager.getTableView(centerAnchorPane, "productsTableView");
+
+        contactsTable.setOnMouseClicked(event -> {
+            if (!contactsTable.getSelectionModel().isEmpty()) {
+
+                // We get the selected row and extract the values
+                List<String> selectedItem = (List<String>) contactsTable.getSelectionModel().getSelectedItem();
+                String ref = selectedItem.get(0);
+                String category = selectedItem.get(1);
+                String brand = selectedItem.get(2);
+                String model = selectedItem.get(3);
+                String description = selectedItem.get(4);
+                String unitPrice = String.valueOf(selectedItem.get(5));
+
+                // We put all the values in one list that we'll use to fill the labels
+                List<String> values = Arrays.asList(ref,category,brand,model,unitPrice,description);
+
+                // We use the extracted values to fill the labels
+                FXManager.catalogLabelsFiller(labels, values);
+
+                // We finally show the right pane
+                rightAnchorPane.setVisible(true);
+
+                // When the update button is clicked
+                update.setOnAction(update_event -> {
+                    this.goToUpdateProductPage(ref);
+                });
+
+                // When the delete button is clicked
+                delete.setOnAction(delete_event -> ProductCrud.deleteProduct(ref));
+           
+        } 
+            
+        });
+
+        // We send an http get request to get all the contacts of the given type
+        List<List<String>> data = ProductDto.getAllProducts();  
+
+        // We populate the table using those collected contacts
+        List<String> columns = FXManager.catalog_columns;
+        FXManager.populateTableView(contactsTable, columns, data);
+
+        // When we press the search button
+        search.setOnAction(event -> {
+            
+            // We collect the entered id (we suppose it's a number)
+            String ref = txtField.getText();
+            System.out.println(ref + "hi");
+
+            if (ref != "") {
+
+                // We get the contact using that id
+                List<String> info = ProductDto.getProductByRef(ref);
+
+                if (info != null) {  // if there is a contact with the given id
+
+                    // We extract each attribute's value from the retrieved contact
+                    String category = info.get(1);
+                    String brand = info.get(2);
+                    String model = info.get(3);
+                    String description = info.get(4);
+                    String unitPrice = info.get(5);
+
+                    // We put all the values in one list that we'll use to fill the labels
+                    List<String> values = Arrays.asList(category, brand, model,description, unitPrice);
+    
+                    // We use the extracted values to fill the labels
+                    FXManager.catalogLabelsFiller(labels, values);
+
+                    // We finally show the right pane
+                    rightAnchorPane.setVisible(true);
+
+                    // When the update button is clicked
+                    update.setOnAction(update_event -> {
+                        this.goToUpdateProductPage(ref);
+                    });
+
+                    // When the delete button is clicked
+                    delete.setOnAction(delete_event -> ProductCrud.deleteProduct(ref));
+                }
+                
+                // if no product corresponds to the provided ref we show an error alert
+                else FXManager.showAlert(AlertType.ERROR, "ERROR", "Product Not Found", ref + " doesn't correspond to any existing product.");
+            }
+
+            // if the text field is empty and the search button is clicked
+            else FXManager.showAlert(AlertType.ERROR, "ERROR", "Empty Reference Field", "Please provide a product reference.");
+        });
+
+        // When the create new button is clicked
+        createNew.setOnAction(event -> {
+            this.goToCreateProductPage();
+            
+        });
+ 
+    }
  
     public void goToCreateContactPage(String contactType) {
 
@@ -204,7 +329,7 @@ public class MainController {
         Button confirm = FXManager.getButton(pane, "confirmBtn");
 
         // We add the corresponding event listener to the button
-        Crud.create_contact(pane, confirm, contactType);
+        ContactCrud.create_contact(pane, confirm, contactType);
         
         // We add the stage info and show it
         stage.setScene(scene);
@@ -226,7 +351,7 @@ public class MainController {
         Button confirm = FXManager.getButton(pane, "confirmBtn");
 
         // We add the corresponding event listener to the button
-        Crud.update_contact(pane, confirm, contactType, contactId, addressId);
+        ContactCrud.update_contact(pane, confirm, contactType, contactId, addressId);
 
         // We add the stage info and show it
         stage.setScene(scene);
@@ -248,13 +373,57 @@ public class MainController {
         Button send = FXManager.getButton(pane, "sendEmailBtn");
 
         // We add the corresponding event listener to the butto
-        Crud.sendEmail(pane, send, receiverEmail);
+        ContactCrud.sendEmail(pane, send, receiverEmail);
 
         // We add the stage info and show it
         stage.setScene(scene);
         stage.setTitle("Email Sending");
         stage.setResizable(false);
         stage.show();
+    }
+
+    public void goToCreateProductPage() {
+
+        // We create the stage that will contain the creation page
+        Stage stage = new Stage();
+        AnchorPane pane = new AnchorPane();
+        Scene scene = new Scene(pane);
+        loadFXML("create_update_catalog_pane.fxml", pane);  // here we load the creation page fxml file
+        
+        // We collect the confirm button from the fxml file
+        Button confirm = FXManager.getButton(pane, "confirmBtn");
+
+        // We add the corresponding event listener to the button
+        ProductCrud.create_product(pane, confirm);;
+        
+        // We add the stage info and show it
+        stage.setScene(scene);
+        stage.setTitle("Create Product");
+        stage.setResizable(false);
+        stage.show();
+
+    }
+
+    public void goToUpdateProductPage(String ref) {
+
+        // We create the stage that will contain the update page
+        Stage stage = new Stage();
+        AnchorPane pane = new AnchorPane();
+        Scene scene = new Scene(pane);
+        loadFXML("create_update_catalog_pane.fxml", pane); // here we load the update page fxml file
+        
+        // We collect the confirm button from the fxml file
+        Button confirm = FXManager.getButton(pane, "confirmBtn");
+
+        // We add the corresponding event listener to the button
+        ProductCrud.update_product(pane, confirm, ref);
+
+        // We add the stage info and show it
+        stage.setScene(scene);
+        stage.setTitle("Update Product");
+        stage.setResizable(false);
+        stage.show();
+
     }
 
     // A method that loads an fxml file into a pane

@@ -1,24 +1,30 @@
 package uiass.gisiba.eia.java.entity.sales;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
-import uiass.gisiba.eia.java.entity.crm.Contact;
+import uiass.gisiba.eia.java.entity.delivery.CustomerDelivery;
+
 
 @Entity
-public class Sale {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public class Sale implements Serializable {
 
     @Id
-    @Column(name="sale_id")
-    private int saleId;
+    @Column(name="sale_ref")
+    private int saleRef;
 
     @OneToOne
-    @Column(name="customer_id")
-    private Contact customer;
+    @JoinColumn(name="delivery_ref")
+    private CustomerDelivery delivery;
 
     @Column(name="sale_date")
     private LocalDate saleDate;
@@ -28,11 +34,11 @@ public class Sale {
 
     // Constructors
 
-    public Sale(int saleId, LocalDate saleDate, double total, Contact customer) {
-        this.saleId = saleId;
+    public Sale(int saleRef, LocalDate saleDate, double total, CustomerDelivery delivery) {
+        this.saleRef = saleRef;
         this.saleDate = saleDate;
         this.total = total;
-        this.customer = customer;
+        this.delivery = delivery;
     }
 
     public Sale() {
@@ -41,20 +47,12 @@ public class Sale {
 
     // Getters - Setters
     
-    public int getSaleId() {
-        return saleId;
+    public int getSaleRef() {
+        return saleRef;
     }
 
-    public void setSaleId(int saleId) {
-        this.saleId = saleId;
-    }
-
-    public Contact getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Contact customer) {
-        this.customer = customer;
+    public void setSaleRef(int saleRef) {
+        this.saleRef = saleRef;
     }
 
     public LocalDate getSaleDate() {

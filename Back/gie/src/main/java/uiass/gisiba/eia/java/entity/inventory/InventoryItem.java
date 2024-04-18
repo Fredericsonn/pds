@@ -14,11 +14,12 @@ import javax.persistence.OneToOne;
 public class InventoryItem {
 
     @Id
+    @Column(name="item_id")
     @GeneratedValue(strategy =GenerationType.IDENTITY)
     private int id;
 
     @OneToOne
-    @JoinColumn(name = "ref")
+    @JoinColumn(name="product_ref")
     private Product product;
 
     @Column(name="quantity")

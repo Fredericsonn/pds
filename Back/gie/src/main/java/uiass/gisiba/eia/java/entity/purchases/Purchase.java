@@ -5,20 +5,27 @@ import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
-import uiass.gisiba.eia.java.entity.crm.Contact;
+import uiass.gisiba.eia.java.entity.crm.Supplier;
+import uiass.gisiba.eia.java.entity.delivery.SupplierDelivery;
 
-@Entity
+
+@Entity(name="Purchase")
 public class Purchase {
 
     @Id
-    @Column(name="purchase_id")
-    private int purchaseId;
+    @Column(name="purchase_ref")
+    private String purchaseRef;
 
     @OneToOne
-    @Column(name="supplier_id")
-    private Contact supplier;
+    @JoinColumn(name="id")
+    private Supplier supplier;
+
+    @OneToOne
+    @JoinColumn(name="delivery_ref")
+    private SupplierDelivery delivery;
 
     @Column(name="purchase_date")
     private LocalDate purchaseDate;
@@ -28,8 +35,8 @@ public class Purchase {
 
     // Constructors
 
-    public Purchase(int purchaseId, LocalDate purchaseDate, double total, Contact supplier) {
-        this.purchaseId = purchaseId;
+    public Purchase(String purchaseRef, Supplier supplier, LocalDate purchaseDate, double total) {
+        this.purchaseRef = purchaseRef;
         this.supplier = supplier;
         this.purchaseDate = purchaseDate;
         this.total = total;
@@ -42,19 +49,19 @@ public class Purchase {
 
     // Getters - Setters
     
-    public int getPurchaseId() {
-        return purchaseId;
+    public String getPurchaseRef() {
+        return purchaseRef;
     }
 
-    public void setPurchaseId(int purchaseId) {
-        this.purchaseId = purchaseId;
+    public void setPurchaseRef(String purchaseRef) {
+        this.purchaseRef = purchaseRef;
     }
 
-    public Contact getSupplier() {
+    public Supplier getSupplier() {
         return supplier;
     }
 
-    public void setSupplier(Contact supplier) {
+    public void setSupplier(Supplier supplier) {
         this.supplier = supplier;
     }
 
@@ -74,6 +81,9 @@ public class Purchase {
         this.total = total;
     }
 
+
+
+    
 
 
     

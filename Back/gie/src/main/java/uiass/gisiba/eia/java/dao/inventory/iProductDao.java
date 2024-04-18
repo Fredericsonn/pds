@@ -20,5 +20,9 @@ public interface iProductDao {
 
     List<Product> getAllProducts();
 
+    List<ProductCatagory> getAllCategories(); 
+
+    List<ProductBrand> getAllBrandsByCategory(ProductCatagory category); 
+
     void updateProduct(String ref, Map<String,Object> columnsNewValues) throws ProductNotFoundException;
 }

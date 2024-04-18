@@ -2,60 +2,45 @@ package uiass.gisiba.eia.java.entity.delivery;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import uiass.gisiba.eia.java.entity.crm.Address;
-import uiass.gisiba.eia.java.entity.crm.Contact;
-import uiass.gisiba.eia.java.entity.sales.Sale;
 
-@Entity
+@Entity(name="Customer_Delivery")
 public class CustomerDelivery extends Delivery {
 
     @OneToOne
-    private Address deliveryAddress;
-
-    @OneToOne
-    private Sale sale;
+    @JoinColumn(name="address_id")
+    private Address delivery_address;
 
     // Constructors
 
-    public CustomerDelivery(String ref, LocalDate pickupDate, LocalDate deliveryDate, Contact stakeholder,
-    
-            Address deliveryAddress, Sale sale) {
+    public CustomerDelivery(String deliveryRef, LocalDate pickupDate, LocalDate deliveryDate, Address delivery_address) {
 
-        super(ref, pickupDate, deliveryDate, stakeholder);
+        super(deliveryRef, pickupDate, deliveryDate);
 
-        this.deliveryAddress = deliveryAddress;
-
-        this.sale = sale;
+        this.delivery_address = delivery_address;
     }
 
     public CustomerDelivery() {
 
     }
 
-    // Getters- Setters
+    // Getters - Setters
 
     public Address getDeliveryAddress() {
-        return deliveryAddress;
+        return delivery_address;
     }
 
-    public void setDeliveryAddress(Address deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
-    }
-
-    public Sale getSale() {
-        return sale;
-    }
-
-    public void setSale(Sale sale) {
-        this.sale = sale;
+    public void setDeliveryAddress(Address delivery_address) {
+        this.delivery_address = delivery_address;
     }
 
     
-    
-
 
     
+
 }

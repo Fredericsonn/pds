@@ -6,12 +6,15 @@ import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -23,18 +26,24 @@ public class FXManager {
         put("Enterprise", Arrays.asList("enterpriseNameLabel","enterpriseTypeLabel","phoneNumberLabel","emailLabel","addressLabel"));
     }};
 
+    public static List<String> catalog_labels_ids = Arrays.asList("categoryLabel","brandModelLabel","unitPriceLabel", "descriptionLabel");
+
     public static Map<String, List<String>> columns_names_per_contact_type = new HashMap<String, List<String>>() {{
         put("Person", Arrays.asList("id","first name","last name","phone number", "email", "address"));
         put("Enterprise", Arrays.asList("id","enterprise name","type","phone number", "email", "address"));
     }};
 
+    public static List<String> catalog_columns = Arrays.asList("ref","category","brand","model","description","unit price");
+
+
+
 
     // Used to collect labels in a pane given a list of ids
-    public static List<Label> labelsCollector(Parent pane, List<String> LabelsIds) {
+    public static List<Label> labelsCollector(Parent pane, List<String> labelsIds) {
 
         List<Label> labels = new ArrayList<Label>();
 
-        for (String id : LabelsIds) {
+        for (String id : labelsIds) {
 
             labels.add(getLabel(pane, id));
         }
@@ -42,10 +51,11 @@ public class FXManager {
         return labels;
     }
 
-    // Used to dynamically set each label's corresponding text given a values list and a contact type
+    // Used to dynamically set each label's corresponding text given a contact values list and a contact type
     public static void contactLabelsFiller(List<Label> labels,  List<String> values, String contactType) {
 
-        labels.get(labels.size() - 1).setWrapText(true);
+        labels.get(labels.size() - 1).setWrapText(true); // Allow the label to have multi-line text
+
         // We use the extracted values to fill the labels
         for (int i = 0 ; i < values.size() ; i++) {
 
@@ -68,10 +78,37 @@ public class FXManager {
         }
     }
 
-    // Used to dynamically populate tables given the data and the contact type  
-    public static void populateTableView(TableView<List<String>> tableView, List<List<String>> data, String contactType) {
+    // Used to dynamically set each label's corresponding text given a product values list 
+    public static void catalogLabelsFiller(List<Label> labels,  List<String> values) {
 
-        List<String> columns = columns_names_per_contact_type.get(contactType);
+        labels.get(labels.size() - 1).setWrapText(true); // Allow the label to have multi-line text
+        
+        // We use the extracted values to fill the labels
+        for (int i = 1 ; i < values.size() ; i++) {
+
+            // this if statement is responsible for filling the brand and model labels 
+            if (i < 2)
+
+                labels.get(i-1).setText(values.get(i)); // if it's another attribute we just set the value directly
+
+            else if (i == 2) { 
+
+                labels.get(i-1).setText(values.get(i) + " " + values.get(i + 1)); // We concatenate the brand and the model
+            }
+
+            else if (i != 3 ) labels.get(i-2).setText(values.get(i));
+
+
+
+            
+            
+            }
+
+        
+    }
+
+    // Used to dynamically populate tables given the data and the contact type  
+    public static void populateTableView(TableView<List<String>> tableView, List<String> columns, List<List<String>> data) {
 
         // Clear existing columns and items
         tableView.getColumns().clear();
@@ -96,6 +133,63 @@ public class FXManager {
         tableView.getItems().addAll(data);
     }
 
+    @SuppressWarnings("unchecked")
+    // Populate a combo box using a list of items
+    public static void populateComboBox(ComboBox comboBox, List<?> itemsList) {
+
+        comboBox.getItems().clear();
+
+        ObservableList items = FXCollections.observableArrayList(itemsList);
+
+        comboBox.setItems(items);
+    }
+
+    // validate a creation :
+    public static boolean textFieldsCreationInputChecker(List<TextField> textFields) {
+
+        for (TextField textField : textFields) {
+
+            if (textField.getText().equals("")) return false;
+
+        }
+
+        return true;
+    }
+
+    public static boolean comboBoxesCreationInputChecker(List<ComboBox> comboBoxes) {
+
+        for (ComboBox comboBox : comboBoxes) {
+
+            if (comboBox.getValue() == null) return false;
+
+        }
+
+        return true;
+    }
+
+    // validate an update :
+    public static boolean textFieldsUpdateInputChecker(List<TextField> textFields) {
+
+        for (TextField textField : textFields) {
+
+            if (!textField.getText().equals("")) return true;
+
+        }
+
+        return false;
+    }
+
+    public static boolean comboBoxesUpdateInputChecker(List<ComboBox> comboBoxes) {
+
+        for (ComboBox comboBox : comboBoxes) {
+
+            if (comboBox.getValue() != null) return true;
+
+        }
+
+        return false;
+    }
+
     // numeric only text field rule
     public static void setTextFieldNumericFormatRule(TextField numericTextField) {
 
@@ -111,6 +205,38 @@ public class FXManager {
             
         }));
     }
+
+    // alphanumeric only text field rule
+    public static void setTextFieldAlphanumericFormatRule(TextField alphanumericTextField) {
+
+        alphanumericTextField.setTextFormatter(new TextFormatter<>(change -> {
+
+            String newText = change.getControlNewText();
+
+            // Allow only alphanumeric characters and a max length of 6
+            if (newText.matches("[a-zA-Z0-9]*") && newText.length() <= 6) { 
+
+                return change;
+
+            } else {
+
+                return null; // Reject the change
+
+            }
+        }));
+    }
+
+    public static void setTextFieldFloatFormatRule(TextField floatTextField) {
+        floatTextField.setTextFormatter(new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("\\d*\\.?\\d*")) { // Allow digits, optional decimal point
+                return change;
+            } else {
+                return null; // Reject the change
+            }
+        }));
+    }
+    
 
     // email only text field rule
     public static void setTextFieldEmailFormatRule(TextField emailTextField) {
@@ -162,5 +288,10 @@ public class FXManager {
     public static TextArea getTextArea(Parent pane, String id) {
 
         return (TextArea) pane.lookup("#" + id);
+    } 
+
+    public static ComboBox getComboBox(Parent pane, String id) {
+
+        return (ComboBox) pane.lookup("#" + id);
     } 
 }

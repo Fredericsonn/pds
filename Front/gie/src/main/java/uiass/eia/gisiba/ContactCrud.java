@@ -13,7 +13,7 @@ import uiass.eia.gisiba.dto.AddressDto;
 import uiass.eia.gisiba.dto.ContactDto;
 import uiass.eia.gisiba.dto.Parser;
 
-public class Crud {
+public class ContactCrud {
 
 
     @SuppressWarnings("unchecked")
@@ -25,7 +25,7 @@ public class Crud {
         List values = new ArrayList<>();
 
         // The list of attributes that reference the text fields' ids :
-        List<String> attributes = Parser.textFieldsReferences;
+        List<String> attributes = Parser.contactTextFieldsReferences;
 
         // We change the prompt text if the contact is an enterprise : 
         TextField firstTextField= FXManager.getTextField(pane, "firstTextField");
@@ -52,7 +52,7 @@ public class Crud {
         // We extract the data from the text fields when the button is clicked
         button.setOnAction(event -> {
 
-            if (validCreationChecker(textFields)) {
+            if (FXManager.textFieldsCreationInputChecker(textFields)) {
 
                 attributes.forEach(attribute -> {
 
@@ -93,7 +93,7 @@ public class Crud {
     public static void update_contact(Parent pane, Button button, String contactType, int contactId, int addressId) {
 
         // lists containing each object's attributes (excluding ids) :
-        List<String> contactAttributes = Parser.textFieldsReferences;
+        List<String> contactAttributes = Parser.contactTextFieldsReferences;
 
         List<String> addressAttributes = Parser.update_address_attributes;
 
@@ -127,7 +127,7 @@ public class Crud {
         // We extract the data from the text fields when the button is clicked
         button.setOnAction(event -> {
 
-            if (validUpdateChecker(textFields)) {
+            if (FXManager.textFieldsUpdateInputChecker(textFields)) {
 
                 contactAttributes.forEach(attribute -> {
 
@@ -225,29 +225,7 @@ public class Crud {
         });
     }
 
-    // validate a creation :
-    public static boolean validCreationChecker(List<TextField> textFields) {
 
-        for (TextField textField : textFields) {
-
-            if (textField.getText().equals("")) return false;
-
-        }
-
-        return true;
-    }
-
-    // validate an update :
-    public static boolean validUpdateChecker(List<TextField> textFields) {
-
-        for (TextField textField : textFields) {
-
-            if (!textField.getText().equals("")) return true;
-
-        }
-
-        return false;
-    }
 
 
 }

@@ -1,5 +1,7 @@
 package uiass.gisiba.eia.java.entity.inventory;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -7,11 +9,11 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 
 @MappedSuperclass
-public class Order {
+public class Order implements Serializable {
 
     @Id
     @OneToOne
-    @JoinColumn(name = "ref")
+    @JoinColumn(name = "product_ref")
     private Product product;
 
     @Column(name="quantity")

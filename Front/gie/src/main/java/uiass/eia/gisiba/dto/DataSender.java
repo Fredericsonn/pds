@@ -136,7 +136,7 @@ public class DataSender {
 
         } catch (IOException e) {
 
-            return "IGNORE IT"; 
+            return e.getMessage(); 
         }
     }
     

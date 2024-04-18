@@ -11,7 +11,8 @@ import javax.persistence.Id;
 public class Product {
 
     @Id
-    private String ref;
+    @Column(name="product_ref")
+    private String productRef;
 
     @Enumerated(EnumType.STRING)
     private ProductCatagory category;
@@ -30,8 +31,8 @@ public class Product {
 
     // Constructors
 
-    public Product(String ref, ProductCatagory category, ProductBrand brand, String model, String description, double unitPrice) {
-        this.ref = ref;
+    public Product(String productRef, ProductCatagory category, ProductBrand brand, String model, String description, double unitPrice) {
+        this.productRef = productRef;
         this.category = category;
         this.brand = brand;
         this.model = model;
@@ -45,12 +46,12 @@ public class Product {
 
     // Getters - Setters
 
-    public String getRef() {
-        return ref;
+    public String getProductRef() {
+        return productRef;
     }
 
-    public void setRef(String ref) {
-        this.ref = ref;
+    public void setProductRef(String productRef) {
+        this.productRef = productRef;
     }
 
     public ProductCatagory getCategory() {
@@ -96,7 +97,7 @@ public class Product {
     @Override
     public String toString() {
 
-        return "ref : " + this.ref + ", category : " + this.category  + ", model : "  + this.model +  ", brand : " + this.model + 
+        return "ref : " + this.productRef + ", category : " + this.category  + ", model : "  + this.model +  ", brand : " + this.model + 
         
          ", description : " + this.description + ", unit price: " + this.unitPrice;
     }

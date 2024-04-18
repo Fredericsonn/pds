@@ -4,6 +4,7 @@ module uiass.eia.gisiba {
     requires okhttp3;
     requires com.google.gson;
     requires okio;
+    requires javafx.base;
 
 
     opens uiass.eia.gisiba to javafx.fxml;

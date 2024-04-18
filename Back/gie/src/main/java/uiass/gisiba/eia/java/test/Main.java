@@ -1,24 +1,21 @@
 package uiass.gisiba.eia.java.test;
 
-import java.net.URI;
-import java.time.LocalDate;
+
 import java.util.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 
-import org.hibernate.Hibernate;
 
 import uiass.gisiba.eia.java.controller.crm.AddressController;
 import uiass.gisiba.eia.java.controller.crm.ContactController;
-import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
-import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
-import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
-import uiass.gisiba.eia.java.entity.crm.Address;
-import uiass.gisiba.eia.java.entity.inventory.Product;
+import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
+import uiass.gisiba.eia.java.dao.inventory.ProductDao;
+import uiass.gisiba.eia.java.dao.inventory.iProductDao;
 import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
 import uiass.gisiba.eia.java.entity.inventory.ProductCatagory;
 import uiass.gisiba.eia.java.service.Service;
+import uiass.gisiba.eia.java.service.iService;
+
+
 
 public class Main {
 
@@ -28,18 +25,40 @@ public class Main {
     public static void main(String[] args) {
 
 
-        ContactController.getContactByIdController();
-        ContactController.getContactByNameController();
-        ContactController.getAllContactsByTypeController();
-        ContactController.getContactByAddressIdController();
 
-        ContactController.postContactController();
-        ContactController.updateContactController();
-        ContactController.deleteContactController();
+        iService service = new Service();
 
-        AddressController.updateAddressController();
+        iProductDao ipdao = new ProductDao();
 
-        ContactController.postEmailController();
+        //service.addProduct("hx0b6f", ProductCatagory.LAPTOP, ProductBrand.Dell, "Inspiron", "tech words tech words", 6000);
+
+        /*try {
+            service.getProductById("hx0b6f");
+        } catch (ProductNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }*/
+
+        //System.out.println(service.getAllProducts());
+
+        /*Map<String,Object> map = new HashMap<String,Object>();
+
+        map.put("description", "Bla Bla");
+
+        try {
+            service.updateProduct("hx0b6f", map);
+        } catch (ProductNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }*/
+
+        /*try {
+            service.deleteProduct("hx0b6f");
+        } catch (ProductNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }*/
+
 
         
          

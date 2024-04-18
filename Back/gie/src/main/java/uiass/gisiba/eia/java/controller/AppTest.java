@@ -2,6 +2,7 @@ package uiass.gisiba.eia.java.controller;
 
 import uiass.gisiba.eia.java.controller.crm.AddressController;
 import uiass.gisiba.eia.java.controller.crm.ContactController;
+import uiass.gisiba.eia.java.controller.inventory.ProductController;
 
 public class AppTest {
 
@@ -19,6 +20,12 @@ public class AppTest {
         AddressController.updateAddressController();
 
         ContactController.postEmailController();
+
+        ProductController.getAllProducts();
+        ProductController.getProductByRef();
+        ProductController.deleteProductController();
+        ProductController.getAllCategories();
+        ProductController.getAllBrandsByCategory();
         
     }
 }

@@ -17,13 +17,22 @@
                   <Font name="Franklin Gothic Medium" size="22.0" />
                </font>
             </Label>
-            <SplitMenuButton fx:id="crmSplitMenu" layoutX="14.0" layoutY="85.0" mnemonicParsing="false" text="CRM">
+            <SplitMenuButton fx:id="clientsSplitMenu" layoutX="14.0" layoutY="85.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="130.0" text="Clients">
               <items>
-                  <MenuItem fx:id="Person" mnemonicParsing="false" onAction="#loadPersonPane" text="Persons" />
-                  <MenuItem fx:id="Enterprise" mnemonicParsing="false" onAction="#loadEnterprisePane" text="Enterprises" />
+                  <MenuItem fx:id="personsSplitMenuItem" mnemonicParsing="false" onAction="#loadPersonPane" text="Persons" />
+                  <MenuItem fx:id="enterprisesSplitMenuItem" mnemonicParsing="false" onAction="#loadEnterprisePane" text="Enterprises" />
               </items>
                <font>
-                  <Font name="Georgia" size="15.0" />
+                  <Font name="Georgia" size="16.0" />
+               </font>
+            </SplitMenuButton>
+            <SplitMenuButton fx:id="inventorySplitMenu" layoutX="14.0" layoutY="152.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="130.0" text="Inventory">
+              <items>
+                <MenuItem fx:id="catalogSplitMenuItem" mnemonicParsing="false" onAction="#loadProductPane" text="Catalog" />
+                <MenuItem fx:id="inventorySplitMenuItem" mnemonicParsing="false" text="Inventory" />
+              </items>
+               <font>
+                  <Font name="Georgia" size="16.0" />
                </font>
             </SplitMenuButton>
          </children>

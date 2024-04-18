@@ -4,23 +4,31 @@ import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
-
 import uiass.gisiba.eia.java.dao.crm.AddressDao;
 import uiass.gisiba.eia.java.dao.crm.ContactDao;
+import uiass.gisiba.eia.java.dao.crm.iAddressDao;
+import uiass.gisiba.eia.java.dao.crm.iContactDao;
 import uiass.gisiba.eia.java.dao.crm.EmailSender;
 import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
 import uiass.gisiba.eia.java.dao.exceptions.NoContactsFoundInCountry;
+import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
+import uiass.gisiba.eia.java.dao.inventory.ProductDao;
+import uiass.gisiba.eia.java.dao.inventory.iProductDao;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
 import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
+import uiass.gisiba.eia.java.entity.inventory.Product;
+import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
+import uiass.gisiba.eia.java.entity.inventory.ProductCatagory;
 
 public class Service implements iService {
 
-    private ContactDao cdao = new ContactDao();
-    private AddressDao adao = new AddressDao();
+    private iContactDao cdao = new ContactDao();
+    private iAddressDao adao = new AddressDao();
+    private iProductDao pdao = new ProductDao();
     private EmailSender es = new EmailSender();
 
 /////////////////////////////////////////////////////// ADDRESS ////////////////////////////////////////////////////////////////
@@ -138,6 +146,56 @@ public class Service implements iService {
 
         es.sendEmail(email, subject, body);
     }
+
+/////////////////////////////////////////////////////// PRODUCT ////////////////////////////////////////////////////////////////
+
+    @Override
+    public void addProduct(String ref, ProductCatagory category, ProductBrand brand, String model, String description,
+
+            double unitPrice) {
+
+        pdao.addProduct(ref, category, brand, model, description, unitPrice);
+    }
+
+    @Override
+    public Product getProductById(String ref) throws ProductNotFoundException {
+
+        return pdao.getProductById(ref);
+    }
+
+    @Override
+    public void deleteProduct(String ref) throws ProductNotFoundException {
+
+        pdao.deleteProduct(ref);
+    }
+
+    @Override
+    public List<Product> getAllProducts() {
+
+        return pdao.getAllProducts();
+    }
+
+    @Override
+    public List<ProductCatagory> getAllCategories() {
+
+        return pdao.getAllCategories();
+
+    }
+
+    @Override
+    public List<ProductBrand> getAllBrandsByCategory(ProductCatagory category) {
+
+        return pdao.getAllBrandsByCategory(category);
+    }
+
+    @Override
+    public void updateProduct(String ref, Map<String, Object> columnsNewValues) throws ProductNotFoundException {
+
+        pdao.updateProduct(ref, columnsNewValues);
+    }
+
+
+    
 
 
 

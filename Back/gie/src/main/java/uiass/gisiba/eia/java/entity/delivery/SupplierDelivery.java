@@ -2,58 +2,45 @@ package uiass.gisiba.eia.java.entity.delivery;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import uiass.gisiba.eia.java.entity.crm.Address;
-import uiass.gisiba.eia.java.entity.crm.Contact;
-import uiass.gisiba.eia.java.entity.purchases.Purchase;
 
+@Entity(name="Supplier_Delivery")
 public class SupplierDelivery extends Delivery {
 
     @OneToOne
-    private Address pickupAddress;
-
-    @OneToOne
-    private Purchase purchase;
+    @JoinColumn(name="address_id")
+    private Address pickup_address;
 
     // Constructors
 
-    public SupplierDelivery(String ref, LocalDate pickupDate, LocalDate deliveryDate, Contact stakeholder,
-    
-            Address pickupAddress, Purchase purchase) {
+    public SupplierDelivery(String deliveryRef, LocalDate pickupDate, LocalDate deliveryDate, Address pickup_address) {
 
-        super(ref, pickupDate, deliveryDate);
+        super(deliveryRef, pickupDate, deliveryDate);
 
-        this.pickupAddress = pickupAddress;
-
-        this.purchase = purchase;
+        this.pickup_address = pickup_address;
     }
 
     public SupplierDelivery() {
 
     }
 
-    // Getters- Setters
-
+    // Getters - Setters
+    
     public Address getPickupAddress() {
-        return pickupAddress;
+        return pickup_address;
     }
 
-    public void setPickupAddress(Address pickupAddress) {
-        this.pickupAddress = pickupAddress;
-    }
-
-    public Purchase getPurchase() {
-        return purchase;
-    }
-
-    public void setPurchase(Purchase purchase) {
-        this.purchase = purchase;
+    public void setPickupAddress(Address pickup_address) {
+        this.pickup_address = pickup_address;
     }
 
     
 
- 
     
-    
+
 }
