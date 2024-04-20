@@ -6,3 +6,6 @@ pour executer le jar du front : java --module-path javafx-sdk-22\lib --add-modul
 
 vous pouvez importer le fichier dump pour avoir du data a tester sur votre machine
 
+pour l'auto refresh pour visualiser les modifications on a pas encore programmer un button refresh mais il suffit de cliquer une deuxieme fois sur le button CRM -> Person ou Enterprise
+
+ca depend du type contact que vous avez choisis et vous allez voyer les nouvelle modifications.
