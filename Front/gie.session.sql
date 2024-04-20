@@ -1,1 +1,1 @@
-select * from person where id > 1000
+select * from address where address_id = 952

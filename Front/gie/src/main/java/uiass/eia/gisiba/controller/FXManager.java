@@ -1,4 +1,4 @@
-package uiass.eia.gisiba;
+package uiass.eia.gisiba.controller;
 
 import java.util.*;
 

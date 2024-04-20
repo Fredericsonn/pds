@@ -1,4 +1,4 @@
-package uiass.eia.gisiba;
+package uiass.eia.gisiba.crud;
 
 
 import java.util.*;
@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import uiass.eia.gisiba.controller.FXManager;
 import uiass.eia.gisiba.dto.AddressDto;
 import uiass.eia.gisiba.dto.ContactDto;
 import uiass.eia.gisiba.dto.Parser;
@@ -158,13 +159,21 @@ public class ContactCrud {
     
                 // We send http put requests to update the contact or the address :
                 String contactUpdateResult = ContactDto.updateContact(contactId, contactType, contactJson);
-                AddressDto.updateAddress(addressId, addressJson);
+                String addressUpdateResult = AddressDto.updateAddress(addressId, addressJson);
     
                 // We display the update result :
-                if (contactUpdateResult.equals("Contact updated successfully."))
+                if (contactUpdateResult.equals("Contact updated successfully.") || 
+                
+                addressUpdateResult.equals("Address updated successfully."))
+
                 FXManager.showAlert(AlertType.CONFIRMATION, "Update Status", "Result :", contactUpdateResult);
     
-                else FXManager.showAlert(AlertType.ERROR, "Update Status", "Result :", contactUpdateResult);
+                else if (!contactUpdateResult.equals("Address Updated Successfully.")) {
+
+                FXManager.showAlert(AlertType.ERROR, "Update Status", "Result :", contactUpdateResult);
+
+                }
+
                 ((Stage) button.getScene().getWindow()).close(); // We close the update page after confirming the update
             }
 

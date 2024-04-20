@@ -7,11 +7,14 @@ import java.util.*;
 
 import uiass.gisiba.eia.java.controller.crm.AddressController;
 import uiass.gisiba.eia.java.controller.crm.ContactController;
+import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.dao.inventory.ProductDao;
 import uiass.gisiba.eia.java.dao.inventory.iProductDao;
 import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
-import uiass.gisiba.eia.java.entity.inventory.ProductCatagory;
+import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
 import uiass.gisiba.eia.java.service.Service;
 import uiass.gisiba.eia.java.service.iService;
 
@@ -27,8 +30,6 @@ public class Main {
 
 
         iService service = new Service();
-
-        iProductDao ipdao = new ProductDao();
 
         //service.addProduct("hx0b6f", ProductCatagory.LAPTOP, ProductBrand.Dell, "Inspiron", "tech words tech words", 6000);
 
@@ -59,9 +60,16 @@ public class Main {
             e.printStackTrace();
         }*/
 
+        Map<String,Object> map = new HashMap<String,Object>();
 
-        
-         
+        map.put("type", "SAS");
+
+        try {
+            service.updateContact(5, map, "Enterprise");
+        } catch (ContactNotFoundException | InvalidContactTypeException e) {
+
+            e.printStackTrace();
+        }
 
 
         

@@ -1,23 +1,23 @@
-package uiass.eia.gisiba;
+package uiass.eia.gisiba.controller;
 
 import java.io.IOException;
 import java.util.*;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import uiass.eia.gisiba.crud.ContactCrud;
+import uiass.eia.gisiba.crud.ProductCrud;
 import uiass.eia.gisiba.dto.AddressDto;
 import uiass.eia.gisiba.dto.ContactDto;
 import uiass.eia.gisiba.dto.ProductDto;
@@ -48,8 +48,8 @@ public class MainController {
     // A generic fx method that controls the crm interface depending on the contact type
     private void loadContactPane(String contactType) {
 
-        loadFXML("contact_center_pane.fxml", centerAnchorPane);
-        loadFXML(contactType.toLowerCase() + "_right_pane.fxml", rightAnchorPane);
+        loadFXML("/uiass/eia/gisiba/contact_center_pane.fxml", centerAnchorPane);
+        loadFXML("/uiass/eia/gisiba/" + contactType.toLowerCase() + "_right_pane.fxml", rightAnchorPane);
 
         rightAnchorPane.setVisible(false);
 
@@ -199,8 +199,8 @@ public class MainController {
     // An fx method that controls the catalog 
     private void loadProductPane() {
 
-        loadFXML("catalog_center_pane.fxml", centerAnchorPane);
-        loadFXML("catalog_right_pane.fxml", rightAnchorPane);
+        loadFXML("/uiass/eia/gisiba/catalog_center_pane.fxml", centerAnchorPane);
+        loadFXML("/uiass/eia/gisiba/catalog_right_pane.fxml", rightAnchorPane);
 
         rightAnchorPane.setVisible(false);
 
@@ -267,7 +267,6 @@ public class MainController {
             
             // We collect the entered id (we suppose it's a number)
             String ref = txtField.getText();
-            System.out.println(ref + "hi");
 
             if (ref != "") {
 
@@ -316,14 +315,15 @@ public class MainController {
         });
  
     }
- 
+
+    // A method that display the contact creation pane
     public void goToCreateContactPage(String contactType) {
 
         // We create the stage that will contain the creation page
         Stage stage = new Stage();
         AnchorPane pane = new AnchorPane();
         Scene scene = new Scene(pane);
-        loadFXML("create_update_person_page.fxml", pane);  // here we load the creation page fxml file
+        loadFXML("/uiass/eia/gisiba/create_update_person_page.fxml", pane);  // here we load the creation page fxml file
         
         // We collect the confirm button from the fxml file
         Button confirm = FXManager.getButton(pane, "confirmBtn");
@@ -339,13 +339,14 @@ public class MainController {
 
     }
 
+    // A method that display the contact update pane
     public void goToUpdateContactPage(String contactType, int contactId, int addressId) {
 
         // We create the stage that will contain the update page
         Stage stage = new Stage();
         AnchorPane pane = new AnchorPane();
         Scene scene = new Scene(pane);
-        loadFXML("create_update_person_page.fxml", pane); // here we load the update page fxml file
+        loadFXML("/uiass/eia/gisiba/create_update_person_page.fxml", pane); // here we load the update page fxml file
         
         // We collect the confirm button from the fxml file
         Button confirm = FXManager.getButton(pane, "confirmBtn");
@@ -361,13 +362,14 @@ public class MainController {
 
     }
 
+    // A method that display the email sending pane
     public void goToSendEmailPage(String receiverEmail) {
 
         // We create the stage that will contain the email sending page
         Stage stage = new Stage();
         AnchorPane pane = new AnchorPane();
         Scene scene = new Scene(pane);
-        loadFXML("send_email_pane.fxml", pane); // here we load the email sending page fxml file
+        loadFXML("/uiass/eia/gisiba/send_email_pane.fxml", pane); // here we load the email sending page fxml file
 
         // We collect the send button from the fxml file
         Button send = FXManager.getButton(pane, "sendEmailBtn");
@@ -382,13 +384,14 @@ public class MainController {
         stage.show();
     }
 
+    // A method that display the product creation pane
     public void goToCreateProductPage() {
 
         // We create the stage that will contain the creation page
         Stage stage = new Stage();
         AnchorPane pane = new AnchorPane();
         Scene scene = new Scene(pane);
-        loadFXML("create_update_catalog_pane.fxml", pane);  // here we load the creation page fxml file
+        loadFXML("/uiass/eia/gisiba/create_update_catalog_pane.fxml", pane);  // here we load the creation page fxml file
         
         // We collect the confirm button from the fxml file
         Button confirm = FXManager.getButton(pane, "confirmBtn");
@@ -404,13 +407,14 @@ public class MainController {
 
     }
 
+    // A method that display the product update pane
     public void goToUpdateProductPage(String ref) {
 
         // We create the stage that will contain the update page
         Stage stage = new Stage();
         AnchorPane pane = new AnchorPane();
         Scene scene = new Scene(pane);
-        loadFXML("create_update_catalog_pane.fxml", pane); // here we load the update page fxml file
+        loadFXML("/uiass/eia/gisiba/create_update_catalog_pane.fxml", pane); // here we load the update page fxml file
         
         // We collect the confirm button from the fxml file
         Button confirm = FXManager.getButton(pane, "confirmBtn");

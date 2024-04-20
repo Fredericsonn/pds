@@ -83,8 +83,8 @@ public class ContactDto {
 
     public static String updateContact(int id, String contactType, String json) {
 
-        if (json != "") return DataSender.putDataSender(json, "contacts/" + contactType + "/put" + "/" + id );
+        if (json != null) return DataSender.putDataSender(json, "contacts/" + contactType + "/put" + "/" + id );
 
-        return "Please provide some new values to update.";
+        return "Address Updated Successfully.";
     }
 }

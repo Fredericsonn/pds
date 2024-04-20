@@ -54,8 +54,8 @@ public class AddressDto {
 
     public static String updateAddress(int id, String json) {
 
-        if (json != "") return DataSender.putDataSender(json, "addresses/put/" + id );
+        if (json != null) return DataSender.putDataSender(json, "addresses/put/" + id );
 
-        return "Please enter the new values to update";
+        return "no Update";
     }
 }

@@ -1,4 +1,4 @@
-package uiass.eia.gisiba;
+package uiass.eia.gisiba.crud;
 
 import java.util.*;
 
@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import uiass.eia.gisiba.controller.FXManager;
 import uiass.eia.gisiba.dto.Parser;
 import uiass.eia.gisiba.dto.ProductDto;
 public class ProductCrud {
@@ -77,16 +78,20 @@ public class ProductCrud {
     
                 // We dynamically generate the corresponding json :
                 String json = Parser.jsonGenerator(map);
+
+                System.out.println(json);
     
                 // We use the json to send an http post request to the server to create the new product with the entered values :
                 String productCreationResult = ProductDto.postProduct(json);
+
+                System.out.println(productCreationResult);
     
                 // We display the creation result :
                 if (productCreationResult.equals("Product created successfully."))
 
                     FXManager.showAlert(AlertType.CONFIRMATION, "Confirmation", "Creation Status  :", productCreationResult);
     
-                else FXManager.showAlert(AlertType.ERROR, "ERROR", "Creation Status  :", productCreationResult);
+                else FXManager.showAlert(AlertType.ERROR, "ERROR", "Creation Status  :", "Internal Server Error");
     
                 ((Stage) button.getScene().getWindow()).close(); // We close the create page after confirming the creation
             
@@ -115,7 +120,7 @@ public class ProductCrud {
 
 
         // We put all the text fields in a list to check if all the fields got input :
-        List<TextField> textFields = Arrays.asList(modelTextField,unitPriceTextField,descriptionTextField);
+        List<TextField> textFields = Arrays.asList(modelTextField,descriptionTextField,unitPriceTextField);
 
         // We put all the combo boxes in a list to check if an item was selected :
         List<ComboBox> comboBoxes = Arrays.asList(categoryComboBox,brandComboBox);
@@ -133,62 +138,51 @@ public class ProductCrud {
             
                 // Populate the brandComboBox with the brandsList
                 FXManager.populateComboBox(brandComboBox, brandsList);
+
             }
         });
 
         // We extract the data from the text fields when the button is clicked
         button.setOnAction(event -> {
 
-            if (FXManager.textFieldsUpdateInputChecker(textFields) && 
+            if (FXManager.textFieldsUpdateInputChecker(textFields) ||
             
             FXManager.comboBoxesUpdateInputChecker(comboBoxes)) {
 
                 String category = String.valueOf(categoryComboBox.getValue());
 
-                brandComboBox.setOnAction(brandEvent -> {
-                   
-                    if (category != "null") {
+                String brand = String.valueOf(brandComboBox.getValue());
 
-                        List<String> brandsList = ProductDto.getAllBrandsByCategory(category);
+                values.add(category); values.add(brand);
 
-                        FXManager.populateComboBox(brandComboBox, brandsList);
+                textFields.forEach(textField -> {
 
-                        String brand = String.valueOf(brandComboBox.getValue());
-
-                        values.add(category); values.add(brand);
-
-                        textFields.forEach(textField -> {
-
-                            values.add(String.valueOf(textField.getText()));
-                        });
-
-                        // We generate the columns - values map using the values list :
-                        Map<String,Object> map = Parser.productUpdateMapGenerator(values);
-    
-                        // We dynamically generate the corresponding json :
-                        String json = Parser.jsonGenerator(map);
-    
-                        // We use the json to send an http post request to the server to create the new product with the entered values :
-                        String productCreationResult = ProductDto.updateProduct(ref,json);
-    
-                        // We display the creation result :
-                        if (productCreationResult.equals("Product Updated successfully."))
-
-                        FXManager.showAlert(AlertType.CONFIRMATION, "Confirmation", "Update Status  :", productCreationResult);
-    
-                        else FXManager.showAlert(AlertType.ERROR, "ERROR", "Update Status  :", productCreationResult);
-    
-                        ((Stage) button.getScene().getWindow()).close(); // We close the create page after confirming the creation
-                   }
-
-                   // When the user click tries to select a brand before the category
-                   else FXManager.showAlert(AlertType.ERROR, "ERROR", "No category was selected :", "Please select a category first.");
+                    values.add(String.valueOf(textField.getText()));
                 });
+
+                // We generate the columns - values map using the values list :
+                Map<String,Object> map = Parser.productUpdateMapGenerator(values);
+                System.out.println(map);
+    
+                // We dynamically generate the corresponding json :
+                String json = Parser.jsonGenerator(map);
+                    
+                // We use the json to send an http post request to the server to create the new product with the entered values :
+                String productCreationResult = ProductDto.updateProduct(ref,json);
+                    
+                // We display the creation result :
+                if (productCreationResult.equals("Product Updated successfully."))
+                
+                FXManager.showAlert(AlertType.CONFIRMATION, "Confirmation", "Update Status  :", productCreationResult);
+                    
+                else FXManager.showAlert(AlertType.ERROR, "ERROR", "Update Status  :", productCreationResult);
+                    
+                ((Stage) button.getScene().getWindow()).close(); // We close the create page after confirming the creation
             
             }
 
             // When the user clicks on CONFIRM before provididing all the necessary data 
-            else FXManager.showAlert(AlertType.ERROR, "ERROR", "Missing Data", "Please enter all the required information.");
+            else FXManager.showAlert(AlertType.ERROR, "ERROR", "Missing Data", "Please provide some new values for the update");
         });
     }
 
@@ -205,4 +199,5 @@ public class ProductCrud {
         else FXManager.showAlert(AlertType.ERROR, "ERROR", "Deletion Status :", contactDeletionResult);
 
     }
+    
 }

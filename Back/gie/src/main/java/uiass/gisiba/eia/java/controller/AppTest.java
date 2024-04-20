@@ -28,6 +28,8 @@ public class AppTest {
         ProductController.deleteProductController();
         ProductController.getAllCategories();
         ProductController.getAllBrandsByCategory();
+        ProductController.updateproductController();
+        ProductController.postproductController();
         
     }
 }
