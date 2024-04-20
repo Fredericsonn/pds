@@ -1,6 +1,5 @@
 package uiass.gisiba.eia.java.controller;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -10,12 +9,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
-import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
 import uiass.gisiba.eia.java.entity.crm.Person;
 import uiass.gisiba.eia.java.entity.inventory.Product;
 import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
