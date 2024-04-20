@@ -1,0 +1,8 @@
+Ce liverable contrient les exigences du sprint 1 "CRM" et la partie de la gestion des produits du sprint 2 "Inventory Management"
+
+
+pour executer le jar du front : java --module-path javafx-sdk-22\lib --add-modules javafx.controls,javafx.fxml -jar gie-1.0-SNAPSHOT.jar
+
+
+vous pouvez importer le fichier dump pour avoir du data a tester sur votre machine
+

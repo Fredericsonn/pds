@@ -1,1 +1,0 @@
-select * from address where address_id = 952
