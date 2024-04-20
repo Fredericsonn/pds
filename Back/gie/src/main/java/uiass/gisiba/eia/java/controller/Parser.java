@@ -19,7 +19,7 @@ import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
 import uiass.gisiba.eia.java.entity.crm.Person;
 import uiass.gisiba.eia.java.entity.inventory.Product;
 import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
-import uiass.gisiba.eia.java.entity.inventory.ProductCatagory;
+import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
 
 public class Parser {
  
@@ -33,45 +33,45 @@ public class Parser {
         put("Enterprise", Arrays.asList("enterprise_name","type","phone_number","email"));
     }};
 
-    public static List<String> address_columns = Arrays.asList("house_number","neighborhood","city","zip_code","region","country");
+    public static List<String> address_columns = Arrays.asList("houseNumber","neighborhood","city","zipCode","region","country");
 
-    private static List<String> addressAttributes = Arrays.asList("addressId","houseNumber","neighborhood","city","zipCode","region","country");
+    public static List<String> addressAttributes = Arrays.asList("addressId","houseNumber","neighborhood","city","zipCode","region","country");
 
-    private static List<String> productAttributes = Arrays.asList("product_ref","category","brand","model","description","unitPrice");
+    public static List<String> productAttributes = Arrays.asList("productRef","category","brand","model","description","unitPrice");
 
-    private static List<String> product_columns = Arrays.asList("product_ref","category","brand","model","description","unit_price");
+    public static List<String> product_columns = Arrays.asList("category","brand","model","description","unit_price");
 
-        // Columns filter 
-        public static Map<String, Object> mapFormater(List<String> columns, List values) {
+    // Columns filter 
+    public static Map<String, Object> mapFormater(List<String> columns, List values) {
 
-            Map<String, Object> columns_new_values = new HashMap<String, Object>();
+        Map<String, Object> columns_new_values = new HashMap<String, Object>();
     
-            for (int i = 0; i < columns.size() ; i++) {
+        for (int i = 0; i < columns.size() ; i++) {
     
-                String column = columns.get(i);
+            String column = columns.get(i);
     
-                Object value = values.get(i);
+            Object value = values.get(i);
     
-                if (column.equals("houseNumber")) {
-    
-                    if ((int) value != 0) columns_new_values.put(column, value);
-                }
-    
-                else {
+            if (column.equals("houseNumber")) {
                     
-                    if (value != null) {
-    
-                        columns_new_values.put(column,value);
-                    }
-                }
+                if ((int) value != 0) columns_new_values.put(column, value);
             }
     
-            return columns_new_values;
+            else {
+                    
+                if (value != null) {
+    
+                    columns_new_values.put(column,value);
+                }
+            }
         }
     
-        @SuppressWarnings("unchecked")
-        // A method that collects contact data from a json :
-        public static List contactValuesCollector(Gson gson, String body, String contactType) {
+        return columns_new_values;
+    }
+    
+    @SuppressWarnings("unchecked")
+    // A method that collects contact data from a json :
+    public static List contactValuesCollector(Gson gson, String body, String contactType) {
 
         List values = new ArrayList<>();
 
@@ -91,13 +91,6 @@ public class Parser {
 
         // we put the collected contact values in the contact values list :
         values.addAll(Arrays.asList(first_or_enterprise_name, last_name_or_enterprise_type, phoneNumber, email));
-
-        // We adapt the second value type wether it's the String last_name for Person or the Enumeration type for Enterprise :
-        if (last_name_or_enterprise_type != null) {
-
-                values.set(1, contactType.equals("Person") ? last_name_or_enterprise_type : EntrepriseType.valueOf(last_name_or_enterprise_type));
-
-        }
 
         return values;
     }
@@ -120,6 +113,27 @@ public class Parser {
         String country = Parser.collectString(address, "country");
 
         return Arrays.asList(houseNumber,neighborhood,city,zipCode,region,country);
+
+    }
+
+    // A method that address contact data from a json :
+    public static List productValuesCollector(Gson gson, String body) {
+
+        List values = new ArrayList<>();
+
+        JsonObject product = gson.fromJson(body, JsonObject.class);
+
+        String category = Parser.collectString(product, "category");
+
+        String brand = Parser.collectString(product, "brand");
+
+        String model = Parser.collectString(product, "model");
+
+        String description = Parser.collectString(product, "description");
+
+        String unitPrice = Parser.collectString(product, "unitPrice");
+
+        return Arrays.asList(category,brand,model,description,unitPrice);
 
     }
 
@@ -313,7 +327,7 @@ public static Product parseProduct(String responseBody) {
 
     double unitPrice = productDoubleInfo.get(0);
 
-    ProductCatagory category = ProductCatagory.valueOf(categoryString);
+    ProductCategory category = ProductCategory.valueOf(categoryString);
 
     ProductBrand brand = ProductBrand.valueOf(brandString);
 

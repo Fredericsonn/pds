@@ -15,7 +15,7 @@ import uiass.gisiba.eia.java.entity.crm.Contact;
 import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
 import uiass.gisiba.eia.java.entity.inventory.Product;
 import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
-import uiass.gisiba.eia.java.entity.inventory.ProductCatagory;
+import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
 
 public interface iService {
 
@@ -62,7 +62,7 @@ public interface iService {
 
 /////////////////////////////////////////////////////// PRODUCT ////////////////////////////////////////////////////////////////
 
-    void addProduct(String ref, ProductCatagory category, ProductBrand brand, String model, 
+    void addProduct(String ref, ProductCategory category, ProductBrand brand, String model, 
     
     String description, double unitPrice);
 
@@ -72,9 +72,9 @@ public interface iService {
 
     List<Product> getAllProducts();
 
-    List<ProductCatagory> getAllCategories(); 
+    List<ProductCategory> getAllCategories(); 
 
-    List<ProductBrand> getAllBrandsByCategory(ProductCatagory category); 
+    List<ProductBrand> getAllBrandsByCategory(ProductCategory category); 
 
     void updateProduct(String ref, Map<String,Object> columnsNewValues) throws ProductNotFoundException;
 }

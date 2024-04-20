@@ -58,7 +58,7 @@ public class ProductDto {
     // Create a new product :
     public static String postProduct(String json) {
 
-        return DataSender.postDataSender(json, "products/post");
+        return DataSender.postDataSender(json, "products");
     }
 
 //////////////////////////////////////////////////// Delete METHOD /////////////////////////////////////////////////////////////

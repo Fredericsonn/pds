@@ -22,7 +22,7 @@ import uiass.gisiba.eia.java.entity.crm.Contact;
 import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
 import uiass.gisiba.eia.java.entity.inventory.Product;
 import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
-import uiass.gisiba.eia.java.entity.inventory.ProductCatagory;
+import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
 
 public class Service implements iService {
 
@@ -150,7 +150,7 @@ public class Service implements iService {
 /////////////////////////////////////////////////////// PRODUCT ////////////////////////////////////////////////////////////////
 
     @Override
-    public void addProduct(String ref, ProductCatagory category, ProductBrand brand, String model, String description,
+    public void addProduct(String ref, ProductCategory category, ProductBrand brand, String model, String description,
 
             double unitPrice) {
 
@@ -176,14 +176,14 @@ public class Service implements iService {
     }
 
     @Override
-    public List<ProductCatagory> getAllCategories() {
+    public List<ProductCategory> getAllCategories() {
 
         return pdao.getAllCategories();
 
     }
 
     @Override
-    public List<ProductBrand> getAllBrandsByCategory(ProductCatagory category) {
+    public List<ProductBrand> getAllBrandsByCategory(ProductCategory category) {
 
         return pdao.getAllBrandsByCategory(category);
     }

@@ -208,7 +208,8 @@ public static void postContactController() {
             }
 
             else {
-
+                
+            // We adapt the second value type wether it's the String last_name for Person or the Enumeration type for Enterprise
                 service.addContact(first_or_enterprise_name, EntrepriseType.valueOf(last_name_or_enterprise_type),
                 
                 phoneNumber, email, address);

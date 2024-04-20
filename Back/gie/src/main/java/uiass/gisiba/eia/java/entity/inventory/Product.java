@@ -15,7 +15,7 @@ public class Product {
     private String productRef;
 
     @Enumerated(EnumType.STRING)
-    private ProductCatagory category;
+    private ProductCategory category;
 
     @Enumerated(EnumType.STRING)
     private ProductBrand brand;
@@ -31,7 +31,7 @@ public class Product {
 
     // Constructors
 
-    public Product(String productRef, ProductCatagory category, ProductBrand brand, String model, String description, double unitPrice) {
+    public Product(String productRef, ProductCategory category, ProductBrand brand, String model, String description, double unitPrice) {
         this.productRef = productRef;
         this.category = category;
         this.brand = brand;
@@ -54,11 +54,11 @@ public class Product {
         this.productRef = productRef;
     }
 
-    public ProductCatagory getCategory() {
+    public ProductCategory getCategory() {
         return this.category;
     }
 
-    public void setCategory(ProductCatagory category) {
+    public void setCategory(ProductCategory category) {
         this.category = category;
     }
 

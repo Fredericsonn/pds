@@ -13,7 +13,7 @@ import java.io.InputStream;
 /**
  * JavaFX App
  */
-public class Main extends Application {
+public class Main extends Application {   //uiass.eia.gisiba.Main
 
     private static Scene scene;
 

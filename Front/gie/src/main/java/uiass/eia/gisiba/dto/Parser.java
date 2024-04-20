@@ -12,7 +12,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-
+// This class contain all the diverse parsing and data structures generating methods 
 public class Parser {
 
     private static Map<String, List<String>> attributes_by_type_map = new HashMap<String, List<String>>() {{
@@ -40,7 +40,7 @@ public class Parser {
 
     private static List<String> productAttributes = Arrays.asList("productRef","category","brand","model","description","unitPrice");
 
-    private static List<String> product_columns = Arrays.asList("category","brand","model","description","unit_price");
+    private static List<String> product_columns = Arrays.asList("category","brand","model","description","unitPrice");
 
     public static Map<String,Object> contactCreationMapGenerator(List values, String contactType) {
 
@@ -62,8 +62,7 @@ public class Parser {
 
         Map<String,String> map = new HashMap<String,String>();
 
-        List<String> attributes = productAttributes;
-
+        List<String> attributes = product_columns;
         
         for (int i=0 ; i < attributes.size() ; i++) {
 
@@ -123,7 +122,11 @@ public class Parser {
         
         for (int i=0 ; i < attributes.size() ; i++) {
 
-            map.put(attributes.get(i), values.get(i));
+            String attribute = attributes.get(i);
+
+            String value = values.get(i);
+
+            if (value != "null" && value != "") map.put(attribute, value);
 
         }
 
@@ -154,7 +157,9 @@ public class Parser {
 
         Gson gson = GetGson.getGson();
 
-        return gson.toJson(attributes);
+        if (!attributes.isEmpty()) return gson.toJson(attributes);
+
+        return null;
     }
     
     public static String collectString(JsonObject jsObj, String attribute) {

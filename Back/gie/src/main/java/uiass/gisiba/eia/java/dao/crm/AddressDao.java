@@ -151,11 +151,14 @@ public class AddressDao implements iAddressDao {
 			query.setParameter(column, new_value);
 		}
 
-		query.setParameter("id", address_id);
+		query.setParameter("address_id", address_id);
 
 		tr.begin();
+
 		query.executeUpdate();
 
+		em.refresh(address);
+		
 		tr.commit();
 	}
 
