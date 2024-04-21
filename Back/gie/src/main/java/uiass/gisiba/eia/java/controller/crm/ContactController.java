@@ -172,6 +172,8 @@ public static void postContactController() {
 
         String body = request.body();
 
+        System.out.println(body);
+
         JsonObject contact = gson.fromJson(body, JsonObject.class);
 
         String first_or_enterprise_name = contactType.equals("Person") ? Parser.collectString(contact, "firstName") 

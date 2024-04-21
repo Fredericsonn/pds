@@ -229,8 +229,6 @@ public class ContactDao implements iContactDao {
 
 			if (column.equals("type")) {
 
-				System.out.println(column);
-
 				query.setParameter(column, EntrepriseType.valueOf(String.valueOf(newValue)));
 			}
 		           
