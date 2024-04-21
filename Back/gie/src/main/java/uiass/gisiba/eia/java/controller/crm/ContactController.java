@@ -34,7 +34,7 @@ public class ContactController {
 /////////////////////////////////////////////////// GET METHODS //////////////////////////////////////////////////////////////////
 	public static void getContactByIdController() {
 
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -57,7 +57,7 @@ public class ContactController {
 
 	public static void getContactByNameController() {
 
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -78,7 +78,7 @@ public class ContactController {
 
 	public static void getContactByAddressIdController() {
 		
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -100,7 +100,7 @@ public class ContactController {
 
 	public static void getAllContactsByCountryController() {
 
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -121,7 +121,7 @@ public class ContactController {
 
 	public static void getAllContactsByTypeController() {
 
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -140,7 +140,7 @@ public class ContactController {
 
 	public static void getAllContactsController() {
 
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -159,7 +159,7 @@ public class ContactController {
 /////////////////////////////////////////////////// POST METHOD //////////////////////////////////////////////////////////////////
 public static void postContactController() {
 
-    Gson gson = GetGson.getGson();
+    Gson gson = new Gson();
 
     System.out.println("Server started.");
 
@@ -231,7 +231,7 @@ public static void postContactController() {
 //////////////////////////////////////////  Email Sending Controller ////////////////////////////////////////////////////////////  
     public static void postEmailController() {
 
-        Gson gson = GetGson.getGson();
+        Gson gson = new Gson();
 
         System.out.println("Server Started.");
 
@@ -303,7 +303,7 @@ public static void postContactController() {
 
         // A list of the contact table's columns
 
-        Gson gson = GetGson.getGson();
+        Gson gson = new Gson();
 
 		System.out.println("Server started.");
 

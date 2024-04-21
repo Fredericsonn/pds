@@ -27,7 +27,7 @@ public class ProductController {
 
     public static void getProductByRef() {
 
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -49,7 +49,7 @@ public class ProductController {
 
 	public static void getAllProducts() {
 
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -68,7 +68,7 @@ public class ProductController {
 
 	public static void getAllCategories() {
 
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -87,7 +87,7 @@ public class ProductController {
 
 	public static void getAllBrandsByCategory() {
 
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -142,7 +142,7 @@ public static void updateproductController() {
 
 	// A list of the product table's columns
 
-    Gson gson = GetGson.getGson();
+    Gson gson = new Gson();
 
     put("/products/put/:ref" , new Route() {
 
@@ -185,7 +185,7 @@ public static void postproductController() {
 
 	// A list of the product table's columns
 
-    Gson gson = GetGson.getGson();
+    Gson gson = new Gson();
 
     post("/products/post" , new Route() {
 

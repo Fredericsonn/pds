@@ -22,7 +22,7 @@ public class AddressController {
     
     public static  void getAddressByIdController() {
 
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -43,7 +43,7 @@ public class AddressController {
 
 	public static void getAllAddressesController() {
 
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -62,7 +62,7 @@ public class AddressController {
 
     public static void updateAddressController() {
 
-        Gson gson = GetGson.getGson();
+        Gson gson = new Gson();
 
         System.out.println("Server started.");
 
