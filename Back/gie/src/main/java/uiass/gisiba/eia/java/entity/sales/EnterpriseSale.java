@@ -1,6 +1,7 @@
 package uiass.gisiba.eia.java.entity.sales;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -8,19 +9,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import uiass.gisiba.eia.java.entity.crm.Enterprise;
-import uiass.gisiba.eia.java.entity.delivery.CustomerDelivery;
 
 @Entity
 @DiscriminatorValue("Enterprise")
 public class EnterpriseSale extends Sale {
 
     @OneToOne
-    @JoinColumn(name="id")
+    @JoinColumn(name="customer_id")
     private Enterprise customer;
 
-    public EnterpriseSale(int saleId, LocalDate saleDate, double total, CustomerDelivery delivery, Enterprise customer) {
+    public EnterpriseSale(int saleId,List<SaleOrder> orders, LocalDate saleDate, double total, Enterprise customer) {
 
-        super(saleId, saleDate, total, delivery);
+        super(saleId, orders, saleDate, total);
 
         this.customer = customer;
     }
@@ -28,12 +28,12 @@ public class EnterpriseSale extends Sale {
     public EnterpriseSale() {
     }
 
-    public Enterprise getSupplier() {
+    public Enterprise getCustomer() {
         return this.customer;
     }
 
-    public void setSupplier(Enterprise supplier) {
-        this.customer = supplier;
+    public void setCustomer(Enterprise customer) {
+        this.customer = customer;
     }
 
     

@@ -1,23 +1,24 @@
-package uiass.gisiba.eia.java.entity.inventory;
+package uiass.gisiba.eia.java.entity.purchases;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 
-import uiass.gisiba.eia.java.entity.purchases.Purchase;
+import uiass.gisiba.eia.java.entity.inventory.Order;
+import uiass.gisiba.eia.java.entity.inventory.Product;
 
 @Entity(name="Purchase_Order")
 public class PurchaseOrder extends Order {
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="purchase_ref")
     private Purchase purchase;
 
     // Constructors
 
-    public PurchaseOrder(Product product, int quantity, double unitPrice, String orderTime, Purchase purchase) {
+    public PurchaseOrder(Product product, int quantity, String orderTime, Purchase purchase) {
 
-        super(product, quantity, unitPrice, orderTime);
+        super(product, quantity, orderTime);
 
         this.purchase = purchase;
     }

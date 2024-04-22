@@ -1,11 +1,14 @@
 package uiass.gisiba.eia.java.entity.purchases;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import uiass.gisiba.eia.java.entity.crm.Supplier;
@@ -20,12 +23,11 @@ public class Purchase {
     private String purchaseRef;
 
     @OneToOne
-    @JoinColumn(name="id")
+    @JoinColumn(name="supplier_id")
     private Supplier supplier;
 
-    @OneToOne
-    @JoinColumn(name="delivery_ref")
-    private SupplierDelivery delivery;
+    @OneToMany(mappedBy = "purchase")
+    private List<PurchaseOrder> orders;
 
     @Column(name="purchase_date")
     private LocalDate purchaseDate;
@@ -35,9 +37,10 @@ public class Purchase {
 
     // Constructors
 
-    public Purchase(String purchaseRef, Supplier supplier, LocalDate purchaseDate, double total) {
+    public Purchase(String purchaseRef, Supplier supplier,List<PurchaseOrder> orders, LocalDate purchaseDate, double total) {
         this.purchaseRef = purchaseRef;
         this.supplier = supplier;
+        this.orders = orders;
         this.purchaseDate = purchaseDate;
         this.total = total;
 
@@ -65,6 +68,14 @@ public class Purchase {
         this.supplier = supplier;
     }
 
+    public List<PurchaseOrder> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<PurchaseOrder> orders) {
+        this.orders = orders;
+    }
+
     public LocalDate getPurchaseDate() {
         return purchaseDate;
     }
@@ -80,6 +91,8 @@ public class Purchase {
     public void setTotal(double total) {
         this.total = total;
     }
+
+
 
 
 

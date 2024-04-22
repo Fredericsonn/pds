@@ -2,16 +2,14 @@ package uiass.gisiba.eia.java.entity.sales;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-
-import uiass.gisiba.eia.java.entity.delivery.CustomerDelivery;
+import javax.persistence.OneToMany;
 
 
 @Entity
@@ -22,9 +20,8 @@ public class Sale implements Serializable {
     @Column(name="sale_ref")
     private int saleRef;
 
-    @OneToOne
-    @JoinColumn(name="delivery_ref")
-    private CustomerDelivery delivery;
+    @OneToMany(mappedBy = "purchase")
+    private List<SaleOrder> orders;
 
     @Column(name="sale_date")
     private LocalDate saleDate;
@@ -34,11 +31,11 @@ public class Sale implements Serializable {
 
     // Constructors
 
-    public Sale(int saleRef, LocalDate saleDate, double total, CustomerDelivery delivery) {
+    public Sale(int saleRef, List<SaleOrder> orders, LocalDate saleDate, double total) {
         this.saleRef = saleRef;
+        this.orders = orders;
         this.saleDate = saleDate;
         this.total = total;
-        this.delivery = delivery;
     }
 
     public Sale() {
@@ -53,6 +50,14 @@ public class Sale implements Serializable {
 
     public void setSaleRef(int saleRef) {
         this.saleRef = saleRef;
+    }
+
+    public List<SaleOrder> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<SaleOrder> orders) {
+        this.orders = orders;
     }
 
     public LocalDate getSaleDate() {
@@ -70,6 +75,8 @@ public class Sale implements Serializable {
     public void setTotal(double total) {
         this.total = total;
     }
+
+
 
 
 

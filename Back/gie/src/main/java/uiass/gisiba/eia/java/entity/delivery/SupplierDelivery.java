@@ -2,7 +2,6 @@ package uiass.gisiba.eia.java.entity.delivery;
 
 import java.time.LocalDate;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
