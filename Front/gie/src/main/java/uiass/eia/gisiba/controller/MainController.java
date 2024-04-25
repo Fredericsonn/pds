@@ -1,6 +1,7 @@
 package uiass.eia.gisiba.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 
@@ -9,10 +10,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -63,8 +67,8 @@ public class MainController {
         Button notify = FXManager.getButton(rightAnchorPane, "notifyBtn");
 
         // Search text field
-        TextField txtField = FXManager.getTextField(centerAnchorPane, "enterIdTextField");
-        FXManager.setTextFieldNumericFormatRule(txtField);  // a rule that denies any non numeric input
+        TextField txtField = FXManager.getTextField(centerAnchorPane, "enterNameTextField");
+        FXManager.setTextFieldAlphabeticFormatRule(txtField);
 
         // Labels
         List<Label> labels = FXManager.labelsCollector(rightAnchorPane, labelIds);
@@ -83,7 +87,15 @@ public class MainController {
                 String phoneNumber = selectedItem.get(3);
                 String email = selectedItem.get(4);
                 int addressId = Integer.parseInt(selectedItem.get(5));
-                String address = AddressDto.addressFormulator(addressId, contactType); // We formulate the full address using its id
+                String houseNumber = selectedItem.get(6);
+                String neighborhood = selectedItem.get(7);
+                String city = selectedItem.get(8);
+                String zipCode = selectedItem.get(9);
+                String country = selectedItem.get(10);
+
+                String address = houseNumber + " " + neighborhood + " " +
+                
+                city + " " + zipCode + " " + country; // We formulate the full address using its id
 
                 // We put all the values in one list that we'll use to fill the labels
                 List<String> values = Arrays.asList(firstAttribute,secondAttribute,phoneNumber,email,address);
@@ -96,11 +108,36 @@ public class MainController {
 
                 // When the update button is clicked
                 update.setOnAction(update_event -> {
-                    this.goToUpdateContactPage(contactType, contactId, addressId);
+                    // We collect ll the original values to be passed as the text fields prompt text
+                    List<String> originalValues = new ArrayList<String>(values);
+                    originalValues.addAll(Arrays.asList(houseNumber,neighborhood,city,zipCode,country));
+                    this.goToUpdateContactPage(contactType, contactId, addressId, originalValues);
                 });
 
                 // When the delete button is clicked
-                delete.setOnAction(delete_event -> ContactCrud.deleteContact(contactType, contactId));
+                delete.setOnAction(delete_event -> {
+
+                    // We define the contact name based on its type
+                    String contactName = (contactType.equals("Person")) ? firstAttribute + " " + secondAttribute : firstAttribute;
+
+                    // Show a confirmation dialog
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("Confirmation");
+                    alert.setHeaderText("Contact Deletion");
+                    alert.setContentText("The contact " + contactName + " will be deleted, do you confirm this operation ?");
+                
+                    // Add "Yes" and "No" buttons
+                    ButtonType buttonTypeYes = new ButtonType("Yes");
+                    ButtonType buttonTypeNo = new ButtonType("No");
+                    alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
+                
+                    // Show the dialog and wait for user input
+                    ButtonType result = alert.showAndWait().orElse(null);
+                    if (result == buttonTypeYes) {
+                        // Call the deleteContact method if the user clicked "Yes"
+                        ContactCrud.deleteContact(contactType, contactId);
+                    }
+                });
            
         } 
             
@@ -116,24 +153,31 @@ public class MainController {
         // When we press the search button
         search.setOnAction(event -> {
             
+            // We collect the entered name 
+            String contactName = txtField.getText();
 
-            try {
-
-                // We collect the entered id (we suppose it's a number)
-                int contactId = Integer.parseInt(txtField.getText());
+            if (!contactName.equals("")) {
 
                 // We get the contact using that id
-                List<String> info = ContactDto.getContactById(contactId, contactType);
+                List<String> info = ContactDto.getContactByName(contactName, contactType);
 
-                if (info != null) {  // if there is a contact with the given id
+                if (info != null) {  // if there is a contact with the given name
 
                     // We extract each attribute's value from the retrieved contact
+                    int contactId = Integer.parseInt(info.get(0));
                     String firstAttribute = info.get(1);
                     String secondAttribute = info.get(2);
                     String phoneNumber = info.get(3);
                     String email = info.get(4);
                     int addressId = Integer.parseInt(info.get(5));
-                    String address = AddressDto.addressFormulator(addressId, contactType);
+                    String houseNumber = info.get(6);
+                    String neighborhood = info.get(7);
+                    String city = info.get(8);
+                    String zipCode = info.get(9);
+                    String country = info.get(10);    
+                    String address = houseNumber + " " + neighborhood + " " +
+                
+                    city + " " + zipCode + " " + country; 
 
                     // We put all the values in one list that we'll use to fill the labels
                     List<String> values = Arrays.asList(firstAttribute,secondAttribute,phoneNumber,email,address);
@@ -146,22 +190,43 @@ public class MainController {
 
                     // When the update button is clicked
                     update.setOnAction(update_event -> {
-                        this.goToUpdateContactPage(contactType, contactId, addressId);
+                        // We collect ll the original values to be passed as the text fields prompt text
+                        List<String> originalValues = new ArrayList<String>(values);
+                        originalValues.addAll(Arrays.asList(houseNumber,neighborhood,city,zipCode,country));
+                        this.goToUpdateContactPage(contactType, contactId, addressId, originalValues);
                     });
 
                     // When the delete button is clicked
-                    delete.setOnAction(delete_event -> ContactCrud.deleteContact(contactType, contactId));
+                    delete.setOnAction(delete_event -> {
+                        // We ask the user for the confirmation before the delete :
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.setTitle("Confirmation");
+                        alert.setHeaderText("Contact Deletion");
+                        alert.setContentText("The contact " + contactName + " will be deleted, do you confirm this operation ?");
+                    
+                        // Add "Yes" and "No" buttons
+                        ButtonType buttonTypeYes = new ButtonType("Yes");
+                        ButtonType buttonTypeNo = new ButtonType("No");
+                        alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
+                    
+                        // Show the dialog and wait for user input
+                        ButtonType result = alert.showAndWait().orElse(null);
+                        if (result == buttonTypeYes) {
+                            // Call the deleteContact method if the user clicked "Yes"
+                            ContactCrud.deleteContact(contactType, contactId);
+                        }
+                    });
+                        
                 }
                 
-                // if no contact corresponds to the provided id we show an error alert
-                else FXManager.showAlert(AlertType.ERROR, "Invalid Id", "Contact Not Found", contactId + " doesn't correspond to any existing contact.");
+                // if no contact corresponds to the provided name we show an error alert
+                else FXManager.showAlert(AlertType.ERROR, "ERROR", "Contact Not Found", contactName + " doesn't correspond to any existing contact.");
                  
             }
 
             // if the text field is empty and the search button is clicked
-            catch(NumberFormatException e) {
-                FXManager.showAlert(AlertType.ERROR, "Invalid Id", "Empty Id Field", "Please provide an Id.");
-            }
+            else FXManager.showAlert(AlertType.ERROR, "ERROR", "Empty Name Field", "Please provide a contact name.");
+
         });
 
         // When the create new button is clicked
@@ -323,7 +388,7 @@ public class MainController {
         Stage stage = new Stage();
         AnchorPane pane = new AnchorPane();
         Scene scene = new Scene(pane);
-        loadFXML("/uiass/eia/gisiba/create_update_person_page.fxml", pane);  // here we load the creation page fxml file
+        loadFXML("/uiass/eia/gisiba/create_" + contactType.toLowerCase() + "_pane.fxml", pane);  // here we load the creation page fxml file
         
         // We collect the confirm button from the fxml file
         Button confirm = FXManager.getButton(pane, "confirmBtn");
@@ -332,32 +397,42 @@ public class MainController {
         ContactCrud.create_contact(pane, confirm, contactType);
         
         // We add the stage info and show it
+        String iconPath = "/uiass/eia/gisiba/imgs/" + (contactType.equals("Person") ? "man" : "office-building") + ".png";
+        InputStream inputStream = getClass().getResourceAsStream(iconPath);
+        Image icon = new Image(inputStream);
+
         stage.setScene(scene);
         stage.setTitle(contactType.equals("Person") ? "Create Person" : "Create Enterprise");
         stage.setResizable(false);
+        stage.getIcons().add(icon);
         stage.show();
 
     }
 
     // A method that display the contact update pane
-    public void goToUpdateContactPage(String contactType, int contactId, int addressId) {
+    public void goToUpdateContactPage(String contactType, int contactId, int addressId, List<String> originalValues) {
 
         // We create the stage that will contain the update page
         Stage stage = new Stage();
         AnchorPane pane = new AnchorPane();
         Scene scene = new Scene(pane);
-        loadFXML("/uiass/eia/gisiba/create_update_person_page.fxml", pane); // here we load the update page fxml file
+        loadFXML("/uiass/eia/gisiba/update_" + contactType.toLowerCase() + "_pane.fxml", pane); // here we load the update page fxml file
         
         // We collect the confirm button from the fxml file
         Button confirm = FXManager.getButton(pane, "confirmBtn");
 
         // We add the corresponding event listener to the button
-        ContactCrud.update_contact(pane, confirm, contactType, contactId, addressId);
+        ContactCrud.update_contact(pane, confirm, contactType, contactId, addressId, originalValues);
 
         // We add the stage info and show it
+        String iconPath = "/uiass/eia/gisiba/imgs/" + (contactType.equals("Person") ? "man" : "office-building") + ".png";
+        InputStream inputStream = getClass().getResourceAsStream(iconPath);
+        Image icon = new Image(inputStream);
+
         stage.setScene(scene);
         stage.setTitle(contactType.equals("Person") ? "Update Person" : "Update Enterprise");
         stage.setResizable(false);
+        stage.getIcons().add(icon);
         stage.show();
 
     }

@@ -28,9 +28,9 @@ public class Parser {
         put("Enterprise", Arrays.asList("enterprise_name","type","phone_number","email"));
     }};
 
-    public static List<String> address_columns = Arrays.asList("houseNumber","neighborhood","city","zipCode","region","country");
+    public static List<String> address_columns = Arrays.asList("houseNumber","neighborhood","city","zipCode","country");
 
-    public static List<String> addressAttributes = Arrays.asList("addressId","houseNumber","neighborhood","city","zipCode","region","country");
+    public static List<String> addressAttributes = Arrays.asList("addressId","houseNumber","neighborhood","city","zipCode","country");
 
     public static List<String> productAttributes = Arrays.asList("productRef","category","brand","model","description","unitPrice");
 
@@ -103,18 +103,15 @@ public class Parser {
 
         String zipCode = Parser.collectString(address, "zipCode");
 
-        String region = Parser.collectString(address, "region");
 
         String country = Parser.collectString(address, "country");
 
-        return Arrays.asList(houseNumber,neighborhood,city,zipCode,region,country);
+        return Arrays.asList(houseNumber,neighborhood,city,zipCode,country);
 
     }
 
     // A method that address contact data from a json :
     public static List productValuesCollector(Gson gson, String body) {
-
-        List values = new ArrayList<>();
 
         JsonObject product = gson.fromJson(body, JsonObject.class);
 
@@ -203,10 +200,9 @@ public class Parser {
         String neighborhood = contactStringInfo.get(4);
         String city =  contactStringInfo.get(5);
         String zipCode = contactStringInfo.get(6);
-        String region = contactStringInfo.get(7);
         String country = contactStringInfo.get(8);
 
-		Address address = new Address(country, city, zipCode, region, neighborhood, houseNumber);
+		Address address = new Address(country, city, zipCode, neighborhood, houseNumber);
 		address.setAddressId(addressId);
 		Person person = new Person(first_or_enterprise_name, last_name_or_enterprise_type, phoneNumber, email, address);
 		person.setId(id);
@@ -259,10 +255,9 @@ public class Parser {
         String neighborhood = addressStringInfo.get(0);
         String city =  addressStringInfo.get(1);
         String zipCode = addressStringInfo.get(2);
-        String region = addressStringInfo.get(3);
         String country = addressStringInfo.get(4);
 
-        Address address = new Address(country, city, zipCode, region, neighborhood, houseNumber);
+        Address address = new Address(country, city, zipCode, neighborhood, houseNumber);
         address.setAddressId(addressId);
 
         return address;

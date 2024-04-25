@@ -21,20 +21,34 @@ public class Parser {
     }};
 
     public static Map<String, List<String>> contact_creation_columns_by_type_map = new HashMap<String, List<String>>() {{
-        put("Person", Arrays.asList("firstName","lastName","phoneNumber","email","houseNumber","neighborhood","city","zipCode","region","country"));
-        put("Enterprise", Arrays.asList("enterpriseName","type","phoneNumber","email","houseNumber","neighborhood","city","zipCode","region","country"));
+        put("Person", Arrays.asList("firstName","lastName","phoneNumber","email","houseNumber","neighborhood","city","zipCode","country"));
+        put("Enterprise", Arrays.asList("enterpriseName","phoneNumber","email","houseNumber","neighborhood","city","zipCode","country","type"));
     }};
 
     public static Map<String, List<String>> contact_update_columns_by_type_map = new HashMap<String, List<String>>() {{
         put("Person", Arrays.asList("firstName","lastName","phoneNumber","email"));
-        put("Enterprise", Arrays.asList("enterpriseName","type","phoneNumber","email"));
+        put("Enterprise", Arrays.asList("enterpriseName","phoneNumber","email","type"));
     }};
 
-    public static List<String> addressAttributes = Arrays.asList("addressId","houseNumber","neighborhood","city","zipCode","region","country");
+    public static Map<String, List<String>> updateContactPaneAttributes = new HashMap<String, List<String>>() {{
+        put("Person", Arrays.asList("firstName","lastName","phoneNumber","email","houseNumber","neighborhood","city","zipCode","country"));
+        put("Enterprise", Arrays.asList("enterpriseName","phoneNumber","email","houseNumber","neighborhood","city","zipCode","country","type"));
+    }};
 
-    public static List<String> update_address_attributes = Arrays.asList("houseNumber","neighborhood","city","zipCode","region","country");
+    public static Map<String, List<String>> contactTextFieldAttributesMap = new HashMap<String, List<String>>() {{
+        put("Person", Arrays.asList("first","second","phoneNumber","email","houseNumber","neighborhood","city","zipCode","country"));
+        put("Enterprise", Arrays.asList("first","phoneNumber","email","houseNumber","neighborhood","city","zipCode","country","type"));
+    }};
 
-    public static List<String> contactTextFieldsReferences = Arrays.asList("first","second","phoneNumber","email","houseNumber","neighborhood","city","zipCode","region","country");
+
+
+    public static List<String> addressAttributes = Arrays.asList("addressId","houseNumber","neighborhood","city","zipCode","country");
+
+    public static List<String> update_address_attributes = Arrays.asList("houseNumber","neighborhood","city","zipCode","country");
+
+    public static List<String> contactCreationTextFieldsReferences = Arrays.asList("first","second","phoneNumber","email","houseNumber","neighborhood","city","zipCode","country");
+
+    public static List<String> contactUpdateTextFieldsReferences = Arrays.asList("first","second","phoneNumber","email");
 
     public static List<String> email_sending_attributes = Arrays.asList("receiver","subject","body");
 
@@ -79,9 +93,10 @@ public class Parser {
 
         List<String> attributes = contact_update_columns_by_type_map.get(contactType);
 
-        
         for (int i=0 ; i < attributes.size() ; i++) {
 
+            if (values.get(i) != null) 
+            
             if (!((String) values.get(i)).equals("")) map.put(attributes.get(i), values.get(i));
 
         }
@@ -225,12 +240,11 @@ public class Parser {
         String neighborhood = String.valueOf(contactStringInfo.get(4));
         String city = String.valueOf(contactStringInfo.get(5));
         String zipCode = String.valueOf(contactStringInfo.get(6));
-        String region = String.valueOf(contactStringInfo.get(7));
-        String country = String.valueOf(contactStringInfo.get(8));
+        String country = String.valueOf(contactStringInfo.get(7));
 
-        return Arrays.asList(id,first_or_enterprise_name,last_name_or_enterprise_type,phoneNumber,email,addressId, houseNumber + " " + neighborhood
+        return Arrays.asList(id,first_or_enterprise_name,last_name_or_enterprise_type,phoneNumber,email,addressId, houseNumber, neighborhood,
         
-        + " " + city + " " + zipCode + " " + region + " " + country);
+        city, zipCode ,country);
     }
 
     // Address parser
@@ -256,10 +270,9 @@ public class Parser {
         String neighborhood = addressStringInfo.get(0);
         String city =  addressStringInfo.get(1);
         String zipCode = addressStringInfo.get(2);
-        String region = addressStringInfo.get(3);
-        String country = addressStringInfo.get(4);
+        String country = addressStringInfo.get(3);
 
-        return Arrays.asList(addressId,houseNumber,neighborhood,city,zipCode,region,country);
+        return Arrays.asList(addressId,houseNumber,neighborhood,city,zipCode,country);
     }
 
     public static List<String> parseProduct(String responseBody) {

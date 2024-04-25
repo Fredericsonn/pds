@@ -7,12 +7,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import uiass.gisiba.eia.java.entity.crm.Supplier;
-import uiass.gisiba.eia.java.entity.delivery.SupplierDelivery;
 
 
 @Entity(name="Purchase")

@@ -21,7 +21,7 @@ public interface iService {
 
 /////////////////////////////////////////////////////// ADDRESS ////////////////////////////////////////////////////////////////
 
-    void addAddress(String country, String city, String zipCode, String region, String neighborhood,
+    void addAddress(String country, String city, String zipCode, String neighborhood,
     
     int houseNumber) throws AddressNotFoundException,DuplicatedAddressException;
 

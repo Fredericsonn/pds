@@ -26,7 +26,7 @@ public class ContactDto {
 
         String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType + "/byName/" + name);
 
-        if (!responseBody.equals("Internal Server Error")) return Parser.parseContact(responseBody, contactType);
+        if (!responseBody.equals("Server Error.")) return Parser.parseContact(responseBody, contactType);
 
         return null;
     }

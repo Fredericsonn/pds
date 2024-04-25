@@ -22,9 +22,9 @@ public class AddressDao implements iAddressDao {
 	    this.tr=em.getTransaction();
 	}
     @Override
-    public void addAddress(String country, String city, String zipCode, String region, String neighborhood, int houseNumber) throws AddressNotFoundException,DuplicatedAddressException {
+    public void addAddress(String country, String city, String zipCode, String neighborhood, int houseNumber) throws AddressNotFoundException,DuplicatedAddressException {
 
-        Address address = new Address(country, city, zipCode, region, neighborhood, houseNumber);
+        Address address = new Address(country, city, zipCode, neighborhood, houseNumber);
 
 		if (this.existingAddressChecker(address) != 0) {
 
@@ -100,7 +100,6 @@ public class AddressDao implements iAddressDao {
 		String country = addressToCheck.getCountry();
 		String city = addressToCheck.getCity();
 		String zipCode = addressToCheck.getZipCode();
-		String region = addressToCheck.getRegion();
 		String neighborhood = addressToCheck.getNeighborhood();
 		int houseNumber = addressToCheck.getHouseNumber();
 
@@ -108,7 +107,6 @@ public class AddressDao implements iAddressDao {
 		query.setParameter("country", country);
         query.setParameter("city", city);
         query.setParameter("zip_code", zipCode);
-        query.setParameter("region", region);
         query.setParameter("neighborhood", neighborhood);
         query.setParameter("house_number", houseNumber);
 

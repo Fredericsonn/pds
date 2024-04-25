@@ -6,7 +6,8 @@ import java.util.*;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import uiass.eia.gisiba.controller.FXManager;
@@ -26,34 +27,36 @@ public class ContactCrud {
         List values = new ArrayList<>();
 
         // The list of attributes that reference the text fields' ids :
-        List<String> attributes = Parser.contactTextFieldsReferences;
+        List<String> attributes = new ArrayList<String>(Parser.contactCreationTextFieldsReferences);
 
-        // We change the prompt text if the contact is an enterprise : 
-        TextField firstTextField= FXManager.getTextField(pane, "firstTextField");
-        if (contactType.equals("Enterprise")) firstTextField.setPromptText("enterprise name");
-        TextField secondTextField = FXManager.getTextField(pane, "secondTextField");
-        if (contactType.equals("Enterprise")) secondTextField.setPromptText("type");
-        TextField phoneNumberTextField = FXManager.getTextField(pane, "phoneNumberTextField");
-        TextField emailTextField = FXManager.getTextField(pane, "emailTextField");
-        FXManager.setTextFieldEmailFormatRule(emailTextField);
-        TextField houseNumberTextField = FXManager.getTextField(pane, "houseNumberTextField");
-        FXManager.setTextFieldNumericFormatRule(houseNumberTextField);
-        TextField neighborhoodTextField = FXManager.getTextField(pane, "neighborhoodTextField");
-        TextField cityTextField = FXManager.getTextField(pane, "cityTextField");
-        TextField zipCodeTextField = FXManager.getTextField(pane, "zipCodeTextField");
-        FXManager.setTextFieldNumericFormatRule(zipCodeTextField);
-        TextField regionTextField = FXManager.getTextField(pane, "regionTextField");
-        TextField countryTextField = FXManager.getTextField(pane, "countryTextField");
 
-        // We put all the text fields in a list to check if all the fields got input :
-        List<TextField> textFields = Arrays.asList(firstTextField,secondTextField,phoneNumberTextField,emailTextField,
+        // We collect all the text fields in a list and set the corresponding prompt text :
+        List<TextField> textFields = contactCreationTextFieldsHandler(pane, contactType);
 
-        houseNumberTextField,neighborhoodTextField,cityTextField,zipCodeTextField,regionTextField,countryTextField);
+        ComboBox typeComboBox = null;
+
+        if (contactType.equals("Enterprise")) {
+
+            attributes.remove(1);
+
+            typeComboBox = FXManager.getComboBox(pane, "enterpriseTypeComboBox");
+            
+            List<String> types = new ArrayList<>(Arrays.asList("SA","SAS","SARL","SNC"));
+
+            FXManager.populateComboBox(typeComboBox, types);
+            
+        }
+
+        List<ComboBox> comboBoxes = new ArrayList<ComboBox>();
+
+        if (typeComboBox != null) comboBoxes.add(typeComboBox);
 
         // We extract the data from the text fields when the button is clicked
         button.setOnAction(event -> {
 
-            if (FXManager.textFieldsCreationInputChecker(textFields)) {
+            if (FXManager.textFieldsCreationInputChecker(textFields) && (FXManager.comboBoxesCreationInputChecker(comboBoxes)
+            
+            || comboBoxes.isEmpty())) {
 
                 attributes.forEach(attribute -> {
 
@@ -63,6 +66,8 @@ public class ContactCrud {
                     
                     else values.add(value); // for every other attribute we just save the value as string
                 });
+
+                if (contactType.equals("Enterprise")) values.add(comboBoxes.get(0).getValue());
     
                 // We generate the columns - values map using the values list :
                 Map<String,Object> map = Parser.contactCreationMapGenerator(values, contactType);
@@ -91,10 +96,12 @@ public class ContactCrud {
     @SuppressWarnings("unchecked")
 
     // A method that extracts the data entered by the user and sends a put http request to the server :
-    public static void update_contact(Parent pane, Button button, String contactType, int contactId, int addressId) {
+    public static void update_contact(Parent pane, Button button, String contactType, int contactId, 
+    
+    int addressId, List<String> originalValues) {
 
         // lists containing each object's attributes (excluding ids) :
-        List<String> contactAttributes = Parser.contactTextFieldsReferences;
+        List<String> contactAttributes = new ArrayList<String>(Parser.contactUpdateTextFieldsReferences);
 
         List<String> addressAttributes = Parser.update_address_attributes;
 
@@ -103,38 +110,42 @@ public class ContactCrud {
 
         List addressValues = new ArrayList<>();
 
-        // We change the prompt text if the contact is an enterprise : 
-        TextField firstTextField= FXManager.getTextField(pane, "firstTextField");
-        if (contactType.equals("Enterprise")) firstTextField.setPromptText("enterprise name");
-        TextField secondTextField = FXManager.getTextField(pane, "secondTextField");
-        if (contactType.equals("Enterprise")) secondTextField.setPromptText("type");
-        TextField phoneNumberTextField = FXManager.getTextField(pane, "phoneNumberTextField");
-        TextField emailTextField = FXManager.getTextField(pane, "emailTextField");
-        FXManager.setTextFieldEmailFormatRule(emailTextField);
-        TextField houseNumberTextField = FXManager.getTextField(pane, "houseNumberTextField");
-        FXManager.setTextFieldNumericFormatRule(houseNumberTextField);
-        TextField neighborhoodTextField = FXManager.getTextField(pane, "neighborhoodTextField");
-        TextField cityTextField = FXManager.getTextField(pane, "cityTextField");
-        TextField zipCodeTextField = FXManager.getTextField(pane, "zipCodeTextField");
-        FXManager.setTextFieldNumericFormatRule(zipCodeTextField);
-        TextField regionTextField = FXManager.getTextField(pane, "regionTextField");
-        TextField countryTextField = FXManager.getTextField(pane, "countryTextField");
 
-        // We put all the text fields in a list to check if all the fields got input :
-        List<TextField> textFields = Arrays.asList(firstTextField,secondTextField,phoneNumberTextField,emailTextField,
+        // We collect all the text fields in a list and set the corresponding prompt text :
+        List<TextField> textFields = contactUpdateTextFieldsHandler(pane, contactType, originalValues);
 
-        houseNumberTextField,neighborhoodTextField,cityTextField,zipCodeTextField,regionTextField,countryTextField);
+        ComboBox typeComboBox = null;
+
+        if (contactType.equals("Enterprise")) {
+
+            contactAttributes.remove(1);
+
+            typeComboBox = FXManager.getComboBox(pane, "enterpriseTypeComboBox");
+            
+            List<String> types = new ArrayList<>(Arrays.asList("SA","SAS","SARL","SNC"));
+
+            String originalEnterpriseType = originalValues.get(1);
+
+            FXManager.populateComboBox(typeComboBox, types);
+
+            typeComboBox.setPromptText(originalEnterpriseType);
+            
+        }
+
+        List<ComboBox> comboBoxes = new ArrayList<ComboBox>();
+
+        if (typeComboBox != null) comboBoxes.add(typeComboBox);
 
         // We extract the data from the text fields when the button is clicked
         button.setOnAction(event -> {
 
-            if (FXManager.textFieldsUpdateInputChecker(textFields)) {
+            if (FXManager.textFieldsUpdateInputChecker(textFields) || FXManager.comboBoxesUpdateInputChecker(comboBoxes)) {
 
                 contactAttributes.forEach(attribute -> {
 
                     String value = FXManager.getTextField(pane, attribute + "TextField").getText(); // We collect the value of the text field entered by the user
     
-                    contactValues.add(value); // for every other attribute we just save the value as string
+                    contactValues.add(value); // We add it to the contact values list
                 });
     
                 addressAttributes.forEach(attribute -> {
@@ -148,6 +159,8 @@ public class ContactCrud {
                     
     
                 });
+
+                if (contactType.equals("Enterprise")) contactValues.add(comboBoxes.get(0).getValue());
     
                 // We create the columns - values to update maps :
                 Map<String,Object> contact_attributes_map = Parser.contactUpdateMapGenerator(contactValues, contactType);
@@ -234,6 +247,102 @@ public class ContactCrud {
         });
     }
 
+    public static List<TextField> contactCreationTextFieldsHandler(Parent pane, String contactType) {
+
+        List<TextField> textFields = new ArrayList<TextField>();
+
+        TextField firstTextField= FXManager.getTextField(pane, "firstTextField");
+        FXManager.setTextFieldPureAlphabeticFormatRule(firstTextField);
+        TextField phoneNumberTextField = FXManager.getTextField(pane, "phoneNumberTextField");
+        FXManager.setTextFieldAlphanumericFormatRule(phoneNumberTextField);
+        TextField emailTextField = FXManager.getTextField(pane, "emailTextField");
+        FXManager.setTextFieldEmailFormatRule(emailTextField);
+        TextField houseNumberTextField = FXManager.getTextField(pane, "houseNumberTextField");
+        FXManager.setTextFieldNumericFormatRule(houseNumberTextField);
+        TextField neighborhoodTextField = FXManager.getTextField(pane, "neighborhoodTextField");
+        FXManager.setTextFieldAlphanumericFormatRule(neighborhoodTextField);
+        TextField cityTextField = FXManager.getTextField(pane, "cityTextField");
+        FXManager.setTextFieldPureAlphabeticFormatRule(cityTextField);
+        TextField zipCodeTextField = FXManager.getTextField(pane, "zipCodeTextField");
+        FXManager.setTextFieldNumericFormatRule(zipCodeTextField);
+        TextField countryTextField = FXManager.getTextField(pane, "countryTextField");
+        FXManager.setTextFieldAlphabeticFormatRule(countryTextField);
+
+        if (contactType.equals("Person")) {
+            TextField secondTextField = FXManager.getTextField(pane, "secondTextField");
+            FXManager.setTextFieldPureAlphabeticFormatRule(secondTextField);
+
+            textFields.addAll(Arrays.asList(firstTextField,secondTextField,phoneNumberTextField,emailTextField,houseNumberTextField,
+            
+            neighborhoodTextField,cityTextField,zipCodeTextField,countryTextField));
+            
+        }
+
+        else textFields.addAll(Arrays.asList(firstTextField,phoneNumberTextField,emailTextField,houseNumberTextField,
+            
+        neighborhoodTextField,cityTextField,zipCodeTextField,countryTextField));
+
+        return textFields;
+    }
+
+    public static List<TextField> contactUpdateTextFieldsHandler(Parent pane, String contactType, List<String> originalValues) {
+
+        List<TextField> contactTextFields = new ArrayList<TextField>();
+
+        List<TextField> textFields = new ArrayList<TextField>();
+
+                // We collect the text fields from the pane : 
+                TextField firstTextField= FXManager.getTextField(pane, "firstTextField");
+                FXManager.setTextFieldAlphabeticFormatRule(firstTextField);
+                /*TextField secondTextField = FXManager.getTextField(pane, "secondTextField");
+                FXManager.setTextFieldAlphabeticFormatRule(secondTextField);*/
+                TextField phoneNumberTextField = FXManager.getTextField(pane, "phoneNumberTextField");
+                FXManager.setTextFieldAlphanumericFormatRule(phoneNumberTextField);
+                TextField emailTextField = FXManager.getTextField(pane, "emailTextField");
+                FXManager.setTextFieldEmailFormatRule(emailTextField);
+                TextField houseNumberTextField = FXManager.getTextField(pane, "houseNumberTextField");
+                FXManager.setTextFieldNumericFormatRule(houseNumberTextField);
+                TextField neighborhoodTextField = FXManager.getTextField(pane, "neighborhoodTextField");
+                FXManager.setTextFieldAlphanumericFormatRule(neighborhoodTextField);
+                TextField cityTextField = FXManager.getTextField(pane, "cityTextField");
+                FXManager.setTextFieldAlphabeticFormatRule(cityTextField);
+                TextField zipCodeTextField = FXManager.getTextField(pane, "zipCodeTextField");
+                FXManager.setTextFieldNumericFormatRule(zipCodeTextField);
+                TextField countryTextField = FXManager.getTextField(pane, "countryTextField");
+                FXManager.setTextFieldAlphabeticFormatRule(countryTextField);
+
+                // Here we select the text fields to consider depending on the contact type :
+                if (contactType.equals("Person")) {
+
+                    TextField secondTextField = FXManager.getTextField(pane, "secondTextField");
+                    secondTextField.setPromptText(originalValues.get(1)); // We set its original value
+                    FXManager.setTextFieldAlphabeticFormatRule(secondTextField); 
+
+                    textFields.addAll(Arrays.asList(firstTextField,secondTextField,phoneNumberTextField,emailTextField,
+        
+                    houseNumberTextField,neighborhoodTextField,cityTextField,zipCodeTextField,countryTextField));
+                }
+
+                else textFields.addAll(Arrays.asList(firstTextField,phoneNumberTextField,emailTextField,
+        
+                houseNumberTextField,neighborhoodTextField,cityTextField,zipCodeTextField,countryTextField));
+        
+                // We set the prompt text to be the original contact's values : 
+                firstTextField.setPromptText(originalValues.get(0));
+                phoneNumberTextField.setPromptText(originalValues.get(2));
+                emailTextField.setPromptText(originalValues.get(3));
+                //////// We skip the address value as it is just used to fill the right panel ////////
+                houseNumberTextField.setPromptText(originalValues.get(5));
+                neighborhoodTextField.setPromptText(originalValues.get(6));
+                cityTextField.setPromptText(originalValues.get(7));
+                zipCodeTextField.setPromptText(originalValues.get(8));
+                countryTextField.setPromptText(originalValues.get(9));
+        
+                // We put all the corresponding text fields in a list to later check if all the fields got input :
+                contactTextFields.addAll(textFields);
+
+                return contactTextFields;
+    }
 
 
 

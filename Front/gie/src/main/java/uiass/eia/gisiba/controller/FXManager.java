@@ -29,8 +29,8 @@ public class FXManager {
     public static List<String> catalog_labels_ids = Arrays.asList("categoryLabel","brandModelLabel","unitPriceLabel", "descriptionLabel");
 
     public static Map<String, List<String>> columns_names_per_contact_type = new HashMap<String, List<String>>() {{
-        put("Person", Arrays.asList("id","first name","last name","phone number", "email", "address"));
-        put("Enterprise", Arrays.asList("id","enterprise name","type","phone number", "email", "address"));
+        put("Person", Arrays.asList("id","first name","last name","phone number", "email", "address id","house number","neighborhood","city","zip code","country"));
+        put("Enterprise", Arrays.asList("id","enterprise name","type","phone number", "email", "address id","house number","neighborhood","city","zip code","country"));
     }};
 
     public static List<String> catalog_columns = Arrays.asList("ref","category","brand","model","description","unit price");
@@ -116,16 +116,27 @@ public class FXManager {
 
         // Create columns
         for (int i = 0; i < columns.size(); i++) {
+
             final int columnIndex = i;
+
             TableColumn<List<String>, String> column = new TableColumn<>(columns.get(i));
+
             column.setCellValueFactory(cellData -> {
+
                 List<String> row = cellData.getValue();
+
                 if (row != null && columnIndex < row.size()) {
+
                     return new SimpleStringProperty(row.get(columnIndex));
+
                 } else {
+
                     return new SimpleStringProperty(""); // Return an empty property for empty cells
                 }
             });
+
+            if (columns.get(i).equals("id") || columns.get(i).equals("address id")) column.setVisible(false);
+
             tableView.getColumns().add(column);
         }
 
@@ -214,7 +225,7 @@ public class FXManager {
             String newText = change.getControlNewText();
 
             // Allow only alphanumeric characters and a max length of 6
-            if (newText.matches("[a-zA-Z0-9]*") && newText.length() <= 6) { 
+            if (newText.matches("[a-zA-Z0-9]*")) { 
 
                 return change;
 
@@ -222,6 +233,46 @@ public class FXManager {
 
                 return null; // Reject the change
 
+            }
+        }));
+    }
+
+    // alphabetic only text field rule
+    public static void setTextFieldPureAlphabeticFormatRule(TextField alphabeticTextField) {
+        alphabeticTextField.setTextFormatter(new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+
+            // Allow only alphabetic characters, spaces, and "-" characters
+            if (newText.matches("[a-zA-Z]*")) {
+                return change;
+            } else {
+                return null; // Reject the change
+            }
+        }));
+    }
+    public static void setTextFieldAlphabeticFormatRule(TextField alphabeticTextField) {
+        alphabeticTextField.setTextFormatter(new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+
+            // Allow only alphabetic characters, spaces, and "-" characters
+            if (newText.matches("[a-zA-Z -]*")) {
+                return change;
+            } else {
+                return null; // Reject the change
+            }
+        }));
+    }
+
+    // Rule for only alphanumeric characters, dots, and at symbols
+    public static void setTextFieldEmailFormatRule(TextField textField) {
+        textField.setTextFormatter(new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+
+            // Allow only alphanumeric characters, dots, and at symbols
+            if (newText.matches("[a-zA-Z0-9.@]*")) {
+                return change;
+            } else {
+                return null; // Reject the change
             }
         }));
     }
@@ -236,20 +287,7 @@ public class FXManager {
             }
         }));
     }
-    
 
-    // email only text field rule
-    public static void setTextFieldEmailFormatRule(TextField emailTextField) {
-        emailTextField.setTextFormatter(new TextFormatter<>(change -> {
-            String newText = change.getControlNewText();
-            if (newText.isEmpty() || newText.matches("[a-zA-Z0-9_+&*-]*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*")) {
-                // Allow the change
-                return change;
-            } else {
-                return change;
-            }
-        }));
-    }
 
     // A method that generates alerts : 
     public static void showAlert(AlertType type, String title, String header, String message) {

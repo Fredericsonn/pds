@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="955.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uiass.eia.gisiba.controller.MainController">
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="970.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uiass.eia.gisiba.controller.MainController">
    <children>
       <AnchorPane fx:id="leftAnchorPane" prefHeight="539.0" prefWidth="170.0">
          <children>
@@ -50,6 +50,6 @@
             </ImageView>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="rightAnchorPane" layoutX="700.0" prefHeight="539.0" prefWidth="255.0" />
+      <AnchorPane fx:id="rightAnchorPane" layoutX="700.0" prefHeight="539.0" prefWidth="270.0" />
    </children>
 </AnchorPane>

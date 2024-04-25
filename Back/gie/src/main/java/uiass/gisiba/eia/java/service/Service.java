@@ -34,11 +34,11 @@ public class Service implements iService {
 /////////////////////////////////////////////////////// ADDRESS ////////////////////////////////////////////////////////////////
 
     @Override
-    public void addAddress(String country, String city, String zipCode, String region, String neighborhood,
+    public void addAddress(String country, String city, String zipCode, String neighborhood,
 
             int houseNumber) throws AddressNotFoundException, DuplicatedAddressException {
 
-        adao.addAddress(country, city, zipCode, region, neighborhood, houseNumber);
+        adao.addAddress(country, city, zipCode, neighborhood, houseNumber);
     }
 
     @Override

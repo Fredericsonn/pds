@@ -172,8 +172,6 @@ public static void postContactController() {
 
         String body = request.body();
 
-        System.out.println(body);
-
         JsonObject contact = gson.fromJson(body, JsonObject.class);
 
         String first_or_enterprise_name = contactType.equals("Person") ? Parser.collectString(contact, "firstName") 
@@ -196,11 +194,9 @@ public static void postContactController() {
 
         String zipCode = Parser.collectString(contact, "zipCode");
 
-        String region = Parser.collectString(contact, "region");
-
         String country = Parser.collectString(contact, "country");
 
-        Address address = new Address(country, city, zipCode, region, neighborhood, houseNumber);
+        Address address = new Address(country, city, zipCode, neighborhood, houseNumber);
 
         try {
 

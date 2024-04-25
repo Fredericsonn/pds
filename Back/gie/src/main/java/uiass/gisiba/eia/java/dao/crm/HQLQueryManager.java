@@ -61,7 +61,7 @@ public class HQLQueryManager {
     public static String checkAddressExistenceHQLQueryGnenerator() {
 
         return "select a.addressId from Address a where country = :country AND city = :city AND zip_code = :zip_code AND " +
-        "region = :region AND neighborhood = :neighborhood AND house_number = :house_number";
+        "neighborhood = :neighborhood AND house_number = :house_number";
     }
 
     public static String getContactByAddressIdHQLQueryGenerator(String contactType) {

@@ -15,6 +15,7 @@ import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.dao.inventory.ProductDao;
 import uiass.gisiba.eia.java.dao.inventory.iProductDao;
 import uiass.gisiba.eia.java.entity.crm.Address;
+import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
 import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
 import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
 import uiass.gisiba.eia.java.service.Service;
@@ -74,7 +75,7 @@ public class Main {
         }*/
 
         try {
-            service.addContact("fjwnf", "wbfebw", "125642389", "jdjfjfoiejf", new Address("kdmfkwm", "kfmkwegm", "52623", "nojnvowjng", "dnjlw efjln", 9));
+            service.addContact("fjwnf limited", EntrepriseType.valueOf("SARL"), "125642389", "jdjfjfoiejf", new Address("kdmfkwm", "kfmkwegm", "52623",  "dnjlw efjln", 10));
         } catch (AddressNotFoundException | DuplicatedAddressException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
