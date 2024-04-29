@@ -1,22 +1,25 @@
 package uiass.gisiba.eia.java.dao.inventory;
 
-import java.time.LocalDate;
 import java.util.*;
+import java.sql.Date;
 
+import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
 import uiass.gisiba.eia.java.entity.inventory.Product;
 
 public interface iInventoryItemDao {
 
-    InventoryItem getInventoryItemById(int itemId);
+    InventoryItem getInventoryItemById(int itemId) throws InventoryItemNotFoundException;
 
     List<InventoryItem> getAllInventoryItems();
 
-    int getItemQuantity(int itemId);
+    void addInventoryItem(Product product, int quantity, Date dateAdded);
 
-    void addInventoryItem(Product product, int quantity, LocalDate dateAdded);
+    int getItemQuantity(int itemId) throws InventoryItemNotFoundException;
 
-    void deleteInventoryItem(int itemId);
+    boolean canSell(int itemId, int quantity) throws InventoryItemNotFoundException;
 
-    void updateInventoryItem(int id, Map<String,Object> columnsNewValues);
+    void deleteInventoryItem(int itemId) throws InventoryItemNotFoundException;
+
+    void updateInventoryItem(int itemId, int quantity) throws InventoryItemNotFoundException;
 }

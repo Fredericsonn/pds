@@ -1,12 +1,19 @@
 package uiass.gisiba.eia.java.test;
 
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.*;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.transaction.Transaction;
 
+import com.google.gson.Gson;
 
 import uiass.gisiba.eia.java.controller.crm.AddressController;
 import uiass.gisiba.eia.java.controller.crm.ContactController;
+import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
 import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
@@ -16,6 +23,9 @@ import uiass.gisiba.eia.java.dao.inventory.ProductDao;
 import uiass.gisiba.eia.java.dao.inventory.iProductDao;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
+import uiass.gisiba.eia.java.entity.inventory.Category;
+import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
+import uiass.gisiba.eia.java.entity.inventory.Product;
 import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
 import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
 import uiass.gisiba.eia.java.service.Service;
@@ -30,9 +40,13 @@ public class Main {
 
     public static void main(String[] args) {
 
+        EntityManager em = HibernateUtility.getEntityManger();
 
+        EntityTransaction tr = em.getTransaction();
 
         iService service = new Service();
+
+        Gson gson = new Gson();
 
         //service.addProduct("hx0b6f", ProductCatagory.LAPTOP, ProductBrand.Dell, "Inspiron", "tech words tech words", 6000);
 
@@ -74,14 +88,18 @@ public class Main {
             e.printStackTrace();
         }*/
 
-        try {
-            service.addContact("fjwnf limited", EntrepriseType.valueOf("SARL"), "125642389", "jdjfjfoiejf", new Address("kdmfkwm", "kfmkwegm", "52623",  "dnjlw efjln", 10));
-        } catch (AddressNotFoundException | DuplicatedAddressException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        /*Product product = new Product("7F1C66", ProductCategory.CAMERA, ProductBrand.Canon, "GX-ALPHA", "Good Camera", 200);
 
 
+        tr.begin();
+        product.setUnitPrice(300);
+        em.persist(product);
+        em.persist(new InventoryItem(product, 5, Date.valueOf(LocalDate.now())));
+        tr.commit();*/
+
+        Category cat = new Category(ProductCategory.CAMERA, ProductBrand.Canon);
+
+        service.addProduct(cat, "GX-ALPHA", "Good Camera", 200);
         
 
     

@@ -3,28 +3,25 @@ package uiass.gisiba.eia.java.entity.purchases;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
-import uiass.gisiba.eia.java.entity.crm.Supplier;
 
 
 @Entity(name="Purchase")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Purchase {
 
     @Id
-    @Column(name="purchase_ref")
-    private String purchaseRef;
+    @Column(name="purchase_id")
+    private int purchaseId;
 
-    @OneToOne
-    @JoinColumn(name="supplier_id")
-    private Supplier supplier;
-
-    @OneToMany(mappedBy = "purchase")
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL)
     private List<PurchaseOrder> orders;
 
     @Column(name="purchase_date")
@@ -35,9 +32,8 @@ public class Purchase {
 
     // Constructors
 
-    public Purchase(String purchaseRef, Supplier supplier,List<PurchaseOrder> orders, LocalDate purchaseDate, double total) {
-        this.purchaseRef = purchaseRef;
-        this.supplier = supplier;
+    public Purchase(int purchaseId, List<PurchaseOrder> orders, LocalDate purchaseDate, double total) {
+        this.purchaseId = purchaseId;
         this.orders = orders;
         this.purchaseDate = purchaseDate;
         this.total = total;
@@ -50,20 +46,12 @@ public class Purchase {
 
     // Getters - Setters
     
-    public String getPurchaseRef() {
-        return purchaseRef;
+    public int getPurchaseId() {
+        return purchaseId;
     }
 
-    public void setPurchaseRef(String purchaseRef) {
-        this.purchaseRef = purchaseRef;
-    }
-
-    public Supplier getSupplier() {
-        return supplier;
-    }
-
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
+    public void setPurchaseId(int purchaseId) {
+        this.purchaseId = purchaseId;
     }
 
     public List<PurchaseOrder> getOrders() {

@@ -3,6 +3,7 @@ package uiass.gisiba.eia.java.controller;
 
 import uiass.gisiba.eia.java.controller.crm.AddressController;
 import uiass.gisiba.eia.java.controller.crm.ContactController;
+import uiass.gisiba.eia.java.controller.inventory.InventoryItemController;
 import uiass.gisiba.eia.java.controller.inventory.ProductController;
 
 
@@ -30,6 +31,14 @@ public class AppTest {
         ProductController.getAllBrandsByCategory();
         ProductController.updateproductController();
         ProductController.postproductController();
+
+        InventoryItemController.getAllItems();
+        InventoryItemController.getItemById();
+        InventoryItemController.getItemQuantity();
+        InventoryItemController.postItemController();
+        InventoryItemController.deleteItemController();
+
+
         
     }
 }

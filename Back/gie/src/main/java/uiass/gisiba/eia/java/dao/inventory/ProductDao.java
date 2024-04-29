@@ -10,6 +10,7 @@ import javax.persistence.Query;
 import uiass.gisiba.eia.java.dao.crm.HQLQueryManager;
 import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
+import uiass.gisiba.eia.java.entity.inventory.Category;
 import uiass.gisiba.eia.java.entity.inventory.Product;
 import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
 import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
@@ -25,9 +26,9 @@ public class ProductDao implements iProductDao {
     }
 
     @Override
-    public void addProduct(String ref, ProductCategory category, ProductBrand brand, String model, String description, double unitPrice) {
+    public void addProduct(Category categoryBrand, String model, String description, double unitPrice) {
 
-        Product product = new Product(ref, category, brand, model,description, unitPrice);
+        Product product = new Product(categoryBrand,model,description, unitPrice);
 
         tr.begin();
         em.persist(product);
@@ -82,7 +83,7 @@ public class ProductDao implements iProductDao {
     @Override
     public List<ProductCategory> getAllCategories() {
 
-        String hql = "select DISTINCT category from Catalog";
+        String hql = "select DISTINCT categoryName from Category";
 
         Query query = em.createQuery(hql);
 
@@ -92,11 +93,11 @@ public class ProductDao implements iProductDao {
     @Override
     public List<ProductBrand> getAllBrandsByCategory(ProductCategory category) {
 
-        String hql = "select DISTINCT brand from Catalog where category = :category";
+        String hql = "select DISTINCT brandName from Category where categoryName = :categoryName";
 
         Query query = em.createQuery(hql);
 
-        query.setParameter("category", category);
+        query.setParameter("categoryName", category);
 
         return query.getResultList();
     }
@@ -109,8 +110,6 @@ public class ProductDao implements iProductDao {
 
 		//dynamically generate the corresponding hql string :
 		String hql = HQLQueryManager.UpdateHQLQueryGenerator("Catalog", columnsNewValues, "product_ref");
-
-        System.out.println(hql);
 
 		// create the query using the generated hql :
 		Query query = em.createQuery(hql);

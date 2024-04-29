@@ -1,5 +1,7 @@
 package uiass.gisiba.eia.java.service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -13,13 +15,18 @@ import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
+import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.NoContactsFoundInCountry;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
+import uiass.gisiba.eia.java.dao.inventory.InventoryItemDao;
 import uiass.gisiba.eia.java.dao.inventory.ProductDao;
+import uiass.gisiba.eia.java.dao.inventory.iInventoryItemDao;
 import uiass.gisiba.eia.java.dao.inventory.iProductDao;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
 import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
+import uiass.gisiba.eia.java.entity.inventory.Category;
+import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
 import uiass.gisiba.eia.java.entity.inventory.Product;
 import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
 import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
@@ -29,6 +36,7 @@ public class Service implements iService {
     private iContactDao cdao = new ContactDao();
     private iAddressDao adao = new AddressDao();
     private iProductDao pdao = new ProductDao();
+    private iInventoryItemDao idao = new InventoryItemDao();
     private EmailSender es = new EmailSender();
 
 /////////////////////////////////////////////////////// ADDRESS ////////////////////////////////////////////////////////////////
@@ -150,11 +158,11 @@ public class Service implements iService {
 /////////////////////////////////////////////////////// PRODUCT ////////////////////////////////////////////////////////////////
 
     @Override
-    public void addProduct(String ref, ProductCategory category, ProductBrand brand, String model, String description,
+    public void addProduct(Category categoryBrand, String model, String description,
 
             double unitPrice) {
 
-        pdao.addProduct(ref, category, brand, model, description, unitPrice);
+        pdao.addProduct(categoryBrand,model, description, unitPrice);
     }
 
     @Override
@@ -193,6 +201,52 @@ public class Service implements iService {
 
         pdao.updateProduct(ref, columnsNewValues);
     }
+
+/////////////////////////////////////////////////////// Inventory Item ////////////////////////////////////////////////////////////////
+
+    @Override
+    public InventoryItem getInventoryItemById(int itemId) throws InventoryItemNotFoundException {
+
+        return idao.getInventoryItemById(itemId);
+    }
+
+    @Override
+    public List<InventoryItem> getAllInventoryItems() {
+
+        return idao.getAllInventoryItems();
+    }
+
+    @Override
+    public int getItemQuantity(int itemId) throws InventoryItemNotFoundException {
+ 
+        return idao.getItemQuantity(itemId);
+    }
+
+    @Override
+    public void addInventoryItem(Product product, int quantity, Date dateAdded) {
+
+        idao.addInventoryItem(product, quantity, dateAdded);
+    }
+
+    @Override
+    public boolean canSell(int itemId, int quantity) throws InventoryItemNotFoundException {
+
+        return idao.canSell(itemId, quantity);
+    }
+
+    @Override
+    public void deleteInventoryItem(int itemId) throws InventoryItemNotFoundException {
+
+        idao.deleteInventoryItem(itemId);
+    }
+
+    @Override
+    public void updateInventoryItem(int itemId, int quantity) throws InventoryItemNotFoundException {
+
+        idao.updateInventoryItem(itemId, quantity);
+    }
+
+
 
 
     

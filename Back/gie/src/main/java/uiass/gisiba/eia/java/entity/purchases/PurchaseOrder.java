@@ -1,5 +1,7 @@
 package uiass.gisiba.eia.java.entity.purchases;
 
+import java.time.LocalTime;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -16,7 +18,7 @@ public class PurchaseOrder extends Order {
 
     // Constructors
 
-    public PurchaseOrder(Product product, int quantity, String orderTime, Purchase purchase) {
+    public PurchaseOrder(Product product, int quantity, LocalTime orderTime, Purchase purchase) {
 
         super(product, quantity, orderTime);
 

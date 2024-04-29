@@ -1,10 +1,13 @@
 package uiass.gisiba.eia.java.entity.inventory;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
+import uiass.gisiba.eia.java.dao.inventory.ProductRefGenerator;
 
 
 @Entity(name="Catalog")
@@ -14,11 +17,9 @@ public class Product {
     @Column(name="product_ref")
     private String productRef;
 
-    @Enumerated(EnumType.STRING)
-    private ProductCategory category;
-
-    @Enumerated(EnumType.STRING)
-    private ProductBrand brand;
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name="category_id")
+    private Category category;
 
     @Column(name="model")
     private String model;
@@ -31,10 +32,9 @@ public class Product {
 
     // Constructors
 
-    public Product(String productRef, ProductCategory category, ProductBrand brand, String model, String description, double unitPrice) {
-        this.productRef = productRef;
+    public Product(Category category, String model, String description, double unitPrice) {
+        this.productRef = ProductRefGenerator.generateProductRef();
         this.category = category;
-        this.brand = brand;
         this.model = model;
         this.description = description;
         this.unitPrice = unitPrice;
@@ -54,20 +54,12 @@ public class Product {
         this.productRef = productRef;
     }
 
-    public ProductCategory getCategory() {
-        return this.category;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setCategory(ProductCategory category) {
+    public void setCategory(Category category) {
         this.category = category;
-    }
-
-    public ProductBrand getBrand() {
-        return brand;
-    }
-
-    public void setBrand(ProductBrand brand) {
-        this.brand = brand;
     }
 
     public String getModel() {
@@ -94,13 +86,21 @@ public class Product {
         this.unitPrice = unitPrice;
     }
 
+    
+
     @Override
     public String toString() {
 
-        return "ref : " + this.productRef + ", category : " + this.category  + ", model : "  + this.model +  ", brand : " + this.model + 
+        return "ref : " + this.productRef + ", category : " + this.category.getCategoryName() +  ", brand : "  + 
         
-         ", description : " + this.description + ", unit price: " + this.unitPrice;
+        this.category.getBrandName() +  ", model : " + this.model + ", description : " + this.description + ", unit price: " +
+        
+        this.unitPrice;
+        
+        
     }
+
+
 
 
 

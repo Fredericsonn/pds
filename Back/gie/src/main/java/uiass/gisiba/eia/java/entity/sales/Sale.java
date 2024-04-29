@@ -4,8 +4,11 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -20,7 +23,7 @@ public class Sale implements Serializable {
     @Column(name="sale_ref")
     private int saleRef;
 
-    @OneToMany(mappedBy = "purchase")
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
     private List<SaleOrder> orders;
 
     @Column(name="sale_date")
@@ -29,13 +32,18 @@ public class Sale implements Serializable {
     @Column(name="total")
     private double total;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name="state")
+    private SaleState state;
+
     // Constructors
 
-    public Sale(int saleRef, List<SaleOrder> orders, LocalDate saleDate, double total) {
+    public Sale(int saleRef, List<SaleOrder> orders, LocalDate saleDate, double total, SaleState state) {
         this.saleRef = saleRef;
         this.orders = orders;
         this.saleDate = saleDate;
         this.total = total;
+        this.state= state;
     }
 
     public Sale() {
@@ -76,6 +84,15 @@ public class Sale implements Serializable {
         this.total = total;
     }
 
+    public SaleState getState() {
+        return state;
+    }
+
+    public void setState(SaleState state) {
+        this.state = state;
+    }
+
+    
 
 
 

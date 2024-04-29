@@ -1,6 +1,7 @@
 package uiass.gisiba.eia.java.controller;
 
 import java.time.LocalDate;
+import java.sql.Date;
 import java.util.*;
 
 import com.google.gson.Gson;
@@ -12,6 +13,8 @@ import com.google.gson.JsonParser;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
 import uiass.gisiba.eia.java.entity.crm.Person;
+import uiass.gisiba.eia.java.entity.inventory.Category;
+import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
 import uiass.gisiba.eia.java.entity.inventory.Product;
 import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
 import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
@@ -32,7 +35,9 @@ public class Parser {
 
     public static List<String> addressAttributes = Arrays.asList("addressId","houseNumber","neighborhood","city","zipCode","country");
 
-    public static List<String> productAttributes = Arrays.asList("productRef","category","brand","model","description","unitPrice");
+    public static List<String> productAttributes = Arrays.asList("productRef","model","description","unitPrice");
+
+    public static List<String> categoryAttributes = Arrays.asList("categoryName","brandName");
 
     public static List<String> product_columns = Arrays.asList("category","brand","model","description","unit_price");
 
@@ -161,13 +166,11 @@ public class Parser {
     		
     	JsonObject contact = new JsonParser().parse(responseBody).getAsJsonObject();
 
+        List<String> attributes = attributes_by_type_map.get(contactType);
+
         List<String> contactStringInfo = new ArrayList<String>();
         
         List<Integer> contactIntInfo = new ArrayList<Integer>();
-
-    
-    	
-        List<String> attributes = attributes_by_type_map.get(contactType);
 
         for (String attribute : attributes) {
 
@@ -284,68 +287,143 @@ public class Parser {
     }
 
 /////////////////////////////// a method that parses a product object from a json //////////////////////////////////////////////////
-public static Product parseProduct(String responseBody) {
+    public static Product parseProduct(String responseBody) {
     		
-    JsonObject productObject = new JsonParser().parse(responseBody).getAsJsonObject();
+        JsonObject productObject = new JsonParser().parse(responseBody).getAsJsonObject();
 
-    List<String> productStringInfo = new ArrayList<String>();
+        List<String> productStringInfo = new ArrayList<String>();
     
-    List<Double> productDoubleInfo = new ArrayList<Double>();
+        List<Double> productDoubleInfo = new ArrayList<Double>();
 
-    // The list containing attributes names used to parse the json
-    List<String> attributes = productAttributes;
+        // The list containing attributes names used to parse the json
+        List<String> pAttributes = new ArrayList<String>(productAttributes);
 
-    // We iterate through our attributes and call the collectors to collect the values from the json
-    for (String attribute : attributes) {
+        // We iterate through our attributes and call the collectors to collect the values from the json
+        for (String attribute : pAttributes) {
 
-        if (attribute.equals("unitPrice")) {
+            if (attribute.equals("unitPrice")) {
             
-            productDoubleInfo.add(collectDouble(productObject, attribute));
+                productDoubleInfo.add(collectDouble(productObject, attribute));
+            }
+            else productStringInfo.add(collectString(productObject, attribute));
         }
-        else productStringInfo.add(collectString(productObject, attribute));
-    }
 
-    String ref = productStringInfo.get(0); 
+        String ref = productStringInfo.get(0); 
 
-    String categoryString = productStringInfo.get(1);
+        String model = productStringInfo.get(1);
 
-    String brandString = productStringInfo.get(2);
+        String description = productStringInfo.get(2);
 
-    String model = productStringInfo.get(3);
+        double unitPrice = productDoubleInfo.get(0);
 
-    String description = productStringInfo.get(4);
+        if (productObject.has("category")) {
 
-    double unitPrice = productDoubleInfo.get(0);
+            JsonObject categoryObject = productObject.get("category").getAsJsonObject();
 
-    ProductCategory category = ProductCategory.valueOf(categoryString);
+            String categoryString = collectString(categoryObject, "categoryName");
 
-    ProductBrand brand = ProductBrand.valueOf(brandString);
+            String brandString = collectString(categoryObject, "brandName");
 
-    Product product = new Product(ref, category, brand, model, description, unitPrice);
+            Category category = new Category(ProductCategory.valueOf(categoryString), ProductBrand.valueOf(brandString));
 
-    return product;
+            return new Product(category, model, description, unitPrice);
+        }
+
+        String categoryString = collectString(productObject, "categoryName");
+
+        String brandString = collectString(productObject, "brandName");
+
+        ProductCategory category = ProductCategory.valueOf(categoryString);
+
+        ProductBrand brand = ProductBrand.valueOf(brandString);
+
+        Category categoryBrand = new Category(category, brand);
+
+        Product product = new Product(categoryBrand,model,description,unitPrice);
+
+        return product;
                  
-}
+    }
 
 /////////////////////////////// a method that parses a list of product objects from a json /////////////////////////////////////////
 
-public static List<Product> parseProducts(String responseBody) {
+    public static List<Product> parseProducts(String responseBody) {
 
-    List<Product> products = new ArrayList<Product>();
+        List<Product> products = new ArrayList<Product>();
 
-    JsonArray productsArray = new JsonParser().parse(responseBody).getAsJsonArray();
+        JsonArray productsArray = new JsonParser().parse(responseBody).getAsJsonArray();
 
-    for (int i = 0 ; i < productsArray.size() ; i++) {
+        for (int i = 0 ; i < productsArray.size() ; i++) {
 
-        String productJsonBody = productsArray.get(i).toString();
+            String productJsonBody = productsArray.get(i).toString();
 
-        Product product = parseProduct(productJsonBody);
+            Product product = parseProduct(productJsonBody);
 
-        products.add(product);
+            products.add(product);
+        }
+
+        return products;
+
+    }
+    
+/////////////////////////////// a method that parses an inventory item object from a json //////////////////////////////////////////////////
+    public static InventoryItem parseInventoryItem(String responseBody) {
+    	
+        JsonObject itemObject = new JsonParser().parse(responseBody).getAsJsonObject();
+
+        Gson gson = new Gson();
+
+        int quantity = collectInt(itemObject, "quantity");
+
+        String dateAddedString = collectString(itemObject, "dateAdded");
+
+        Date dateAdded = Date.valueOf(dateAddedString);
+
+        Product product;
+
+        if (itemObject.has("product")) {
+
+            JsonObject productObject = itemObject.get("product").getAsJsonObject();
+
+            String productJson = gson.toJson(productObject);
+
+            product = parseProduct(productJson);
+        }
+
+        else {
+
+            itemObject.remove("quantity");
+
+            itemObject.remove("dateAdded");
+    
+            String productJson = gson.toJson(itemObject);
+    
+            product = parseProduct(productJson);
+        }
+
+        return new InventoryItem(product, quantity, dateAdded);
+             
     }
 
-    return products;
+/////////////////////////////// a method that parses a list of inventory item objects from a json /////////////////////////////////////////
 
-}
+    public static List<InventoryItem> parseInventoryItems(String responseBody) {
+
+        List<InventoryItem> items = new ArrayList<InventoryItem>();
+
+        JsonArray itemsArray = new JsonParser().parse(responseBody).getAsJsonArray();
+
+        for (int i = 0 ; i < itemsArray.size() ; i++) {
+
+            String itemJsonBody = itemsArray.get(i).toString();
+
+            InventoryItem inventoryItem = parseInventoryItem(itemJsonBody);
+
+            items.add(inventoryItem);
+        }
+
+        return items;
+
+    }
 }
 
