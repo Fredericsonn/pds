@@ -98,4 +98,7 @@ public interface iService {
     void deleteInventoryItem(int itemId) throws InventoryItemNotFoundException;
 
     void updateInventoryItem(int itemId, int quantity) throws InventoryItemNotFoundException;
+
+/////////////////////////////////////Order////////////////////////////////////////////////
+List<Contact> getAllOrders() throws InvalidContactTypeException;
 }

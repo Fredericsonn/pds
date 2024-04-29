@@ -19,14 +19,17 @@ import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.NoContactsFoundInCountry;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.dao.inventory.InventoryItemDao;
+import uiass.gisiba.eia.java.dao.inventory.OrderDao;
 import uiass.gisiba.eia.java.dao.inventory.ProductDao;
 import uiass.gisiba.eia.java.dao.inventory.iInventoryItemDao;
+import uiass.gisiba.eia.java.dao.inventory.iOrderDao;
 import uiass.gisiba.eia.java.dao.inventory.iProductDao;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
 import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
 import uiass.gisiba.eia.java.entity.inventory.Category;
 import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
+import uiass.gisiba.eia.java.entity.inventory.Order;
 import uiass.gisiba.eia.java.entity.inventory.Product;
 import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
 import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
@@ -38,7 +41,8 @@ public class Service implements iService {
     private iProductDao pdao = new ProductDao();
     private iInventoryItemDao idao = new InventoryItemDao();
     private EmailSender es = new EmailSender();
-
+    private iOrderDao odao = new OrderDao();
+ 
 /////////////////////////////////////////////////////// ADDRESS ////////////////////////////////////////////////////////////////
 
     @Override
@@ -245,7 +249,11 @@ public class Service implements iService {
 
         idao.updateInventoryItem(itemId, quantity);
     }
+/////////////////////////////////Order/////////////////////////////////////////////////
+public List<Order> getAllOrders() throws InvalidContactTypeException {
 
+    return cdao.getAllContacts();
+}
 
 
 
