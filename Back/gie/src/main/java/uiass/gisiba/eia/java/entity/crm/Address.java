@@ -27,19 +27,15 @@ public class Address {
     @Column(name = "zip_code")
     private String zipCode;
 
-    @Column(name = "region")
-    private String region;
-
 	@Column(name="country")
     private String country;
 
     // Constructors
 
-    public Address(String country, String city, String zipCode, String region, String neighborhood, int houseNumber) {
+    public Address(String country, String city, String zipCode, String neighborhood, int houseNumber) {
 		this.country = country;
 		this.city = city;
         this.zipCode = zipCode;
-        this.region = region;
         this.neighborhood = neighborhood;
         this.houseNumber = houseNumber;
     }
@@ -62,14 +58,6 @@ public class Address {
 
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
-	}
-
-	public String getRegion() {
-		return region;
-	}
-
-	public void setRegion(String region) {
-		this.region = region;
 	}
 
 	public String getCity() {
@@ -106,8 +94,8 @@ public class Address {
 
 	@Override
 	public String toString() {
-		return this.houseNumber + " " +  this.neighborhood + " " + this.city + ", " + this.zipCode + ", "  
-		+ this.region +  ", " + this.country;
+		return "id : " + this.addressId + ", " + this.houseNumber + " " +  this.neighborhood + " " + this.city + ", " + this.zipCode + ", "  
+		+ ", " + this.country;
 	}
 
 

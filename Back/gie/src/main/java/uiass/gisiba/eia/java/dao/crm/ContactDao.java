@@ -2,14 +2,11 @@ package uiass.gisiba.eia.java.dao.crm;
 
 
 
-import java.nio.channels.NoConnectionPendingException;
 import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 
 import uiass.gisiba.eia.java.dao.exceptions.*;
@@ -229,14 +226,21 @@ public class ContactDao implements iContactDao {
         for (String column : columnsNewValues.keySet()) {
 
 			Object newValue = columnsNewValues.get(column);
-            
-            query.setParameter(column, newValue);
+
+			if (column.equals("type")) {
+
+				query.setParameter(column, EntrepriseType.valueOf(String.valueOf(newValue)));
+			}
+		           
+            else query.setParameter(column, newValue);
             
         }
 
 		query.setParameter("id", id);
 
         query.executeUpdate();
+		
+		em.refresh(contact);
 
 		tr.commit();
     }

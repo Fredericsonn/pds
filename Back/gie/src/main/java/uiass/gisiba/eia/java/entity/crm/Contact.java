@@ -16,7 +16,7 @@ import javax.persistence.OneToOne;
 public class Contact implements Serializable {
 
     @Id
-	@GeneratedValue(strategy =GenerationType.IDENTITY)
+	@GeneratedValue(strategy =GenerationType.IDENTITY)     //uiass.gisiba.eia.java.controller.AppTest
 	private int id;
 	
 	@Column(name="phone_number")
@@ -25,7 +25,7 @@ public class Contact implements Serializable {
 	@Column(name="email")
 	private String email;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "address_id")
     private Address address;
 

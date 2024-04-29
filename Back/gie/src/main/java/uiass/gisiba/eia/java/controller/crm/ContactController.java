@@ -6,8 +6,7 @@ import javax.mail.MessagingException;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonStreamParser;
+
 
 import spark.Request;
 import spark.Response;
@@ -35,7 +34,7 @@ public class ContactController {
 /////////////////////////////////////////////////// GET METHODS //////////////////////////////////////////////////////////////////
 	public static void getContactByIdController() {
 
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -58,7 +57,7 @@ public class ContactController {
 
 	public static void getContactByNameController() {
 
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -79,7 +78,7 @@ public class ContactController {
 
 	public static void getContactByAddressIdController() {
 		
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -101,7 +100,7 @@ public class ContactController {
 
 	public static void getAllContactsByCountryController() {
 
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -122,7 +121,7 @@ public class ContactController {
 
 	public static void getAllContactsByTypeController() {
 
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -141,7 +140,7 @@ public class ContactController {
 
 	public static void getAllContactsController() {
 
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -160,7 +159,7 @@ public class ContactController {
 /////////////////////////////////////////////////// POST METHOD //////////////////////////////////////////////////////////////////
 public static void postContactController() {
 
-    Gson gson = GetGson.getGson();
+    Gson gson = new Gson();
 
     System.out.println("Server started.");
 
@@ -195,11 +194,9 @@ public static void postContactController() {
 
         String zipCode = Parser.collectString(contact, "zipCode");
 
-        String region = Parser.collectString(contact, "region");
-
         String country = Parser.collectString(contact, "country");
 
-        Address address = new Address(country, city, zipCode, region, neighborhood, houseNumber);
+        Address address = new Address(country, city, zipCode, neighborhood, houseNumber);
 
         try {
 
@@ -209,7 +206,8 @@ public static void postContactController() {
             }
 
             else {
-
+                
+            // We adapt the second value type wether it's the String last_name for Person or the Enumeration type for Enterprise
                 service.addContact(first_or_enterprise_name, EntrepriseType.valueOf(last_name_or_enterprise_type),
                 
                 phoneNumber, email, address);
@@ -229,7 +227,7 @@ public static void postContactController() {
 //////////////////////////////////////////  Email Sending Controller ////////////////////////////////////////////////////////////  
     public static void postEmailController() {
 
-        Gson gson = GetGson.getGson();
+        Gson gson = new Gson();
 
         System.out.println("Server Started.");
 
@@ -301,7 +299,7 @@ public static void postContactController() {
 
         // A list of the contact table's columns
 
-        Gson gson = GetGson.getGson();
+        Gson gson = new Gson();
 
 		System.out.println("Server started.");
 
@@ -319,7 +317,7 @@ public static void postContactController() {
                 String body = request.body(); // We get the json containing update information as string
                     
                 // The corresponding list of attribute (used to parse the json)
-                List<String> columns = Parser.contact_update_columns_by_type_map.get(contactType);
+                List<String> columns = Parser.contact_columns_by_type_map.get(contactType);
     
                 // We collect all the values to update from the request body in one list :
                 List contactValues = Parser.contactValuesCollector(gson, body, contactType);

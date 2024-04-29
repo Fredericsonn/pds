@@ -68,6 +68,7 @@ public class DataSender {
 
         OkHttpClient client = new OkHttpClient();
 
+        @SuppressWarnings("deprecation")
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
 
         Request request = new Request.Builder()
@@ -136,7 +137,7 @@ public class DataSender {
 
         } catch (IOException e) {
 
-            return "IGNORE IT"; 
+            return e.getMessage(); 
         }
     }
     

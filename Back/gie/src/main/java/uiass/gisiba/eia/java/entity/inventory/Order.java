@@ -1,35 +1,40 @@
 package uiass.gisiba.eia.java.entity.inventory;
 
+import java.io.Serializable;
+import java.time.LocalTime;
+
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 
 @MappedSuperclass
-public class Order {
+public class Order implements Serializable {
 
     @Id
+    @GeneratedValue(strategy =GenerationType.IDENTITY) 
+    @Column(name="order_id")
+    private int orderId;
+
     @OneToOne
-    @JoinColumn(name = "ref")
+    @JoinColumn(name = "product_ref")
     private Product product;
 
     @Column(name="quantity")
     private int quantity;
 
-    @Column(name="unit_price")
-    private double unitPrice;
-
     @Column(name="time")
-    private String orderTime;
+    private LocalTime orderTime;
 
     // Constructors
 
-    public Order(Product product, int quantity, double unitPrice, String orderTime) {
+    public Order(Product product, int quantity, LocalTime orderTime) {
 
         this.product = product;
         this.quantity = quantity;
-        this.unitPrice = unitPrice;
         this.orderTime = orderTime;
     }
 
@@ -38,6 +43,14 @@ public class Order {
     }
 
     // Getters - Setters 
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
 
     public Product getProduct() {
         return product;
@@ -55,21 +68,17 @@ public class Order {
         this.quantity = quantity;
     }
 
-    public double getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(double unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
-    public String getOrderTime() {
+    public LocalTime getOrderTime() {
         return orderTime;
     }
 
-    public void setOrderTime(String orderTime) {
+    public void setOrderTime(LocalTime orderTime) {
         this.orderTime = orderTime;
     }
+
+
+
+    
 
     
 

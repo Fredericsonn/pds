@@ -26,7 +26,7 @@ public class ContactDto {
 
         String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType + "/byName/" + name);
 
-        if (!responseBody.equals("Internal Server Error")) return Parser.parseContact(responseBody, contactType);
+        if (!responseBody.equals("Server Error.")) return Parser.parseContact(responseBody, contactType);
 
         return null;
     }
@@ -36,14 +36,14 @@ public class ContactDto {
 
         String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType);
 
-        List<List<String>> parsedContacts = new ArrayList<List<String>>();
+        List<List<String>> contacts = new ArrayList<List<String>>();
 
-        JsonArray contacts = new JsonParser().parse(responseBody).getAsJsonArray();
+        JsonArray contactsArray = new JsonParser().parse(responseBody).getAsJsonArray();
 
-        contacts.forEach(elt -> parsedContacts.add(Parser.parseContact(String.valueOf(elt.getAsJsonObject()), contactType)) );
+        contactsArray.forEach(elt -> contacts.add(Parser.parseContact(String.valueOf(elt.getAsJsonObject()), contactType)) );
 
 
-        return parsedContacts;
+        return contacts;
     }
 
     // Find all contacts (persons and enterprises) :
@@ -83,8 +83,8 @@ public class ContactDto {
 
     public static String updateContact(int id, String contactType, String json) {
 
-        if (json != "") return DataSender.putDataSender(json, "contacts/" + contactType + "/put" + "/" + id );
+        if (json != null) return DataSender.putDataSender(json, "contacts/" + contactType + "/put" + "/" + id );
 
-        return "Please provide some new values to update.";
+        return "Address Updated Successfully.";
     }
 }

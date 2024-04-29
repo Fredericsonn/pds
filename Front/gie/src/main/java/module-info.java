@@ -4,8 +4,10 @@ module uiass.eia.gisiba {
     requires okhttp3;
     requires com.google.gson;
     requires okio;
-
+    requires javafx.base;
+    requires javafx.graphics;
 
     opens uiass.eia.gisiba to javafx.fxml;
+    opens uiass.eia.gisiba.controller to javafx.fxml; // Add this line to open the controller package
     exports uiass.eia.gisiba;
 }

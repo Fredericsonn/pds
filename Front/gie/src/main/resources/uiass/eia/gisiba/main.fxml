@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="955.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uiass.eia.gisiba.MainController">
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="970.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uiass.eia.gisiba.controller.MainController">
    <children>
       <AnchorPane fx:id="leftAnchorPane" prefHeight="539.0" prefWidth="170.0">
          <children>
@@ -17,13 +17,22 @@
                   <Font name="Franklin Gothic Medium" size="22.0" />
                </font>
             </Label>
-            <SplitMenuButton fx:id="crmSplitMenu" layoutX="14.0" layoutY="85.0" mnemonicParsing="false" text="CRM">
+            <SplitMenuButton fx:id="clientsSplitMenu" layoutX="14.0" layoutY="85.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="130.0" text="Clients">
               <items>
-                  <MenuItem fx:id="Person" mnemonicParsing="false" onAction="#loadPersonPane" text="Persons" />
-                  <MenuItem fx:id="Enterprise" mnemonicParsing="false" onAction="#loadEnterprisePane" text="Enterprises" />
+                  <MenuItem fx:id="personsSplitMenuItem" mnemonicParsing="false" onAction="#loadPersonPane" text="Persons" />
+                  <MenuItem fx:id="enterprisesSplitMenuItem" mnemonicParsing="false" onAction="#loadEnterprisePane" text="Enterprises" />
               </items>
                <font>
-                  <Font name="Georgia" size="15.0" />
+                  <Font name="Georgia" size="16.0" />
+               </font>
+            </SplitMenuButton>
+            <SplitMenuButton fx:id="inventorySplitMenu" layoutX="14.0" layoutY="152.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="130.0" text="Inventory">
+              <items>
+                <MenuItem fx:id="catalogSplitMenuItem" mnemonicParsing="false" onAction="#loadProductPane" text="Catalog" />
+                <MenuItem fx:id="inventorySplitMenuItem" mnemonicParsing="false" text="Inventory" />
+              </items>
+               <font>
+                  <Font name="Georgia" size="16.0" />
                </font>
             </SplitMenuButton>
          </children>
@@ -41,6 +50,6 @@
             </ImageView>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="rightAnchorPane" layoutX="700.0" prefHeight="539.0" prefWidth="255.0" />
+      <AnchorPane fx:id="rightAnchorPane" layoutX="700.0" prefHeight="539.0" prefWidth="270.0" />
    </children>
 </AnchorPane>

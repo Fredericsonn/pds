@@ -1,0 +1,11 @@
+Ce liverable contrient les exigences du sprint 1 "CRM" et la partie de la gestion des produits du sprint 2 "Inventory Management"
+
+
+pour executer le jar du front (a modifier le path) : java --module-path [C:path]\gie\Front\gie\javafx-sdk-22.0.1\lib --add-modules javafx.controls,javafx.fxml -jar gie-1.0-SNAPSHOT.jar
+
+
+vous pouvez importer le fichier dump pour avoir du data a tester sur votre machine
+
+pour l'auto refresh pour visualiser les modifications on a pas encore programmer un button refresh mais il suffit de cliquer une deuxieme fois sur le button CRM -> Person ou Enterprise
+
+ca depend du type contact que vous avez choisis et vous allez voyer les nouvelle modifications.

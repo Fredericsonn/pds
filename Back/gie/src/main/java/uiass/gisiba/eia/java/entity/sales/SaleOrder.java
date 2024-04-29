@@ -1,9 +1,10 @@
 package uiass.gisiba.eia.java.entity.sales;
 
+import java.time.LocalTime;
+
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 
 import uiass.gisiba.eia.java.entity.inventory.Order;
 import uiass.gisiba.eia.java.entity.inventory.Product;
@@ -11,15 +12,16 @@ import uiass.gisiba.eia.java.entity.inventory.Product;
 @Entity(name="Sale_Order")
 public class SaleOrder extends Order {
 
-    @Id
-    @OneToOne
-    @JoinColumn(name = "sale_id")
+    @ManyToOne
+    @JoinColumn(name="sale_ref")
     private Sale sale;
 
     // Constructors
+    
+    public SaleOrder(Product product, int quantity, LocalTime orderTime, Sale sale) {
 
-    public SaleOrder(Product product, int quantity, double unitPrice, String orderTime, Sale sale) {
-        super(product, quantity, unitPrice, orderTime);
+        super(product, quantity, orderTime);
+
         this.sale = sale;
     }
 
@@ -28,7 +30,7 @@ public class SaleOrder extends Order {
     }
 
     // Getters - Setters
-    
+
     public Sale getSale() {
         return sale;
     }

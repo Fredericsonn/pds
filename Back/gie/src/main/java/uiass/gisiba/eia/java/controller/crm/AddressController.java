@@ -22,7 +22,7 @@ public class AddressController {
     
     public static  void getAddressByIdController() {
 
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -43,7 +43,7 @@ public class AddressController {
 
 	public static void getAllAddressesController() {
 
-	    Gson gson = GetGson.getGson();
+	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -62,7 +62,7 @@ public class AddressController {
 
     public static void updateAddressController() {
 
-        Gson gson = GetGson.getGson();
+        Gson gson = new Gson();
 
         System.out.println("Server started.");
 
@@ -80,7 +80,7 @@ public class AddressController {
             List addressValues = Parser.addressValuesCollector(gson, body);
 
             // We select only the non null values with their corresponding columns and form the update map :
-            Map<String, Object> address_new_values = Parser.mapFormater(Parser.address_update_columns, addressValues);
+            Map<String, Object> address_new_values = Parser.mapFormater(Parser.address_columns, addressValues);
             
             // the address_update_columns list in the Parser class contains columns name used to parse Address jsons
 

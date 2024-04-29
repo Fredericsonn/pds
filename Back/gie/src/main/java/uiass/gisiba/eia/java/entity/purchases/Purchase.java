@@ -1,17 +1,28 @@
 package uiass.gisiba.eia.java.entity.purchases;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 
-@Entity
+
+
+@Entity(name="Purchase")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Purchase {
 
     @Id
     @Column(name="purchase_id")
     private int purchaseId;
+
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL)
+    private List<PurchaseOrder> orders;
 
     @Column(name="purchase_date")
     private LocalDate purchaseDate;
@@ -21,10 +32,12 @@ public class Purchase {
 
     // Constructors
 
-    public Purchase(int purchaseId, LocalDate purchaseDate, double total) {
+    public Purchase(int purchaseId, List<PurchaseOrder> orders, LocalDate purchaseDate, double total) {
         this.purchaseId = purchaseId;
+        this.orders = orders;
         this.purchaseDate = purchaseDate;
         this.total = total;
+
     }
 
     public Purchase() {
@@ -39,6 +52,14 @@ public class Purchase {
 
     public void setPurchaseId(int purchaseId) {
         this.purchaseId = purchaseId;
+    }
+
+    public List<PurchaseOrder> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<PurchaseOrder> orders) {
+        this.orders = orders;
     }
 
     public LocalDate getPurchaseDate() {
@@ -56,6 +77,18 @@ public class Purchase {
     public void setTotal(double total) {
         this.total = total;
     }
+
+
+
+
+
+    
+
+
+    
+
+
+    
 
     
 

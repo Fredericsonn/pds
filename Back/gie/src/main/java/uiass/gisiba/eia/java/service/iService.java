@@ -1,23 +1,34 @@
 package uiass.gisiba.eia.java.service;
 
+import java.time.LocalDate;
+import java.sql.Date;
 import java.util.*;
 
 import javax.mail.MessagingException;
+
+import org.hibernate.criterion.Order;
 
 import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
+import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.NoContactsFoundInCountry;
+import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
 import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
+import uiass.gisiba.eia.java.entity.inventory.Category;
+import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
+import uiass.gisiba.eia.java.entity.inventory.Product;
+import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
+import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
 
 public interface iService {
 
 /////////////////////////////////////////////////////// ADDRESS ////////////////////////////////////////////////////////////////
 
-    void addAddress(String country, String city, String zipCode, String region, String neighborhood,
+    void addAddress(String country, String city, String zipCode, String neighborhood,
     
     int houseNumber) throws AddressNotFoundException,DuplicatedAddressException;
 
@@ -56,4 +67,40 @@ public interface iService {
 
     void notifyContact(String email, String subject, String body) throws MessagingException;
 
+/////////////////////////////////////////////////////// PRODUCT ////////////////////////////////////////////////////////////////
+
+    void addProduct(Category categoryBrand, String model, 
+    
+    String description, double unitPrice);
+
+    Product getProductById(String ref) throws ProductNotFoundException;
+
+    void deleteProduct(String ref) throws ProductNotFoundException;
+
+    List<Product> getAllProducts();
+
+    List<ProductCategory> getAllCategories(); 
+
+    List<ProductBrand> getAllBrandsByCategory(ProductCategory category); 
+
+    void updateProduct(String ref, Map<String,Object> columnsNewValues) throws ProductNotFoundException;
+
+/////////////////////////////////////////////////////// Inventory Item ////////////////////////////////////////////////////////////////
+
+    InventoryItem getInventoryItemById(int itemId) throws InventoryItemNotFoundException;
+
+    List<InventoryItem> getAllInventoryItems();
+
+    int getItemQuantity(int itemId) throws InventoryItemNotFoundException;
+
+    void addInventoryItem(Product product, int quantity, Date dateAdded);
+
+    boolean canSell(int itemId, int quantity) throws InventoryItemNotFoundException;
+
+    void deleteInventoryItem(int itemId) throws InventoryItemNotFoundException;
+
+    void updateInventoryItem(int itemId, int quantity) throws InventoryItemNotFoundException;
+
+/////////////////////////////////////Order////////////////////////////////////////////////
+public List<Order> getAllOrdersByType( String OrderType);
 }

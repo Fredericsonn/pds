@@ -5,37 +5,21 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rightAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="255.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="rightAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="270.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <ImageView fx:id="enterpriseImg" fitHeight="89.0" fitWidth="86.0" layoutX="4.0" layoutY="22.0">
+        <ImageView fx:id="enterpriseImg" fitHeight="97.0" fitWidth="87.0" layoutX="4.0" layoutY="22.0">
             <image>
                 <Image url="@imgs/office-building.png" />
             </image>
         </ImageView>
-        <Label fx:id="enterpriseNameLabel" layoutX="99.0" layoutY="39.0" prefHeight="22.0" prefWidth="146.0" text="Enterprise Name">
-         <font>
-            <Font size="9.5" />
-         </font></Label>
-        <Label fx:id="enterpriseTypeLabel" layoutX="99.0" layoutY="22.0" prefHeight="22.0" prefWidth="146.0" text="Enterprise Type">
-         <font>
-            <Font size="9.5" />
-         </font></Label>
-        <Label fx:id="phoneNumberLabel" layoutX="99.0" layoutY="57.0" prefHeight="18.0" prefWidth="146.0" text="Phone Number">
-         <font>
-            <Font size="9.5" />
-         </font></Label>
-        <Label fx:id="emailLabel" layoutX="99.0" layoutY="73.0" prefHeight="18.0" prefWidth="146.0" text="Email">
-         <font>
-            <Font size="9.5" />
-         </font></Label>
-        <Label fx:id="addressLabel" layoutX="98.0" layoutY="90.0" prefHeight="36.0" prefWidth="146.0" text="Address">
-         <font>
-            <Font size="9.5" />
-         </font></Label>
-        <Button fx:id="updateBtn" layoutX="29.0" layoutY="136.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="70.0" text="Update" />
-        <Button fx:id="deleteBtn" layoutX="152.0" layoutY="136.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="70.0" text="Delete" />
-      <Button fx:id="notifyBtn" layoutX="92.0" layoutY="196.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="70.0" text="Notify" />
+        <Label fx:id="enterpriseNameLabel" layoutX="99.0" layoutY="39.0" prefHeight="22.0" prefWidth="170.0" text="Enterprise Name" />
+        <Label fx:id="enterpriseTypeLabel" layoutX="99.0" layoutY="22.0" prefHeight="22.0" prefWidth="170.0" text="Enterprise Type" />
+        <Label fx:id="phoneNumberLabel" layoutX="99.0" layoutY="60.0" prefHeight="18.0" prefWidth="170.0" text="Phone Number" />
+        <Label fx:id="emailLabel" layoutX="99.0" layoutY="77.0" prefHeight="18.0" prefWidth="170.0" text="Email" />
+        <Label fx:id="addressLabel" layoutX="99.0" layoutY="94.0" prefHeight="36.0" prefWidth="170.0" text="Address" />
+        <Button fx:id="updateBtn" layoutX="29.0" layoutY="146.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="70.0" text="Update" />
+        <Button fx:id="deleteBtn" layoutX="152.0" layoutY="146.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="70.0" text="Delete" />
+      <Button fx:id="notifyBtn" layoutX="92.0" layoutY="206.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="70.0" text="Notify" />
     </children>
 </AnchorPane>

@@ -1,9 +1,10 @@
 package uiass.gisiba.eia.java.entity.purchases;
 
+import java.time.LocalTime;
+
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 
 import uiass.gisiba.eia.java.entity.inventory.Order;
 import uiass.gisiba.eia.java.entity.inventory.Product;
@@ -11,23 +12,24 @@ import uiass.gisiba.eia.java.entity.inventory.Product;
 @Entity(name="Purchase_Order")
 public class PurchaseOrder extends Order {
 
-    @Id
-    @OneToOne
-    @JoinColumn(name = "purchase_id")
+    @ManyToOne
+    @JoinColumn(name="purchase_ref")
     private Purchase purchase;
 
     // Constructors
 
-    public PurchaseOrder(Product product, int quantity, double unitPrice, String orderTime, Purchase purchase) {
-        super(product, quantity, unitPrice, orderTime);
+    public PurchaseOrder(Product product, int quantity, LocalTime orderTime, Purchase purchase) {
+
+        super(product, quantity, orderTime);
+
         this.purchase = purchase;
     }
 
     public PurchaseOrder() {
-    
+
     }
 
-    // Getters - Setters 
+    // Getters - Setters
 
     public Purchase getPurchase() {
         return purchase;

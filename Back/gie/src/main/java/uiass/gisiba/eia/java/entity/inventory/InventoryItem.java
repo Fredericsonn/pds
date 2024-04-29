@@ -1,7 +1,8 @@
 package uiass.gisiba.eia.java.entity.inventory;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,21 +15,22 @@ import javax.persistence.OneToOne;
 public class InventoryItem {
 
     @Id
+    @Column(name="item_id")
     @GeneratedValue(strategy =GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
-    @JoinColumn(name = "ref")
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name="product_ref")
     private Product product;
 
     @Column(name="quantity")
     private int quantity;
 
     @Column(name="date_added")
-    private LocalDate dateAdded;
+    private Date dateAdded;
 
     // Constructors
-    public InventoryItem(Product product, int quantity, LocalDate dateAdded) {
+    public InventoryItem(Product product, int quantity, Date dateAdded) {
 
         this.product = product;
 
@@ -67,12 +69,20 @@ public class InventoryItem {
         this.quantity = quantity;
     }
 
-    public LocalDate getDateAdded() {
+    public Date getDateAdded() {
         return dateAdded;
     }
 
-    public void setDateAdded(LocalDate dateAdded) {
+    public void setDateAdded(Date dateAdded) {
         this.dateAdded = dateAdded;
+    }
+
+    @Override
+    public String toString() {
+
+        return "id : " + this.id + ", ref : " + this.product.getProductRef() + ", quantity : " + this.quantity
+        
+        + ", added on : " + this.dateAdded;
     }
 
     

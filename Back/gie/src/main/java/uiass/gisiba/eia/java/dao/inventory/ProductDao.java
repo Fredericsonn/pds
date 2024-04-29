@@ -10,9 +10,10 @@ import javax.persistence.Query;
 import uiass.gisiba.eia.java.dao.crm.HQLQueryManager;
 import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
-import uiass.gisiba.eia.java.entity.inventory.Model;
+import uiass.gisiba.eia.java.entity.inventory.Category;
 import uiass.gisiba.eia.java.entity.inventory.Product;
-import uiass.gisiba.eia.java.entity.inventory.ProductCatagory;
+import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
+import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
 
 public class ProductDao implements iProductDao {
 
@@ -25,9 +26,9 @@ public class ProductDao implements iProductDao {
     }
 
     @Override
-    public void addProduct(String ref, String description, ProductCatagory category, Model model, double unitPrice) {
+    public void addProduct(Category categoryBrand, String model, String description, double unitPrice) {
 
-        Product product = new Product(ref, description, category, model, unitPrice);
+        Product product = new Product(categoryBrand,model,description, unitPrice);
 
         tr.begin();
         em.persist(product);
@@ -74,20 +75,41 @@ public class ProductDao implements iProductDao {
     @Override
     public List<Product> getAllProducts() {
 
-        Query query = em.createQuery("from Product");
+        Query query = em.createQuery("from Catalog");
 
         return (List<Product>) query.getResultList();
     }
 
     @Override
+    public List<ProductCategory> getAllCategories() {
+
+        String hql = "select DISTINCT categoryName from Category";
+
+        Query query = em.createQuery(hql);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<ProductBrand> getAllBrandsByCategory(ProductCategory category) {
+
+        String hql = "select DISTINCT brandName from Category where categoryName = :categoryName";
+
+        Query query = em.createQuery(hql);
+
+        query.setParameter("categoryName", category);
+
+        return query.getResultList();
+    }
+
+    @Override
     public void updateProduct(String ref, Map<String, Object> columnsNewValues) throws ProductNotFoundException {
 
-		tr.begin();
 		// get the product to update :
 		Product product = this.getProductById(ref);
 
 		//dynamically generate the corresponding hql string :
-		String hql = HQLQueryManager.UpdateHQLQueryGenerator("Product", columnsNewValues, "ref");
+		String hql = HQLQueryManager.UpdateHQLQueryGenerator("Catalog", columnsNewValues, "product_ref");
 
 		// create the query using the generated hql :
 		Query query = em.createQuery(hql);
@@ -97,15 +119,25 @@ public class ProductDao implements iProductDao {
 
 			Object newValue = columnsNewValues.get(column);
             
-            query.setParameter(column, newValue);
+			if (column.equals("category")) query.setParameter(column, ProductCategory.valueOf((String) newValue));
+
+			else if (column.equals("brand")) query.setParameter(column, ProductBrand.valueOf((String) newValue));
+            
+            else query.setParameter(column, newValue);
             
         }
 
-		query.setParameter("ref", ref);
+		query.setParameter("product_ref", ref);
+
+        tr.begin();
 
         query.executeUpdate();
 
+        em.refresh(product);
+
 		tr.commit();
     }
+
+
 
 }

@@ -7,11 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-
+// This class contain all the diverse parsing and data structures generating methods 
 public class Parser {
 
     private static Map<String, List<String>> attributes_by_type_map = new HashMap<String, List<String>>() {{
@@ -20,22 +21,40 @@ public class Parser {
     }};
 
     public static Map<String, List<String>> contact_creation_columns_by_type_map = new HashMap<String, List<String>>() {{
-        put("Person", Arrays.asList("firstName","lastName","phoneNumber","email","houseNumber","neighborhood","city","zipCode","region","country"));
-        put("Enterprise", Arrays.asList("enterpriseName","type","phoneNumber","email","houseNumber","neighborhood","city","zipCode","region","country"));
+        put("Person", Arrays.asList("firstName","lastName","phoneNumber","email","houseNumber","neighborhood","city","zipCode","country"));
+        put("Enterprise", Arrays.asList("enterpriseName","phoneNumber","email","houseNumber","neighborhood","city","zipCode","country","type"));
     }};
 
     public static Map<String, List<String>> contact_update_columns_by_type_map = new HashMap<String, List<String>>() {{
         put("Person", Arrays.asList("firstName","lastName","phoneNumber","email"));
-        put("Enterprise", Arrays.asList("enterpriseName","type","phoneNumber","email"));
+        put("Enterprise", Arrays.asList("enterpriseName","phoneNumber","email","type"));
     }};
 
-    public static List<String> addressAttributes = Arrays.asList("addressId","houseNumber","neighborhood","city","zipCode","region","country");
+    public static Map<String, List<String>> updateContactPaneAttributes = new HashMap<String, List<String>>() {{
+        put("Person", Arrays.asList("firstName","lastName","phoneNumber","email","houseNumber","neighborhood","city","zipCode","country"));
+        put("Enterprise", Arrays.asList("enterpriseName","phoneNumber","email","houseNumber","neighborhood","city","zipCode","country","type"));
+    }};
 
-    public static List<String> update_address_attributes = Arrays.asList("houseNumber","neighborhood","city","zipCode","region","country");
+    public static Map<String, List<String>> contactTextFieldAttributesMap = new HashMap<String, List<String>>() {{
+        put("Person", Arrays.asList("first","second","phoneNumber","email","houseNumber","neighborhood","city","zipCode","country"));
+        put("Enterprise", Arrays.asList("first","phoneNumber","email","houseNumber","neighborhood","city","zipCode","country","type"));
+    }};
 
-    public static List<String> textFieldsReferences = Arrays.asList("first","second","phoneNumber","email","houseNumber","neighborhood","city","zipCode","region","country");
+
+
+    public static List<String> addressAttributes = Arrays.asList("addressId","houseNumber","neighborhood","city","zipCode","country");
+
+    public static List<String> update_address_attributes = Arrays.asList("houseNumber","neighborhood","city","zipCode","country");
+
+    public static List<String> contactCreationTextFieldsReferences = Arrays.asList("first","second","phoneNumber","email","houseNumber","neighborhood","city","zipCode","country");
+
+    public static List<String> contactUpdateTextFieldsReferences = Arrays.asList("first","second","phoneNumber","email");
 
     public static List<String> email_sending_attributes = Arrays.asList("receiver","subject","body");
+
+    private static List<String> productAttributes = Arrays.asList("productRef","category","brand","model","description","unitPrice");
+
+    private static List<String> product_columns = Arrays.asList("category","brand","model","description","unitPrice");
 
     public static Map<String,Object> contactCreationMapGenerator(List values, String contactType) {
 
@@ -52,15 +71,32 @@ public class Parser {
 
         return map;
     }
+
+    public static Map<String,String> productCreationMapGenerator(List<String> values) {
+
+        Map<String,String> map = new HashMap<String,String>();
+
+        List<String> attributes = product_columns;
+        
+        for (int i=0 ; i < attributes.size() ; i++) {
+
+            map.put(attributes.get(i), values.get(i));
+
+        }
+
+        return map;
+    }
+
     public static Map<String,Object> contactUpdateMapGenerator(List values, String contactType) {
 
         Map<String,Object> map = new HashMap<String,Object>();
 
         List<String> attributes = contact_update_columns_by_type_map.get(contactType);
 
-        
         for (int i=0 ; i < attributes.size() ; i++) {
 
+            if (values.get(i) != null) 
+            
             if (!((String) values.get(i)).equals("")) map.put(attributes.get(i), values.get(i));
 
         }
@@ -92,6 +128,26 @@ public class Parser {
         return map;
     }
 
+    public static Map<String,String> productUpdateMapGenerator(List<String> values) {
+
+        Map<String,String> map = new HashMap<String,String>();
+
+        List<String> attributes = product_columns;
+
+        
+        for (int i=0 ; i < attributes.size() ; i++) {
+
+            String attribute = attributes.get(i);
+
+            String value = values.get(i);
+
+            if (value != "null" && value != "") map.put(attribute, value);
+
+        }
+
+        return map;
+    }
+
     public static Map<String,Object> emailSendingMapGenerator(List values) {
 
         Map<String,Object> map = new HashMap<String,Object>();
@@ -110,11 +166,15 @@ public class Parser {
         return map;
     }
 
+    
+
     public static String jsonGenerator(Map<String,Object> attributes) {
 
         Gson gson = GetGson.getGson();
 
-        return gson.toJson(attributes);
+        if (!attributes.isEmpty()) return gson.toJson(attributes);
+
+        return null;
     }
     
     public static String collectString(JsonObject jsObj, String attribute) {
@@ -129,6 +189,14 @@ public class Parser {
         return element != null ? Integer.valueOf(element.getAsString()) : null;
     }
 
+    public static double collectDouble(JsonObject jsObj, String attribute) {
+
+        JsonElement element = jsObj.get(attribute);
+
+        return element != null ? Double.valueOf(element.getAsString()) : null;
+    }
+
+    // Contact parser
     public static List<String> parseContact(String responseBody, String contactType) {
 
     	JsonObject contact = new JsonParser().parse(responseBody).getAsJsonObject();
@@ -172,14 +240,14 @@ public class Parser {
         String neighborhood = String.valueOf(contactStringInfo.get(4));
         String city = String.valueOf(contactStringInfo.get(5));
         String zipCode = String.valueOf(contactStringInfo.get(6));
-        String region = String.valueOf(contactStringInfo.get(7));
-        String country = String.valueOf(contactStringInfo.get(8));
+        String country = String.valueOf(contactStringInfo.get(7));
 
-        return Arrays.asList(id,first_or_enterprise_name,last_name_or_enterprise_type,phoneNumber,email,addressId, houseNumber + " " + neighborhood
+        return Arrays.asList(id,first_or_enterprise_name,last_name_or_enterprise_type,phoneNumber,email,addressId, houseNumber, neighborhood,
         
-        + " " + city + " " + zipCode + " " + region + " " + country);
+        city, zipCode ,country);
     }
 
+    // Address parser
     public static List<String> parseAddress(String responseBody) {
 
     	JsonObject addressObject = new JsonParser().parse(responseBody).getAsJsonObject();
@@ -202,11 +270,63 @@ public class Parser {
         String neighborhood = addressStringInfo.get(0);
         String city =  addressStringInfo.get(1);
         String zipCode = addressStringInfo.get(2);
-        String region = addressStringInfo.get(3);
-        String country = addressStringInfo.get(4);
+        String country = addressStringInfo.get(3);
 
-        return Arrays.asList(addressId,houseNumber,neighborhood,city,zipCode,region,country);
+        return Arrays.asList(addressId,houseNumber,neighborhood,city,zipCode,country);
     }
+
+    public static List<String> parseProduct(String responseBody) {
+    		
+        JsonObject productObject = new JsonParser().parse(responseBody).getAsJsonObject();
+    
+        List<String> productStringInfo = new ArrayList<String>();
+        
+        List<Double> productDoubleInfo = new ArrayList<Double>();
+    
+        // The list containing attributes names used to parse the json
+        List<String> attributes = productAttributes;
+    
+        // We iterate through our attributes and call the collectors to collect the values from the json
+        for (String attribute : attributes) {
+    
+            if (attribute.equals("unitPrice")) {
+                
+                productDoubleInfo.add(collectDouble(productObject, attribute));
+            }
+            else productStringInfo.add(collectString(productObject, attribute));
+        }
+    
+        String ref = productStringInfo.get(0); 
+    
+        String category = productStringInfo.get(1);
+    
+        String brand = productStringInfo.get(2);
+    
+        String model = productStringInfo.get(3);
+    
+        String description = productStringInfo.get(4);
+    
+        String unitPrice = String.valueOf(productDoubleInfo.get(0)) + "$";
+
+        return Arrays.asList(ref, category, brand, model, description, unitPrice);
+                     
+    }
+
+    public static List<String> parseProductCharacteristics(String responseBody) {
+
+        List<String> characteristics = new ArrayList<String>();
+
+        JsonArray characteristicsArray = new JsonParser().parse(responseBody).getAsJsonArray();
+
+        characteristicsArray.forEach(jsonElt -> characteristics.add(String.valueOf(jsonElt.getAsString())));
+
+        return characteristics;
+
+
+
+    }
+
+    
 
 
 
