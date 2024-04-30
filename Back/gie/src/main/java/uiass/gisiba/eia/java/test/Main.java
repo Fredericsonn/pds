@@ -1,12 +1,20 @@
 package uiass.gisiba.eia.java.test;
 
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 import javax.transaction.Transaction;
 
 import com.google.gson.Gson;
@@ -15,6 +23,7 @@ import uiass.gisiba.eia.java.controller.crm.AddressController;
 import uiass.gisiba.eia.java.controller.crm.ContactController;
 import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
 import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
@@ -97,9 +106,31 @@ public class Main {
         em.persist(new InventoryItem(product, 5, Date.valueOf(LocalDate.now())));
         tr.commit();*/
 
-        Category cat = new Category(ProductCategory.CAMERA, ProductBrand.Canon);
+        /*Category cat = new Category(ProductCategory.CAMERA, ProductBrand.Canon);
 
-        service.addProduct(cat, "GX-ALPHA", "Good Camera", 200);
+        service.addProduct(cat, "GX-ALPHA", "Good Camera", 200);*/
+
+        /*Map<String,Object> map = new HashMap<String,Object>();
+
+        map.put("unitPrice", 250.0);
+
+        map.put("categoryName", "LAPTOP");
+
+        try {
+            service.updateProduct("00ENDE", map);
+        } catch (ProductNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }*/
+
+        try {
+            System.out.println(service.getCategoryById(6));
+        } catch (CategoryNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        
         
 
     

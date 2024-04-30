@@ -56,52 +56,10 @@ public class ProductController {
 	    get("/products", (req,res)-> {
 
 		List<Product> products = service.getAllProducts();
-
-		System.out.println(products);
 		
 		res.type("application/json");
 
 		return products;
-	
-		   
-		}, gson::toJson);
-
-    }
-
-	public static void getAllCategories() {
-
-	    Gson gson = new Gson();
-	  
-	    System.out.println("Server started.");
-	
-	    get("/products/categories", (req,res)-> {
-
-		List<ProductCategory> categories = service.getAllCategories();
-		
-		res.type("application/json");
-
-		return categories;
-	
-		   
-		}, gson::toJson);
-
-    }
-
-	public static void getAllBrandsByCategory() {
-
-	    Gson gson = new Gson();
-	  
-	    System.out.println("Server started.");
-	
-	    get("/products/brands/byCategory/:category", (req,res)-> {
-		
-		ProductCategory category = ProductCategory.valueOf(req.params(":category"));
-
-		List<ProductBrand> brands = service.getAllBrandsByCategory(category);
-		
-		res.type("application/json");
-
-		return brands;
 	
 		   
 		}, gson::toJson);
@@ -139,7 +97,7 @@ public class ProductController {
 
 /////////////////////////////////////////////////// PUT METHOD //////////////////////////////////////////////////////////////////
 
-    public static void updateproductController() {
+    public static void updateProductController() {
 
 
 	    // A list of the product table's columns
@@ -163,6 +121,8 @@ public class ProductController {
 		    	// We select only the non null values with their corresponding columns :
 		    	Map<String, Object> product_columns_new_values = Parser.mapFormater(Parser.product_columns, productValues);
 
+				System.out.println(product_columns_new_values);
+
 		    	// And finally we update the product :
 		    	try {
 				  
@@ -183,7 +143,7 @@ public class ProductController {
 
 /////////////////////////////////////////////////// POST METHOD //////////////////////////////////////////////////////////////////
 
-public static void postproductController() {
+public static void postProductController() {
 
 	// A list of the product table's columns
 

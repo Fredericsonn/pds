@@ -81,28 +81,6 @@ public class ProductDao implements iProductDao {
     }
 
     @Override
-    public List<ProductCategory> getAllCategories() {
-
-        String hql = "select DISTINCT categoryName from Category";
-
-        Query query = em.createQuery(hql);
-
-        return query.getResultList();
-    }
-
-    @Override
-    public List<ProductBrand> getAllBrandsByCategory(ProductCategory category) {
-
-        String hql = "select DISTINCT brandName from Category where categoryName = :categoryName";
-
-        Query query = em.createQuery(hql);
-
-        query.setParameter("categoryName", category);
-
-        return query.getResultList();
-    }
-
-    @Override
     public void updateProduct(String ref, Map<String, Object> columnsNewValues) throws ProductNotFoundException {
 
 		// get the product to update :
@@ -112,31 +90,29 @@ public class ProductDao implements iProductDao {
 		String hql = HQLQueryManager.UpdateHQLQueryGenerator("Catalog", columnsNewValues, "product_ref");
 
 		// create the query using the generated hql :
-		Query query = em.createQuery(hql);
+		Query productQuery = em.createQuery(hql);
 
 		// set the query parameters :
         for (String column : columnsNewValues.keySet()) {
 
-			Object newValue = columnsNewValues.get(column);
+            Object newValue = columnsNewValues.get(column);
             
-			if (column.equals("category")) query.setParameter(column, ProductCategory.valueOf((String) newValue));
-
-			else if (column.equals("brand")) query.setParameter(column, ProductBrand.valueOf((String) newValue));
-            
-            else query.setParameter(column, newValue);
+            productQuery.setParameter(column, newValue);     
             
         }
 
-		query.setParameter("product_ref", ref);
+		productQuery.setParameter("product_ref", ref);
 
         tr.begin();
 
-        query.executeUpdate();
+        productQuery.executeUpdate();
 
         em.refresh(product);
 
 		tr.commit();
     }
+
+
 
 
 

@@ -8,15 +8,16 @@
 
 <AnchorPane fx:id="rightAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="270.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <ImageView fx:id="personImg" fitHeight="95.0" fitWidth="101.0" layoutX="-4.0" layoutY="24.0">
+        <ImageView fx:id="enterpriseImg" fitHeight="97.0" fitWidth="87.0" layoutX="4.0" layoutY="22.0">
             <image>
-                <Image url="@imgs/man.png" />
+                <Image url="@../../../imgs/office-building.png" />
             </image>
         </ImageView>
-        <Label fx:id="fullNameLabel" layoutX="93.0" layoutY="30.0" prefHeight="22.0" prefWidth="178.0" text="Full Name" />
-        <Label fx:id="phoneNumberLabel" layoutX="93.0" layoutY="52.0" prefHeight="18.0" prefWidth="178.0" text="Phone Number" />
-        <Label fx:id="emailLabel" layoutX="93.0" layoutY="69.0" prefHeight="18.0" prefWidth="178.0" text="Email" />
-        <Label fx:id="addressLabel" layoutX="93.0" layoutY="84.0" prefHeight="36.0" prefWidth="178.0" text="Address" />
+        <Label fx:id="enterpriseNameLabel" layoutX="99.0" layoutY="39.0" prefHeight="22.0" prefWidth="170.0" text="Enterprise Name" />
+        <Label fx:id="enterpriseTypeLabel" layoutX="99.0" layoutY="22.0" prefHeight="22.0" prefWidth="170.0" text="Enterprise Type" />
+        <Label fx:id="phoneNumberLabel" layoutX="99.0" layoutY="60.0" prefHeight="18.0" prefWidth="170.0" text="Phone Number" />
+        <Label fx:id="emailLabel" layoutX="99.0" layoutY="77.0" prefHeight="18.0" prefWidth="170.0" text="Email" />
+        <Label fx:id="addressLabel" layoutX="99.0" layoutY="94.0" prefHeight="36.0" prefWidth="170.0" text="Address" />
         <Button fx:id="updateBtn" layoutX="29.0" layoutY="146.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="70.0" text="Update" />
         <Button fx:id="deleteBtn" layoutX="152.0" layoutY="146.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="70.0" text="Delete" />
       <Button fx:id="notifyBtn" layoutX="92.0" layoutY="206.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="70.0" text="Notify" />

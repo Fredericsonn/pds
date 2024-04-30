@@ -22,7 +22,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import uiass.eia.gisiba.crud.ContactCrud;
 import uiass.eia.gisiba.crud.ProductCrud;
-import uiass.eia.gisiba.dto.AddressDto;
 import uiass.eia.gisiba.dto.ContactDto;
 import uiass.eia.gisiba.dto.ProductDto;
 
@@ -52,8 +51,13 @@ public class MainController {
     // A generic fx method that controls the crm interface depending on the contact type
     private void loadContactPane(String contactType) {
 
-        loadFXML("/uiass/eia/gisiba/contact_center_pane.fxml", centerAnchorPane);
-        loadFXML("/uiass/eia/gisiba/" + contactType.toLowerCase() + "_right_pane.fxml", rightAnchorPane);
+        String type = contactType.toLowerCase();
+
+        System.out.println("/uiass/eia/gisiba/contact/" + type + "/" + type + "_right_pane.fxml");
+        
+        loadFXML("/uiass/eia/gisiba/crm/contact/contact_center_pane.fxml", centerAnchorPane);
+        loadFXML("/uiass/eia/gisiba/crm/contact/" + type + "/" + type + "_right_pane.fxml", rightAnchorPane);
+        
 
         rightAnchorPane.setVisible(false);
 
@@ -264,8 +268,8 @@ public class MainController {
     // An fx method that controls the catalog 
     private void loadProductPane() {
 
-        loadFXML("/uiass/eia/gisiba/catalog_center_pane.fxml", centerAnchorPane);
-        loadFXML("/uiass/eia/gisiba/catalog_right_pane.fxml", rightAnchorPane);
+        loadFXML("/uiass/eia/gisiba/inventory/catalog/catalog_center_pane.fxml", centerAnchorPane);
+        loadFXML("/uiass/eia/gisiba/inventory/catalog/catalog_right_pane.fxml", rightAnchorPane);
 
         rightAnchorPane.setVisible(false);
 
@@ -285,13 +289,13 @@ public class MainController {
         List<Label> labels = FXManager.labelsCollector(rightAnchorPane, labelIds);
 
         // Tables
-        TableView<List<String>> contactsTable = FXManager.getTableView(centerAnchorPane, "productsTableView");
+        TableView<List<String>> productsTable = FXManager.getTableView(centerAnchorPane, "productsTableView");
 
-        contactsTable.setOnMouseClicked(event -> {
-            if (!contactsTable.getSelectionModel().isEmpty()) {
+        productsTable.setOnMouseClicked(event -> {
+            if (!productsTable.getSelectionModel().isEmpty()) {
 
                 // We get the selected row and extract the values
-                List<String> selectedItem = (List<String>) contactsTable.getSelectionModel().getSelectedItem();
+                List<String> selectedItem = (List<String>) productsTable.getSelectionModel().getSelectedItem();
                 String ref = selectedItem.get(0);
                 String category = selectedItem.get(1);
                 String brand = selectedItem.get(2);
@@ -310,7 +314,10 @@ public class MainController {
 
                 // When the update button is clicked
                 update.setOnAction(update_event -> {
-                    this.goToUpdateProductPage(ref);
+
+                    List<String> originalValues = new ArrayList<String>(values);
+
+                    this.goToUpdateProductPage(ref, originalValues);
                 });
 
                 // When the delete button is clicked
@@ -325,7 +332,7 @@ public class MainController {
 
         // We populate the table using those collected contacts
         List<String> columns = FXManager.catalog_columns;
-        FXManager.populateTableView(contactsTable, columns, data);
+        FXManager.populateTableView(productsTable, columns, data);
 
         // When we press the search button
         search.setOnAction(event -> {
@@ -358,7 +365,10 @@ public class MainController {
 
                     // When the update button is clicked
                     update.setOnAction(update_event -> {
-                        this.goToUpdateProductPage(ref);
+
+                        List<String> originalValues = new ArrayList<String>(values);
+
+                        this.goToUpdateProductPage(ref, originalValues);
                     });
 
                     // When the delete button is clicked
@@ -388,7 +398,8 @@ public class MainController {
         Stage stage = new Stage();
         AnchorPane pane = new AnchorPane();
         Scene scene = new Scene(pane);
-        loadFXML("/uiass/eia/gisiba/create_" + contactType.toLowerCase() + "_pane.fxml", pane);  // here we load the creation page fxml file
+        String type = contactType.toLowerCase();
+        loadFXML("/uiass/eia/gisiba/crm/contact/" + type + "/" + "create_" + type + "_pane.fxml", pane);  // here we load the creation page fxml file
         
         // We collect the confirm button from the fxml file
         Button confirm = FXManager.getButton(pane, "confirmBtn");
@@ -416,7 +427,8 @@ public class MainController {
         Stage stage = new Stage();
         AnchorPane pane = new AnchorPane();
         Scene scene = new Scene(pane);
-        loadFXML("/uiass/eia/gisiba/update_" + contactType.toLowerCase() + "_pane.fxml", pane); // here we load the update page fxml file
+        String type = contactType.toLowerCase();
+        loadFXML("/uiass/eia/gisiba/crm/contact/" + type + "/" + "update_" + type + "_pane.fxml", pane); // here we load the update page fxml file
         
         // We collect the confirm button from the fxml file
         Button confirm = FXManager.getButton(pane, "confirmBtn");
@@ -444,7 +456,7 @@ public class MainController {
         Stage stage = new Stage();
         AnchorPane pane = new AnchorPane();
         Scene scene = new Scene(pane);
-        loadFXML("/uiass/eia/gisiba/send_email_pane.fxml", pane); // here we load the email sending page fxml file
+        loadFXML("/uiass/eia/gisiba/contact/send_email_pane.fxml", pane); // here we load the email sending page fxml file
 
         // We collect the send button from the fxml file
         Button send = FXManager.getButton(pane, "sendEmailBtn");
@@ -466,7 +478,9 @@ public class MainController {
         Stage stage = new Stage();
         AnchorPane pane = new AnchorPane();
         Scene scene = new Scene(pane);
-        loadFXML("/uiass/eia/gisiba/create_update_catalog_pane.fxml", pane);  // here we load the creation page fxml file
+
+        // here we load the creation page fxml file
+        loadFXML("/uiass/eia/gisiba/inventory/catalog/create_update_catalog_pane.fxml", pane);  
         
         // We collect the confirm button from the fxml file
         Button confirm = FXManager.getButton(pane, "confirmBtn");
@@ -475,32 +489,44 @@ public class MainController {
         ProductCrud.create_product(pane, confirm);;
         
         // We add the stage info and show it
+        String iconPath = "/uiass/eia/gisiba/imgs/product.png";
+        InputStream inputStream = getClass().getResourceAsStream(iconPath);
+        Image icon = new Image(inputStream);
+
         stage.setScene(scene);
         stage.setTitle("Create Product");
         stage.setResizable(false);
+        stage.getIcons().add(icon);
         stage.show();
 
     }
 
     // A method that display the product update pane
-    public void goToUpdateProductPage(String ref) {
+    public void goToUpdateProductPage(String ref, List<String> originalValues) {
 
         // We create the stage that will contain the update page
         Stage stage = new Stage();
         AnchorPane pane = new AnchorPane();
         Scene scene = new Scene(pane);
-        loadFXML("/uiass/eia/gisiba/create_update_catalog_pane.fxml", pane); // here we load the update page fxml file
+
+        // here we load the update page fxml file
+        loadFXML("/uiass/eia/gisiba/inventory/catalog/create_update_catalog_pane.fxml", pane); 
         
         // We collect the confirm button from the fxml file
         Button confirm = FXManager.getButton(pane, "confirmBtn");
 
         // We add the corresponding event listener to the button
-        ProductCrud.update_product(pane, confirm, ref);
+        ProductCrud.update_product(pane, confirm, ref, originalValues);
 
         // We add the stage info and show it
+        String iconPath = "/uiass/eia/gisiba/imgs/product.png";
+        InputStream inputStream = getClass().getResourceAsStream(iconPath);
+        Image icon = new Image(inputStream);
+
         stage.setScene(scene);
         stage.setTitle("Update Product");
         stage.setResizable(false);
+        stage.getIcons().add(icon);
         stage.show();
 
     }

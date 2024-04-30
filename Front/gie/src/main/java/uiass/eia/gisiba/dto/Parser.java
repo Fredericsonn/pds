@@ -52,9 +52,9 @@ public class Parser {
 
     public static List<String> email_sending_attributes = Arrays.asList("receiver","subject","body");
 
-    private static List<String> productAttributes = Arrays.asList("productRef","category","brand","model","description","unitPrice");
+    private static List<String> productAttributes = Arrays.asList("productRef","category","model","description","unitPrice");
 
-    private static List<String> product_columns = Arrays.asList("category","brand","model","description","unitPrice");
+    private static List<String> product_columns = Arrays.asList("categoryName","brandName","model","description","unitPrice");
 
     public static Map<String,Object> contactCreationMapGenerator(List values, String contactType) {
 
@@ -141,7 +141,7 @@ public class Parser {
 
             String value = values.get(i);
 
-            if (value != "null" && value != "") map.put(attribute, value);
+            if (value != "null" && !value.equals("")) map.put(attribute, value);
 
         }
 
@@ -288,11 +288,18 @@ public class Parser {
     
         // We iterate through our attributes and call the collectors to collect the values from the json
         for (String attribute : attributes) {
-    
-            if (attribute.equals("unitPrice")) {
-                
-                productDoubleInfo.add(collectDouble(productObject, attribute));
+
+            if (attribute.equals("category")) {
+
+                JsonObject categoryObject = productObject.get("category").getAsJsonObject();
+
+                productStringInfo.add(collectString(categoryObject, "categoryName"));
+
+                productStringInfo.add(collectString(categoryObject, "brandName"));
             }
+
+            else if (attribute.equals("unitPrice")) productDoubleInfo.add(collectDouble(productObject, attribute));
+            
             else productStringInfo.add(collectString(productObject, attribute));
         }
     

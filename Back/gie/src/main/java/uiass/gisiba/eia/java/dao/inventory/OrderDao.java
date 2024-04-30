@@ -24,7 +24,7 @@ public class OrderDao implements iOrderDao {
     public OrderDao() {
         this.em= HibernateUtility.getEntityManger();
 	    tr=em.getTransaction();
-    }
+    }                                       // orders/:orderType/:orderId
 
     @Override
     public Order getOrderById(int orderId, String orderType) throws ClassNotFoundException, OrderNotFoundException {

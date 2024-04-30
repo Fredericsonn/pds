@@ -1,12 +1,14 @@
 package uiass.gisiba.eia.java.service;
 
 import java.time.LocalDate;
+import java.net.UnknownHostException;
 import java.sql.Date;
 import java.util.*;
 
 import javax.mail.MessagingException;
 
 import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
@@ -63,7 +65,7 @@ public interface iService {
 
     void updateContact(int id, Map<String,Object> columnsNewValues,String contactType) throws ContactNotFoundException,InvalidContactTypeException;
 
-    void notifyContact(String email, String subject, String body) throws MessagingException;
+    void notifyContact(String email, String subject, String body) throws MessagingException,UnknownHostException;
 
 /////////////////////////////////////////////////////// PRODUCT ////////////////////////////////////////////////////////////////
 
@@ -77,11 +79,23 @@ public interface iService {
 
     List<Product> getAllProducts();
 
-    List<ProductCategory> getAllCategories(); 
-
-    List<ProductBrand> getAllBrandsByCategory(ProductCategory category); 
-
     void updateProduct(String ref, Map<String,Object> columnsNewValues) throws ProductNotFoundException;
+
+/////////////////////////////////////////////////////// Category ////////////////////////////////////////////////////////////////
+
+    Category getCategoryById(int id) throws CategoryNotFoundException;
+    
+    List getAllCategories();
+
+    List<ProductCategory> getAllCategoriesNames(); 
+
+    List<ProductBrand> getAllBrandsNames();
+
+    List<ProductBrand> getAllBrandsByCategory(String category); 
+
+    void addCategory(ProductCategory categoryName, ProductBrand brandName);
+
+    void updateCategory(int id, Map<String,Object> columnsNewValues) throws CategoryNotFoundException;
 
 /////////////////////////////////////////////////////// Inventory Item ////////////////////////////////////////////////////////////////
 

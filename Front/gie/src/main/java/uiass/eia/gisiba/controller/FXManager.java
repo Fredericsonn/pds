@@ -135,7 +135,9 @@ public class FXManager {
                 }
             });
 
-            if (columns.get(i).equals("id") || columns.get(i).equals("address id")) column.setVisible(false);
+            if (columns.get(i).equals("id") || columns.get(i).equals("ref") ||
+            
+            columns.get(i).equals("address id")) column.setVisible(false);
 
             tableView.getColumns().add(column);
         }

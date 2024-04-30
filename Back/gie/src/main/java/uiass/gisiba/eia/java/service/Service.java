@@ -1,5 +1,6 @@
 package uiass.gisiba.eia.java.service;
 
+import java.net.UnknownHostException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -12,14 +13,17 @@ import uiass.gisiba.eia.java.dao.crm.iAddressDao;
 import uiass.gisiba.eia.java.dao.crm.iContactDao;
 import uiass.gisiba.eia.java.dao.crm.EmailSender;
 import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
 import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.NoContactsFoundInCountry;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
+import uiass.gisiba.eia.java.dao.inventory.CategoryDao;
 import uiass.gisiba.eia.java.dao.inventory.InventoryItemDao;
 import uiass.gisiba.eia.java.dao.inventory.ProductDao;
+import uiass.gisiba.eia.java.dao.inventory.iCategoryDao;
 import uiass.gisiba.eia.java.dao.inventory.iInventoryItemDao;
 import uiass.gisiba.eia.java.dao.inventory.iProductDao;
 import uiass.gisiba.eia.java.entity.crm.Address;
@@ -36,6 +40,7 @@ public class Service implements iService {
     private iContactDao cdao = new ContactDao();
     private iAddressDao adao = new AddressDao();
     private iProductDao pdao = new ProductDao();
+    private iCategoryDao catdao = new CategoryDao();
     private iInventoryItemDao idao = new InventoryItemDao();
     private EmailSender es = new EmailSender();
 
@@ -150,7 +155,7 @@ public class Service implements iService {
     }
 
     @Override
-    public void notifyContact(String email, String subject, String body) throws MessagingException {
+    public void notifyContact(String email, String subject, String body) throws MessagingException,UnknownHostException {
 
         es.sendEmail(email, subject, body);
     }
@@ -184,22 +189,52 @@ public class Service implements iService {
     }
 
     @Override
-    public List<ProductCategory> getAllCategories() {
-
-        return pdao.getAllCategories();
-
-    }
-
-    @Override
-    public List<ProductBrand> getAllBrandsByCategory(ProductCategory category) {
-
-        return pdao.getAllBrandsByCategory(category);
-    }
-
-    @Override
     public void updateProduct(String ref, Map<String, Object> columnsNewValues) throws ProductNotFoundException {
 
         pdao.updateProduct(ref, columnsNewValues);
+    }
+/////////////////////////////////////////////////////// Categroy ///////////////////////////////////////////////////////////////////
+
+    @Override
+    public Category getCategoryById(int id) throws CategoryNotFoundException {
+
+        return catdao.getCategoryById(id);
+    }
+
+    @Override
+    public List getAllCategories() {
+
+        return catdao.getAllCategories();
+    }
+    @Override
+    public List<ProductCategory> getAllCategoriesNames() {
+
+        return catdao.getAllCategoriesNames();
+
+    }
+
+    @Override
+    public List<ProductBrand> getAllBrandsNames() {
+
+        return catdao.getAllBrandsNames();
+    }
+
+    @Override
+    public List<ProductBrand> getAllBrandsByCategory(String category) {
+
+        return catdao.getAllBrandsByCategory(category);
+    }
+
+    @Override
+    public void addCategory(ProductCategory categoryName, ProductBrand brandName) {
+
+        catdao.addCategory(categoryName, brandName);
+    }
+
+    @Override
+    public void updateCategory(int id, Map<String, Object> columnsNewValues) throws CategoryNotFoundException {
+
+        catdao.updateCategory(id, columnsNewValues);
     }
 
 /////////////////////////////////////////////////////// Inventory Item ////////////////////////////////////////////////////////////////
@@ -245,6 +280,12 @@ public class Service implements iService {
 
         idao.updateInventoryItem(itemId, quantity);
     }
+
+
+
+
+
+
 
 
 

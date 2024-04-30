@@ -60,5 +60,10 @@ public class Category {
         this.brandName = brandName;
     }
 
+    @Override
+    public String toString() {
+        return "category : " + this.categoryName + ", brand : " + this.brandName;
+    }
+
     
 }

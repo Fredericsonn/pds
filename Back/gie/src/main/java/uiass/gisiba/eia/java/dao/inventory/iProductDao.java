@@ -6,8 +6,7 @@ import java.util.*;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.Category;
 import uiass.gisiba.eia.java.entity.inventory.Product;
-import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
-import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
+
 
 public interface iProductDao {
 
@@ -19,9 +18,6 @@ public interface iProductDao {
 
     List<Product> getAllProducts();
 
-    List<ProductCategory> getAllCategories(); 
-
-    List<ProductBrand> getAllBrandsByCategory(ProductCategory category); 
-
     void updateProduct(String ref, Map<String,Object> columnsNewValues) throws ProductNotFoundException;
+
 }

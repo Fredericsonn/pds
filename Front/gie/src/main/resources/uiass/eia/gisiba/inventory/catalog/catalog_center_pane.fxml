@@ -7,9 +7,9 @@
 
 <AnchorPane fx:id="centerAnchorPane" prefHeight="541.0" prefWidth="530.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <TableView fx:id="personTable" layoutY="77.0" prefHeight="463.0" prefWidth="530.0" />
-        <TextField fx:id="enterIdTextField" layoutX="26.0" layoutY="19.0" prefHeight="36.0" prefWidth="238.0" promptText="enter an id" />
+        <TextField fx:id="enterRefTextField" layoutX="26.0" layoutY="19.0" prefHeight="36.0" prefWidth="238.0" promptText="enter a reference" />
         <Button fx:id="searchBtn" layoutX="287.0" layoutY="19.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="86.0" text="SEARCH" />
-        <Button fx:id="createNewPersonBtn" layoutX="404.0" layoutY="19.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="86.0" text="CREATE NEW" />
+        <Button fx:id="createNewProductBtn" layoutX="404.0" layoutY="19.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="86.0" text="CREATE NEW" />
+      <TableView fx:id="productsTableView" layoutY="84.0" prefHeight="458.0" prefWidth="530.0" />
     </children>
 </AnchorPane>

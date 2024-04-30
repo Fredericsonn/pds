@@ -13,9 +13,7 @@ import spark.Route;
 import uiass.gisiba.eia.java.controller.Parser;
 import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
-import uiass.gisiba.eia.java.dao.inventory.ProductRefGenerator;
 import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
-import uiass.gisiba.eia.java.entity.inventory.Product;
 import uiass.gisiba.eia.java.service.Service;
 import uiass.gisiba.eia.java.service.iService;
 
@@ -56,8 +54,6 @@ public class InventoryItemController {
 	    get("/inventoryItems", (req,res)-> {
 
 		List<InventoryItem> items = service.getAllInventoryItems();
-
-		System.out.println(items);
 		
 		res.type("application/json");
 

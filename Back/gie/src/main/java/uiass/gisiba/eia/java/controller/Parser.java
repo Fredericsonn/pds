@@ -1,6 +1,5 @@
 package uiass.gisiba.eia.java.controller;
 
-import java.time.LocalDate;
 import java.sql.Date;
 import java.util.*;
 
@@ -37,9 +36,7 @@ public class Parser {
 
     public static List<String> productAttributes = Arrays.asList("productRef","model","description","unitPrice");
 
-    public static List<String> categoryAttributes = Arrays.asList("categoryName","brandName");
-
-    public static List<String> product_columns = Arrays.asList("category","brand","model","description","unit_price");
+    public static List<String> product_columns = Arrays.asList("model","description","unit_price");
 
     // Columns filter 
     public static Map<String, Object> mapFormater(List<String> columns, List values) {
@@ -51,7 +48,7 @@ public class Parser {
             String column = columns.get(i);
     
             Object value = values.get(i);
-    
+
             if (column.equals("houseNumber")) {
                     
                 if ((int) value != 0) columns_new_values.put(column, value);
@@ -120,9 +117,9 @@ public class Parser {
 
         JsonObject product = gson.fromJson(body, JsonObject.class);
 
-        String category = Parser.collectString(product, "category");
+        String category = Parser.collectString(product, "categoryName");
 
-        String brand = Parser.collectString(product, "brand");
+        String brand = Parser.collectString(product, "brandName");
 
         String model = Parser.collectString(product, "model");
 
@@ -154,11 +151,11 @@ public class Parser {
         return element != null ? Double.valueOf(element.getAsString()) : null;
     }
 
-    public static LocalDate collectDate(JsonObject jsObj, String attribute) {
+    public static Date collectDate(JsonObject jsObj, String attribute) {
 
         JsonElement element = jsObj.get(attribute);
 
-        return element != null ? LocalDate.parse(element.getAsString()) : null;
+        return element != null ? Date.valueOf(element.getAsString()) : null;
     }
 
 /////////////////////////////// a method that parses a contact object from a json ///////////////////////////////////////////////

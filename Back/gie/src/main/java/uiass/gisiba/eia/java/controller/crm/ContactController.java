@@ -1,5 +1,7 @@
 package uiass.gisiba.eia.java.controller.crm;
 
+import java.net.NetworkInterface;
+import java.net.UnknownHostException;
 import java.util.*;
 
 import javax.mail.MessagingException;
@@ -251,7 +253,7 @@ public static void postContactController() {
                     service.notifyContact(email, subject, emailBody);  
                     
 
-                } catch(MessagingException e) {
+                } catch(MessagingException | UnknownHostException e) {
 
                     return "Email not sent.";
                 }
