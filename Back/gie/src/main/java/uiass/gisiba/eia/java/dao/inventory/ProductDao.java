@@ -14,8 +14,6 @@ import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.Category;
 import uiass.gisiba.eia.java.entity.inventory.Product;
-import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
-import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
 
 public class ProductDao implements iProductDao {
 
@@ -51,6 +49,15 @@ public class ProductDao implements iProductDao {
         if (product != null) return product;
 
         throw new ProductNotFoundException(ref);
+    }
+
+    @Override
+    public List<Product> productSearchFilter(Map<String, Object> columnsNewValues)
+
+            throws ProductNotFoundException, CategoryNotFoundException {
+
+
+                return null;
     }
 
     @Override
@@ -158,6 +165,10 @@ public class ProductDao implements iProductDao {
 
 
     }
+
+
+
+
 
 
 

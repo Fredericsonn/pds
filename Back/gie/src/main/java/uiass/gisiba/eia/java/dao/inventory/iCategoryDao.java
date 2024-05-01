@@ -4,8 +4,6 @@ import java.util.*;
 
 import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.Category;
-import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
-import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
 
 public interface iCategoryDao {
 
@@ -15,13 +13,13 @@ public interface iCategoryDao {
 
     List getAllCategories();
 
-    List<ProductCategory> getAllCategoriesNames();
+    List<String> getAllCategoriesNames();
 
-    List<ProductBrand> getAllBrandsNames();
+    List<String> getAllBrandsNames();
 
-    List<ProductBrand> getAllBrandsByCategory(String category);
+    List<String> getAllBrandsByCategory(String category);
 
-    void addCategory(ProductCategory categoryName, ProductBrand brandName);
+    void addCategory(String categoryName, String brandName);
 
     void updateCategory(int id, Map<String,Object> columnsNewValues) throws CategoryNotFoundException;
 }

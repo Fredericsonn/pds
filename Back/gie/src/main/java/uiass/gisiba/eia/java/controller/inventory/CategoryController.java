@@ -14,11 +14,7 @@ import uiass.gisiba.eia.java.controller.Parsers.CategoryParser;
 import uiass.gisiba.eia.java.controller.Parsers.Parser;
 import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
-import uiass.gisiba.eia.java.dao.inventory.ProductRefGenerator;
 import uiass.gisiba.eia.java.entity.inventory.Category;
-import uiass.gisiba.eia.java.entity.inventory.Product;
-import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
-import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
 import uiass.gisiba.eia.java.service.Service;
 
 public class CategoryController {
@@ -52,7 +48,7 @@ public class CategoryController {
 	
 	    get("/categories/categoriesNames", (req,res)-> {
 
-		List<ProductCategory> categories = service.getAllCategoriesNames();
+		List<String> categories = service.getAllCategoriesNames();
 		
 		res.type("application/json");
 
@@ -71,7 +67,7 @@ public class CategoryController {
 	
 	    get("/categories/brandsNames", (req,res)-> {
 
-		List<ProductBrand> brands = service.getAllBrandsNames();
+		List<String> brands = service.getAllBrandsNames();
 		
 		res.type("application/json");
 
@@ -92,7 +88,7 @@ public class CategoryController {
 		
 		String category = req.params(":categoryName");
 
-		List<ProductBrand> brands = service.getAllBrandsByCategory(category);
+		List<String> brands = service.getAllBrandsByCategory(category);
 		
 		res.type("application/json");
 

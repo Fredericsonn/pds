@@ -2,7 +2,6 @@ package uiass.gisiba.eia.java.service;
 
 import java.net.UnknownHostException;
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +31,7 @@ import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
 import uiass.gisiba.eia.java.entity.inventory.Category;
 import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
 import uiass.gisiba.eia.java.entity.inventory.Product;
-import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
-import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
+
 
 public class Service implements iService {
 
@@ -214,26 +212,26 @@ public class Service implements iService {
         return catdao.getAllCategories();
     }
     @Override
-    public List<ProductCategory> getAllCategoriesNames() {
+    public List<String> getAllCategoriesNames() {
 
         return catdao.getAllCategoriesNames();
 
     }
 
     @Override
-    public List<ProductBrand> getAllBrandsNames() {
+    public List<String> getAllBrandsNames() {
 
         return catdao.getAllBrandsNames();
     }
 
     @Override
-    public List<ProductBrand> getAllBrandsByCategory(String category) {
+    public List<String> getAllBrandsByCategory(String category) {
 
         return catdao.getAllBrandsByCategory(category);
     }
 
     @Override
-    public void addCategory(ProductCategory categoryName, ProductBrand brandName) {
+    public void addCategory(String categoryName, String brandName) {
 
         catdao.addCategory(categoryName, brandName);
     }
@@ -287,6 +285,7 @@ public class Service implements iService {
 
         idao.updateInventoryItem(itemId, quantity);
     }
+
 
 
 

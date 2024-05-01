@@ -11,8 +11,7 @@ import uiass.gisiba.eia.java.dao.crm.HQLQueryManager;
 import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
 import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.Category;
-import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
-import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
+
 
 public class CategoryDao implements iCategoryDao{
 
@@ -43,9 +42,9 @@ public class CategoryDao implements iCategoryDao{
 
         Query query = em.createQuery("select c from Category c where categoryName = :categoryName and brandName = :brandName");
 
-        query.setParameter("categoryName", ProductCategory.valueOf(categoryName));
+        query.setParameter("categoryName", categoryName);
 
-        query.setParameter("brandName", ProductBrand.valueOf(brandName));
+        query.setParameter("brandName", brandName);
 
         Category category = (Category) query.getSingleResult();
 
@@ -63,7 +62,7 @@ public class CategoryDao implements iCategoryDao{
     }
 
     @Override
-    public List<ProductCategory> getAllCategoriesNames() {
+    public List<String> getAllCategoriesNames() {
 
         String hql = "select DISTINCT categoryName from Category";
 
@@ -73,7 +72,7 @@ public class CategoryDao implements iCategoryDao{
     }
 
     @Override
-    public List<ProductBrand> getAllBrandsNames() {
+    public List<String> getAllBrandsNames() {
 
         String hql = "select DISTINCT brandName from Category";
 
@@ -84,19 +83,19 @@ public class CategoryDao implements iCategoryDao{
 
 
     @Override
-    public List<ProductBrand> getAllBrandsByCategory(String category) {
+    public List<String> getAllBrandsByCategory(String category) {
 
         String hql = "select DISTINCT brandName from Category where categoryName = :categoryName";
 
         Query query = em.createQuery(hql);
 
-        query.setParameter("categoryName", ProductCategory.valueOf(category));
+        query.setParameter("categoryName", category);
 
         return query.getResultList();
     }
 
     @Override
-    public void addCategory(ProductCategory categoryName, ProductBrand brandName) {
+    public void addCategory(String categoryName, String brandName) {
 
         Category category = new Category(categoryName, brandName);
 

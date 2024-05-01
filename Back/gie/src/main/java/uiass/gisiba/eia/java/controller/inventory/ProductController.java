@@ -15,11 +15,7 @@ import uiass.gisiba.eia.java.controller.Parsers.Parser;
 import uiass.gisiba.eia.java.controller.Parsers.ProductParser;
 import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
-import uiass.gisiba.eia.java.dao.inventory.ProductRefGenerator;
-import uiass.gisiba.eia.java.entity.inventory.Category;
 import uiass.gisiba.eia.java.entity.inventory.Product;
-import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
-import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
 import uiass.gisiba.eia.java.service.Service;
 
 public class ProductController {
@@ -38,11 +34,11 @@ public class ProductController {
 
 		String ref = String.valueOf(req.params(":ref"));
 
-		Product contact = service.getProductById(ref);
+		Product product = service.getProductById(ref);
 		
 		res.type("application/json");
 
-		return contact;
+		return product;
 	
 		   
 		}, gson::toJson);

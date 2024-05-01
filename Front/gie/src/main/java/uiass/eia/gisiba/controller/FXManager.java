@@ -1,10 +1,12 @@
 package uiass.eia.gisiba.controller;
 
+import java.io.IOException;
 import java.util.*;
 
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -16,6 +18,7 @@ import javafx.scene.control.TableView;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -38,7 +41,17 @@ public class FXManager {
 
 
 
-
+    // A method that loads an fxml file into a pane
+    public static void loadFXML(String fxmlFile, AnchorPane pane, Class c) {
+        
+        try {
+            FXMLLoader loader = new FXMLLoader(c.getResource(fxmlFile));
+            Parent content = loader.load();
+            pane.getChildren().setAll(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     // Used to collect labels in a pane given a list of ids
     public static List<Label> labelsCollector(Parent pane, List<String> labelsIds) {
 

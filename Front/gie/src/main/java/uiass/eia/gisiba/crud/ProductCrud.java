@@ -1,17 +1,25 @@
 package uiass.eia.gisiba.crud;
 
+import java.io.InputStream;
 import java.util.*;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import uiass.eia.gisiba.controller.FXManager;
+import uiass.eia.gisiba.controller.MainController;
 import uiass.eia.gisiba.http.dto.CategoryDto;
 import uiass.eia.gisiba.http.dto.ProductDto;
 import uiass.eia.gisiba.http.parsers.Parser;
@@ -203,6 +211,116 @@ public class ProductCrud {
 
     }
 
+    public static void productTableEventHandler(TableView productsTable, List<Label> labels, Parent pane,
+    
+        Button update, Button delete) {
+
+        productsTable.setOnMouseClicked(event -> {
+            if (!productsTable.getSelectionModel().isEmpty()) {
+
+                // We get the selected row and extract the values
+                List<String> selectedItem = (List<String>) productsTable.getSelectionModel().getSelectedItem();
+                String ref = selectedItem.get(0);
+                int categoryId = Integer.parseInt(selectedItem.get(1));
+                String category = selectedItem.get(2);
+                String brand = selectedItem.get(3);
+                String model = selectedItem.get(4);
+                String description = selectedItem.get(5);
+                String unitPrice = selectedItem.get(6);
+
+                // We put all the values in one list that we'll use to fill the labels
+                List<String> values = Arrays.asList(ref,category,brand,model,unitPrice,description);
+
+                // We use the extracted values to fill the labels
+                FXManager.catalogLabelsFiller(labels, values);
+
+                // We finally show the right pane
+                pane.setVisible(true);
+
+                // When the update button is clicked
+                update.setOnAction(update_event -> {
+
+                    List<String> originalValues = new ArrayList<String>(values);
+
+                    goToUpdateProductPage(ref,categoryId, originalValues);
+                });
+
+                // When the delete button is clicked
+                delete.setOnAction(delete_event -> ProductCrud.deleteProduct(ref));
+           
+        } 
+            
+        });
+    }
+
+    // A method that display the product creation pane
+    public static void goToCreateProductPage() {
+
+        // We create the stage that will contain the creation page
+        Stage stage = new Stage();
+        AnchorPane pane = new AnchorPane();
+        Scene scene = new Scene(pane);
+
+        // here we load the creation page fxml file
+        FXManager.loadFXML("/uiass/eia/gisiba/inventory/catalog/create_update_catalog_pane.fxml", pane, ProductCrud.class); 
+        
+        // We get the HBoxes that contain the nodes
+        HBox hbox1 = FXManager.getHBox(pane, "firstHBox");
+        HBox hbox2 = FXManager.getHBox(pane, "secondHBox");
+        
+        // We collect the confirm button from the fxml file
+        Button confirm = FXManager.getButton(pane, "confirmBtn");
+
+        // We add the corresponding event listener to the button
+        ProductCrud.create_product(hbox1, hbox2, confirm);;
+        
+        // We add the stage info and show it
+        String iconPath = "/uiass/eia/gisiba/imgs/product.png";
+        InputStream inputStream = ProductCrud.class.getResourceAsStream(iconPath);
+        Image icon = new Image(inputStream);
+
+        stage.setScene(scene);
+        stage.setTitle("Create Product");
+        stage.setResizable(false);
+        stage.getIcons().add(icon);
+        stage.show();
+
+    }
+
+    // A method that display the product update pane
+    public static void goToUpdateProductPage(String ref, int categoryId, List<String> originalValues) {
+
+        // We create the stage that will contain the update page
+        Stage stage = new Stage();
+        AnchorPane pane = new AnchorPane();
+        Scene scene = new Scene(pane);
+
+        // here we load the update page fxml file
+        FXManager.loadFXML("/uiass/eia/gisiba/inventory/catalog/create_update_catalog_pane.fxml", pane, ProductCrud.class); 
+
+        // We get the HBoxes that contain the nodes
+        HBox hbox1 = FXManager.getHBox(pane, "firstHBox");
+        HBox hbox2 = FXManager.getHBox(pane, "secondHBox");
+        
+        // We collect the confirm button from the fxml file
+        Button confirm = FXManager.getButton(pane, "confirmBtn");
+
+        // We add the corresponding event listener to the button
+        ProductCrud.update_product(hbox1,hbox2, confirm, ref, categoryId, originalValues);
+
+        // We add the stage info and show it
+        String iconPath = "/uiass/eia/gisiba/imgs/product.png";
+        InputStream inputStream = ProductCrud.class.getResourceAsStream(iconPath);
+        Image icon = new Image(inputStream);
+
+        stage.setScene(scene);
+        stage.setTitle("Update Product");
+        stage.setResizable(false);
+        stage.getIcons().add(icon);
+        stage.show();
+
+    }
+    // A method that handles the text fields
     public static List<TextField> productTextFieldsHandler(Parent firstPane, Parent secondPane, String operation, List<String> originalValues) {
 
         List<TextField> textFields = new ArrayList<TextField>();

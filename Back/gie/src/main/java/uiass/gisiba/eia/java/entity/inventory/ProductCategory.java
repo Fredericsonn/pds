@@ -1,8 +1,0 @@
-package uiass.gisiba.eia.java.entity.inventory;
-
-public enum ProductCategory {
-
-    LAPTOP, DESKTOP_PC, PHONE, PRINTER, TABLET, SMARTWATCH, MONITOR, KEYBOARD, MOUSE, HEADPHONES,  
-    SPEAKER, CAMERA, GAMING_CONSOLE, ROUTER, MODEM, STORAGE_DEVICE, PROJECTOR, SCANNER, WEBCAM
-    
-}

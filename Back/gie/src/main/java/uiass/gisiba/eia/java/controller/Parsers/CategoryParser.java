@@ -5,8 +5,7 @@ import java.util.*;
 import com.google.gson.*;
 
 import uiass.gisiba.eia.java.entity.inventory.Category;
-import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
-import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
+
 
 public class CategoryParser extends Parser {
 
@@ -20,7 +19,7 @@ public class CategoryParser extends Parser {
 
         String brandName = categoryObject.get("brandName").getAsString();
 
-        return new Category(ProductCategory.valueOf(categoryName), ProductBrand.valueOf(brandName));
+        return new Category(categoryName, brandName);
 
     }
 
@@ -55,6 +54,7 @@ public class CategoryParser extends Parser {
 
     }
 
+    @SuppressWarnings("unchecked")
     public static List categoryValuesFormatter(List<String> values) {
 
         List valid_values = new ArrayList<>();
@@ -63,11 +63,11 @@ public class CategoryParser extends Parser {
 
         String brandName = values.get(1);
 
-        if (categoryName != null) valid_values.add(ProductCategory.valueOf(categoryName));
+        if (categoryName != null) valid_values.add(categoryName);
 
         else valid_values.add(categoryName);
 
-        if (brandName != null) valid_values.add(ProductBrand.valueOf(brandName));
+        if (brandName != null) valid_values.add(brandName);
 
         else valid_values.add(brandName);
 

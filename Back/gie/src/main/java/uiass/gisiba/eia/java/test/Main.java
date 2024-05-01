@@ -35,8 +35,6 @@ import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
 import uiass.gisiba.eia.java.entity.inventory.Category;
 import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
 import uiass.gisiba.eia.java.entity.inventory.Product;
-import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
-import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
 import uiass.gisiba.eia.java.service.Service;
 import uiass.gisiba.eia.java.service.iService;
 
