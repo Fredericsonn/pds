@@ -10,7 +10,9 @@ import com.google.gson.JsonObject;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import uiass.gisiba.eia.java.controller.Parser;
+import uiass.gisiba.eia.java.controller.Parsers.InventoryItemParser;
+import uiass.gisiba.eia.java.controller.Parsers.Parser;
+import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
@@ -164,14 +166,14 @@ public static void postItemController() {
     post("/inventoryItems/post" , new Route() {
 
         @Override
-        public String handle(Request request, Response response) throws ProductNotFoundException  {
+        public String handle(Request request, Response response) throws ProductNotFoundException, CategoryNotFoundException  {
 
 	        System.out.println("Server started.");
 
 		    String body = request.body(); 	
 
 			// We create the product using the parse method in the Parser class
-			InventoryItem item = Parser.parseInventoryItem(body);
+			InventoryItem item = InventoryItemParser.parseInventoryItem(body);
 
 			service.addInventoryItem(item.getProduct(), item.getQuantity(), item.getDateAdded());;
 

@@ -4,12 +4,11 @@ import java.util.*;
 
 import com.google.gson.*;
 
-import uiass.gisiba.eia.java.controller.Parser;
 import uiass.gisiba.eia.java.entity.inventory.Category;
 import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
 import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
 
-public class CategoryParsrer {
+public class CategoryParser extends Parser {
 
     public static List<String> categoryAttributes = Arrays.asList("categoryName","brandName");
 
@@ -39,13 +38,20 @@ public class CategoryParsrer {
 
     public static List categoryValuesCollector(Gson gson, String body) {
 
-        JsonObject category = gson.fromJson(body, JsonObject.class);
+        JsonObject product = gson.fromJson(body, JsonObject.class);
 
-        String categoryName = Parser.collectString(category, "categoryName");
+        if (product.has("category")) {
 
-        String brandName = Parser.collectString(category, "brandName");
+            JsonObject category = product.get("category").getAsJsonObject();
 
-        return Arrays.asList(categoryName,brandName);
+            String categoryName = collectString(category, "categoryName");
+    
+            String brandName = collectString(category, "brandName");
+    
+            return Arrays.asList(categoryName,brandName);
+        }
+
+        else return null;
 
     }
 

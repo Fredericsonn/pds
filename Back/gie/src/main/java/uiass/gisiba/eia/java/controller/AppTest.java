@@ -21,9 +21,9 @@ public class AppTest {
         ContactController.updateContactController();
         ContactController.deleteContactController();
 
-        AddressController.updateAddressController();
-
         ContactController.postEmailController();
+
+        AddressController.updateAddressController();
 
         ProductController.getAllProducts();
         ProductController.getProductByRef();
@@ -31,6 +31,7 @@ public class AppTest {
         ProductController.updateProductController();
         ProductController.postProductController();
 
+        CategoryController.getAllCategories();
         CategoryController.getAllCategoriesNames();
         CategoryController.getAllBrandsByCategory();
         CategoryController.updateCategoryController();

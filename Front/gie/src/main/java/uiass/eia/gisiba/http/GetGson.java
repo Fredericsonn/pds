@@ -1,4 +1,4 @@
-package uiass.eia.gisiba.dto;
+package uiass.eia.gisiba.http;
 
 import com.google.gson.Gson;
 

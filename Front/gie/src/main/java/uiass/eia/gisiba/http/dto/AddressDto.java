@@ -1,10 +1,13 @@
-package uiass.eia.gisiba.dto;
+package uiass.eia.gisiba.http.dto;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+
+import uiass.eia.gisiba.http.DataSender;
+import uiass.eia.gisiba.http.parsers.ContactParser;
 
 public class AddressDto {
 
@@ -15,7 +18,7 @@ public class AddressDto {
 
         String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/addresses/" + id);
 
-        if (!responseBody.equals("Server Error.")) return Parser.parseAddress(responseBody);
+        if (!responseBody.equals("Server Error.")) return ContactParser.parseAddress(responseBody);
 
         return null;
     }
@@ -27,7 +30,7 @@ public class AddressDto {
 
             if (!responseBody.equals("Internal Server Error")) {
 
-                List contact = Parser.parseContact(responseBody, contactType);
+                List contact = ContactParser.parseContact(responseBody, contactType);
     
                 return String.valueOf(contact.get(6));
             }
@@ -44,7 +47,7 @@ public class AddressDto {
 
         JsonArray contacts = new JsonParser().parse(responseBody).getAsJsonArray();
 
-        contacts.forEach(elt -> parsedAddresses.add(Parser.parseAddress(String.valueOf(elt.getAsJsonObject()))) );
+        contacts.forEach(elt -> parsedAddresses.add(ContactParser.parseAddress(String.valueOf(elt.getAsJsonObject()))) );
 
 
         return parsedAddresses;

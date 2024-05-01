@@ -39,6 +39,22 @@ public class CategoryDao implements iCategoryDao{
     }
 
     @Override
+    public Category getCategoryByNames(String categoryName, String brandName) throws CategoryNotFoundException {
+
+        Query query = em.createQuery("select c from Category c where categoryName = :categoryName and brandName = :brandName");
+
+        query.setParameter("categoryName", ProductCategory.valueOf(categoryName));
+
+        query.setParameter("brandName", ProductBrand.valueOf(brandName));
+
+        Category category = (Category) query.getSingleResult();
+
+        if (category != null) return category;
+
+        else throw new CategoryNotFoundException(categoryName,brandName);
+    }
+
+    @Override
     public List getAllCategories() {
 
         Query query = em.createQuery("from Category");

@@ -11,6 +11,8 @@ public interface iCategoryDao {
 
     Category getCategoryById(int id) throws CategoryNotFoundException;
 
+    Category getCategoryByNames(String categoryName, String brandName) throws CategoryNotFoundException;
+
     List getAllCategories();
 
     List<ProductCategory> getAllCategoriesNames();

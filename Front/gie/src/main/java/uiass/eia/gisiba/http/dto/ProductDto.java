@@ -1,9 +1,13 @@
-package uiass.eia.gisiba.dto;
+package uiass.eia.gisiba.http.dto;
 
 import java.util.*;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+
+import uiass.eia.gisiba.http.DataSender;
+import uiass.eia.gisiba.http.parsers.Parser;
+import uiass.eia.gisiba.http.parsers.ProductParser;
 
 public class ProductDto {
 
@@ -14,7 +18,7 @@ public class ProductDto {
 
         String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/products/byRef/" + ref);
 
-        if (!responseBody.equals("Server Error.")) return Parser.parseProduct(responseBody);
+        if (!responseBody.equals("Server Error.")) return ProductParser.parseProduct(responseBody);
 
         return null;
     }
@@ -28,31 +32,12 @@ public class ProductDto {
 
         JsonArray productsArray = new JsonParser().parse(responseBody).getAsJsonArray();
 
-        productsArray.forEach(product -> products.add(Parser.parseProduct(String.valueOf(product.getAsJsonObject()))));
+        productsArray.forEach(product -> products.add(ProductParser.parseProduct(String.valueOf(product.getAsJsonObject()))));
 
         return products;
 
     }
  
-    // Find all the categories :
-    public static List<String> getAllCategories() {
-
-        String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/products/categories");
-
-        if (!responseBody.equals("Server Error.")) return Parser.parseProductCharacteristics(responseBody);
-
-        return null;
-    }
-
-    // Find all the categories :
-    public static List<String> getAllBrandsByCategory(String category) {
-
-        String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/products/brands/byCategory/" + category);
-
-        if (!responseBody.equals("Server Error.")) return Parser.parseProductCharacteristics(responseBody);
-
-        return null;
-    }
 //////////////////////////////////////////////////// POST METHOD ////////////////////////////////////////////////////////////////
 
     // Create a new product :
@@ -72,7 +57,7 @@ public class ProductDto {
 
 public static String updateProduct(String ref, String json) {
 
-    if (json != "") return DataSender.putDataSender(json, "products/put/" + ref );
+    if (json != null) return DataSender.putDataSender(json, "products/put/" + ref );
 
     return "Please provide some new values to update.";
 }

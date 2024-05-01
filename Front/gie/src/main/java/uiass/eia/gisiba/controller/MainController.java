@@ -19,11 +19,12 @@ import javafx.scene.image.Image;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import uiass.eia.gisiba.crud.ContactCrud;
 import uiass.eia.gisiba.crud.ProductCrud;
-import uiass.eia.gisiba.dto.ContactDto;
-import uiass.eia.gisiba.dto.ProductDto;
+import uiass.eia.gisiba.http.dto.ContactDto;
+import uiass.eia.gisiba.http.dto.ProductDto;
 
 public class MainController {
 
@@ -297,11 +298,12 @@ public class MainController {
                 // We get the selected row and extract the values
                 List<String> selectedItem = (List<String>) productsTable.getSelectionModel().getSelectedItem();
                 String ref = selectedItem.get(0);
-                String category = selectedItem.get(1);
-                String brand = selectedItem.get(2);
-                String model = selectedItem.get(3);
-                String description = selectedItem.get(4);
-                String unitPrice = String.valueOf(selectedItem.get(5));
+                int categoryId = Integer.parseInt(selectedItem.get(1));
+                String category = selectedItem.get(2);
+                String brand = selectedItem.get(3);
+                String model = selectedItem.get(4);
+                String description = selectedItem.get(5);
+                String unitPrice = selectedItem.get(6);
 
                 // We put all the values in one list that we'll use to fill the labels
                 List<String> values = Arrays.asList(ref,category,brand,model,unitPrice,description);
@@ -317,7 +319,7 @@ public class MainController {
 
                     List<String> originalValues = new ArrayList<String>(values);
 
-                    this.goToUpdateProductPage(ref, originalValues);
+                    this.goToUpdateProductPage(ref,categoryId, originalValues);
                 });
 
                 // When the delete button is clicked
@@ -348,11 +350,12 @@ public class MainController {
                 if (info != null) {  // if there is a contact with the given id
 
                     // We extract each attribute's value from the retrieved contact
-                    String category = info.get(1);
-                    String brand = info.get(2);
-                    String model = info.get(3);
-                    String description = info.get(4);
-                    String unitPrice = info.get(5);
+                    int categoryId = Integer.parseInt(info.get(1));
+                    String category = info.get(2);
+                    String brand = info.get(3);
+                    String model = info.get(4);
+                    String description = info.get(5);
+                    String unitPrice = info.get(6);
 
                     // We put all the values in one list that we'll use to fill the labels
                     List<String> values = Arrays.asList(category, brand, model,description, unitPrice);
@@ -368,7 +371,7 @@ public class MainController {
 
                         List<String> originalValues = new ArrayList<String>(values);
 
-                        this.goToUpdateProductPage(ref, originalValues);
+                        this.goToUpdateProductPage(ref,categoryId, originalValues);
                     });
 
                     // When the delete button is clicked
@@ -456,7 +459,7 @@ public class MainController {
         Stage stage = new Stage();
         AnchorPane pane = new AnchorPane();
         Scene scene = new Scene(pane);
-        loadFXML("/uiass/eia/gisiba/contact/send_email_pane.fxml", pane); // here we load the email sending page fxml file
+        loadFXML("/uiass/eia/gisiba/crm/contact/send_email_pane.fxml", pane); // here we load the email sending page fxml file
 
         // We collect the send button from the fxml file
         Button send = FXManager.getButton(pane, "sendEmailBtn");
@@ -480,13 +483,17 @@ public class MainController {
         Scene scene = new Scene(pane);
 
         // here we load the creation page fxml file
-        loadFXML("/uiass/eia/gisiba/inventory/catalog/create_update_catalog_pane.fxml", pane);  
+        loadFXML("/uiass/eia/gisiba/inventory/catalog/create_update_catalog_pane.fxml", pane); 
+        
+        // We get the HBoxes that contain the nodes
+        HBox hbox1 = FXManager.getHBox(pane, "firstHBox");
+        HBox hbox2 = FXManager.getHBox(pane, "secondHBox");
         
         // We collect the confirm button from the fxml file
         Button confirm = FXManager.getButton(pane, "confirmBtn");
 
         // We add the corresponding event listener to the button
-        ProductCrud.create_product(pane, confirm);;
+        ProductCrud.create_product(hbox1, hbox2, confirm);;
         
         // We add the stage info and show it
         String iconPath = "/uiass/eia/gisiba/imgs/product.png";
@@ -502,7 +509,7 @@ public class MainController {
     }
 
     // A method that display the product update pane
-    public void goToUpdateProductPage(String ref, List<String> originalValues) {
+    public void goToUpdateProductPage(String ref, int categoryId, List<String> originalValues) {
 
         // We create the stage that will contain the update page
         Stage stage = new Stage();
@@ -511,12 +518,16 @@ public class MainController {
 
         // here we load the update page fxml file
         loadFXML("/uiass/eia/gisiba/inventory/catalog/create_update_catalog_pane.fxml", pane); 
+
+        // We get the HBoxes that contain the nodes
+        HBox hbox1 = FXManager.getHBox(pane, "firstHBox");
+        HBox hbox2 = FXManager.getHBox(pane, "secondHBox");
         
         // We collect the confirm button from the fxml file
         Button confirm = FXManager.getButton(pane, "confirmBtn");
 
         // We add the corresponding event listener to the button
-        ProductCrud.update_product(pane, confirm, ref, originalValues);
+        ProductCrud.update_product(hbox1,hbox2, confirm, ref, categoryId, originalValues);
 
         // We add the stage info and show it
         String iconPath = "/uiass/eia/gisiba/imgs/product.png";

@@ -10,7 +10,10 @@ import com.google.gson.JsonObject;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import uiass.gisiba.eia.java.controller.Parser;
+import uiass.gisiba.eia.java.controller.Parsers.CategoryParser;
+import uiass.gisiba.eia.java.controller.Parsers.Parser;
+import uiass.gisiba.eia.java.controller.Parsers.ProductParser;
+import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.dao.inventory.ProductRefGenerator;
 import uiass.gisiba.eia.java.entity.inventory.Category;
@@ -99,9 +102,6 @@ public class ProductController {
 
     public static void updateProductController() {
 
-
-	    // A list of the product table's columns
-
         Gson gson = new Gson();
 
         put("/products/put/:ref" , new Route() {
@@ -111,24 +111,28 @@ public class ProductController {
 
 	            System.out.println("Server started.");
 
-		        String ref = request.params(":ref");  // We take the id of the product to update from the url
+		        String ref = request.params(":ref");  // We take the ref of the product to update from the url
 
 		    	String body = request.body(); 	
 
 		    	// We collect all the values to update from the request body in one list :
-		    	List productValues = Parser.productValuesCollector(gson, body);
+		    	List productValues = ProductParser.productValuesCollector(gson, body);
+
+				List categoryValues = CategoryParser.categoryValuesCollector(gson, body);
 
 		    	// We select only the non null values with their corresponding columns :
-		    	Map<String, Object> product_columns_new_values = Parser.mapFormater(Parser.product_columns, productValues);
+		    	Map<String, Object> product_columns_new_values = Parser.mapFormater(ProductParser.product_columns, productValues);
 
-				System.out.println(product_columns_new_values);
+				Map<String, Object> category_columns_new_values = Parser.mapFormater(CategoryParser.categoryAttributes, categoryValues);
 
+				product_columns_new_values.put("category", category_columns_new_values);
+				
 		    	// And finally we update the product :
 		    	try {
 				  
 			  		service.updateProduct(ref, product_columns_new_values);
 
-		    	} catch (ProductNotFoundException  e) {
+		    	} catch (ProductNotFoundException | CategoryNotFoundException  e) {
 
 			    	return e.getMessage();
 		    	}
@@ -150,22 +154,20 @@ public static void postProductController() {
     post("/products/post" , new Route() {
 
         @Override
-        public String handle(Request request, Response response) throws ProductNotFoundException  {
+        public String handle(Request request, Response response) throws ProductNotFoundException, CategoryNotFoundException  {
 
 	        System.out.println("Server started.");
 
 		    String body = request.body(); 	
 
 			// We create the product using the parse method in the Parser class
-			Product product = Parser.parseProduct(body);
+			Product product = ProductParser.parseProduct(body);
 
 			// We persist the product
 			service.addProduct(product.getCategory(), product.getModel(), product.getDescription(), product.getUnitPrice());
 
 			// The server response : 
 		    return "Product created successfully.";
-
-
 
 
 }});

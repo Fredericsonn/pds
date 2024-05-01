@@ -40,6 +40,26 @@ public class HQLQueryManager {
         return hql;
     }
 
+    // this method dynamically generates the hql query according to the contact type and the selected columns to update
+    public static String UpdateWithExclusionsHQLQueryGenerator(String table, Map<String,Object> columnsNewValues, 
+    
+    String primary_key, List<String> exclusions) {
+
+        if (columnsNewValues.size() != exclusions.size()) {
+
+            List<String> columns = new ArrayList<>(columnsNewValues.keySet());
+
+            for (String column : columnsNewValues.keySet()) {
+    
+                if (exclusions.contains(column)) columns.remove(column);
+            }
+    
+            return columnsCollector(columns, table, primary_key);
+        }
+
+        return null;
+    }
+
     public static String getContactByNameHQLQueryGenerator(String contactType) {
         if (contactType.equals(Person.class.getSimpleName())) {
             return "from  Person where concat(firstName,' ',lastName) = :fullName";

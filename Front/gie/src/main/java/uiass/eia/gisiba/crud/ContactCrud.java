@@ -10,9 +10,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import uiass.eia.gisiba.controller.FXManager;
-import uiass.eia.gisiba.dto.AddressDto;
-import uiass.eia.gisiba.dto.ContactDto;
-import uiass.eia.gisiba.dto.Parser;
+import uiass.eia.gisiba.http.dto.AddressDto;
+import uiass.eia.gisiba.http.dto.ContactDto;
+import uiass.eia.gisiba.http.parsers.ContactParser;
+import uiass.eia.gisiba.http.parsers.Parser;
 
 public class ContactCrud {
 
@@ -26,7 +27,7 @@ public class ContactCrud {
         List values = new ArrayList<>();
 
         // The list of attributes that reference the text fields' ids :
-        List<String> attributes = new ArrayList<String>(Parser.contactCreationTextFieldsReferences);
+        List<String> attributes = new ArrayList<String>(ContactParser.contactCreationTextFieldsReferences);
 
 
         // We collect all the text fields in a list and set the corresponding prompt text :
@@ -69,7 +70,7 @@ public class ContactCrud {
                 if (contactType.equals("Enterprise")) values.add(comboBoxes.get(0).getValue());
     
                 // We generate the columns - values map using the values list :
-                Map<String,Object> map = Parser.contactCreationMapGenerator(values, contactType);
+                Map<String,Object> map = ContactParser.contactCreationMapGenerator(values, contactType);
     
                 // We dynamically generate the corresponding json :
                 String json = Parser.jsonGenerator(map);
@@ -100,9 +101,9 @@ public class ContactCrud {
     int addressId, List<String> originalValues) {
 
         // lists containing each object's attributes (excluding ids) :
-        List<String> contactAttributes = new ArrayList<String>(Parser.contactUpdateTextFieldsReferences);
+        List<String> contactAttributes = new ArrayList<String>(ContactParser.contactUpdateTextFieldsReferences);
 
-        List<String> addressAttributes = Parser.update_address_attributes;
+        List<String> addressAttributes = ContactParser.update_address_attributes;
 
         // lists to store each attribute's entered value :
         List contactValues = new ArrayList<>();
@@ -162,8 +163,8 @@ public class ContactCrud {
                 if (contactType.equals("Enterprise")) contactValues.add(comboBoxes.get(0).getValue());
     
                 // We create the columns - values to update maps :
-                Map<String,Object> contact_attributes_map = Parser.contactUpdateMapGenerator(contactValues, contactType);
-                Map<String,Object> address_attributes_map = Parser.addressMapGenerator(addressValues);
+                Map<String,Object> contact_attributes_map = ContactParser.contactUpdateMapGenerator(contactValues, contactType);
+                Map<String,Object> address_attributes_map = ContactParser.addressMapGenerator(addressValues);
     
                 // We create their corresponding jsons :
                 String contactJson = Parser.jsonGenerator(contact_attributes_map);
@@ -223,7 +224,7 @@ public class ContactCrud {
                 List<String> values = Arrays.asList(receiverEmail, subject, emailBody); 
 
                 // We call the Parser class to generate the corresponding map
-                Map<String,Object> emailSendingMap = Parser.emailSendingMapGenerator(values);
+                Map<String,Object> emailSendingMap = ContactParser.emailSendingMapGenerator(values);
 
                 // We convert the map to json
                 String json = Parser.jsonGenerator(emailSendingMap);

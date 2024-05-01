@@ -110,25 +110,28 @@ public class Main {
 
         service.addProduct(cat, "GX-ALPHA", "Good Camera", 200);*/
 
-        /*Map<String,Object> map = new HashMap<String,Object>();
+        Map<String,Object> map = new HashMap<String,Object>();
 
-        map.put("unitPrice", 250.0);
+        Map<String,Object> categoryMap = new HashMap<String,Object>();
 
-        map.put("categoryName", "LAPTOP");
+        map.put("unitPrice", 150.0);
+
+        map.put("description", "a very good product");
+
+        categoryMap.put("categoryName", "LAPTOP");
+
+        categoryMap.put("brandName", "Dell");
+
+        map.put("category", categoryMap);
 
         try {
             service.updateProduct("00ENDE", map);
-        } catch (ProductNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }*/
-
-        try {
-            System.out.println(service.getCategoryById(6));
-        } catch (CategoryNotFoundException e) {
+        } catch (ProductNotFoundException | CategoryNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+
 
         
         

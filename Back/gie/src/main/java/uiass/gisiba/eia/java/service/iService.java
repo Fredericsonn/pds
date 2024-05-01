@@ -79,11 +79,13 @@ public interface iService {
 
     List<Product> getAllProducts();
 
-    void updateProduct(String ref, Map<String,Object> columnsNewValues) throws ProductNotFoundException;
+    void updateProduct(String ref, Map<String,Object> columnsNewValues) throws ProductNotFoundException, CategoryNotFoundException;
 
 /////////////////////////////////////////////////////// Category ////////////////////////////////////////////////////////////////
 
     Category getCategoryById(int id) throws CategoryNotFoundException;
+
+    Category getCategoryByNames(String categoryName, String brandName) throws CategoryNotFoundException;
     
     List getAllCategories();
 

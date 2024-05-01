@@ -1,10 +1,14 @@
-package uiass.eia.gisiba.dto;
+package uiass.eia.gisiba.http.dto;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+
+import uiass.eia.gisiba.http.DataSender;
+import uiass.eia.gisiba.http.parsers.ContactParser;
+import uiass.eia.gisiba.http.parsers.Parser;
 
 public class ContactDto {
 
@@ -16,7 +20,7 @@ public class ContactDto {
 
         String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType + "/byId/" + id);
 
-        if (!responseBody.equals("Server Error.")) return Parser.parseContact(responseBody, contactType);
+        if (!responseBody.equals("Server Error.")) return ContactParser.parseContact(responseBody, contactType);
 
         return null;
     }
@@ -26,7 +30,7 @@ public class ContactDto {
 
         String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType + "/byName/" + name);
 
-        if (!responseBody.equals("Server Error.")) return Parser.parseContact(responseBody, contactType);
+        if (!responseBody.equals("Server Error.")) return ContactParser.parseContact(responseBody, contactType);
 
         return null;
     }
@@ -40,7 +44,7 @@ public class ContactDto {
 
         JsonArray contactsArray = new JsonParser().parse(responseBody).getAsJsonArray();
 
-        contactsArray.forEach(elt -> contacts.add(Parser.parseContact(String.valueOf(elt.getAsJsonObject()), contactType)) );
+        contactsArray.forEach(elt -> contacts.add(ContactParser.parseContact(String.valueOf(elt.getAsJsonObject()), contactType)) );
 
 
         return contacts;

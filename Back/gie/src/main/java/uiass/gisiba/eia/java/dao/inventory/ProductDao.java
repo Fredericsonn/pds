@@ -1,5 +1,6 @@
 package uiass.gisiba.eia.java.dao.inventory;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import javax.persistence.Query;
 
 import uiass.gisiba.eia.java.dao.crm.HQLQueryManager;
 import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
+import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.Category;
 import uiass.gisiba.eia.java.entity.inventory.Product;
@@ -19,6 +21,7 @@ public class ProductDao implements iProductDao {
 
     private EntityManager em;
 	private EntityTransaction tr;
+    private static CategoryDao cdao = new CategoryDao();
     
     public ProductDao() {
         this.em= HibernateUtility.getEntityManger();
@@ -81,35 +84,79 @@ public class ProductDao implements iProductDao {
     }
 
     @Override
-    public void updateProduct(String ref, Map<String, Object> columnsNewValues) throws ProductNotFoundException {
+    public void updateProduct(String ref, Map<String, Object> columnsNewValues) throws ProductNotFoundException, CategoryNotFoundException {
 
 		// get the product to update :
 		Product product = this.getProductById(ref);
 
+        productCategoryHandler(columnsNewValues,product);
+        
 		//dynamically generate the corresponding hql string :
-		String hql = HQLQueryManager.UpdateHQLQueryGenerator("Catalog", columnsNewValues, "product_ref");
+		String hql = HQLQueryManager.UpdateWithExclusionsHQLQueryGenerator("Catalog", columnsNewValues,
 
-		// create the query using the generated hql :
-		Query productQuery = em.createQuery(hql);
+         "product_ref", Arrays.asList("category"));
 
-		// set the query parameters :
-        for (String column : columnsNewValues.keySet()) {
+        if (hql != null) {  // if there are other columns to update other than the category
 
-            Object newValue = columnsNewValues.get(column);
+            // create the query using the generated hql :
+		    Query productQuery = em.createQuery(hql);
+
+		    // set the query parameters :
+            for (String column : columnsNewValues.keySet()) {
             
-            productQuery.setParameter(column, newValue);     
+                if (!column.equals("category")) {
+
+                    Object newValue = columnsNewValues.get(column);
             
+                    productQuery.setParameter(column, newValue);  
+                }
+            
+            }
+
+		    productQuery.setParameter("product_ref", ref);
+
+            tr.begin();
+
+            productQuery.executeUpdate();
+
+            em.refresh(product);
+
+		    tr.commit();
         }
 
-		productQuery.setParameter("product_ref", ref);
+        
+    }
 
-        tr.begin();
+    @SuppressWarnings("unchecked")
+    public void productCategoryHandler(Map<String, Object> columnsNewValues, Product product) throws CategoryNotFoundException {
 
-        productQuery.executeUpdate();
+        Map<String, Object> categoryParams = (Map<String, Object>) columnsNewValues.get("category");
 
-        em.refresh(product);
+        if (categoryParams != null) {
 
-		tr.commit();
+            if (!categoryParams.isEmpty()) {
+
+                String categoryName = categoryParams.keySet().contains("categoryName") ? (String) categoryParams.get("categoryName") : null;
+    
+                String brandName = categoryParams.keySet().contains("brandName") ? (String) categoryParams.get("brandName") : null;
+
+                if (categoryName != null && brandName != null) {
+
+                    Category category = cdao.getCategoryByNames(categoryName, brandName);
+        
+                    if (!product.getCategory().equals(category)) product.setCategory(category);
+            
+                    tr.begin();
+            
+                    em.persist(product);
+            
+                    tr.commit();
+                }
+            }
+
+        }
+
+
     }
 
 

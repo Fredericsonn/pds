@@ -2,6 +2,8 @@ package uiass.eia.gisiba.crud;
 
 import java.util.*;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import javafx.scene.Parent;
 import javafx.scene.control.Alert.AlertType;
@@ -10,25 +12,27 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import uiass.eia.gisiba.controller.FXManager;
-import uiass.eia.gisiba.dto.Parser;
-import uiass.eia.gisiba.dto.ProductDto;
+import uiass.eia.gisiba.http.dto.CategoryDto;
+import uiass.eia.gisiba.http.dto.ProductDto;
+import uiass.eia.gisiba.http.parsers.Parser;
+import uiass.eia.gisiba.http.parsers.ProductParser;
 public class ProductCrud {
 
     @SuppressWarnings("unchecked")
 
     // A method that extracts the data entered by the user and sends a post http request to the server :
-    public static void create_product(Parent pane, Button button) {
+    public static void create_product(Parent hbox1, Parent hbox2, Button button) {
 
-        // The list of values we'll be using to generate the coluns - values map
-        List values = new ArrayList<>();
+        // The list of values we'll be using to generate the columns - values map
+        List productValues = new ArrayList<>();
 
         // We put all the text fields in a list to check if all the fields got input :
-        List<TextField> textFields = productTextFieldsHandler(pane, "create", values);
+        List<TextField> textFields = productTextFieldsHandler(hbox1,hbox2, "create", productValues);
 
         // We put all the combo boxes in a list to check if an item was selected :
-        List<ComboBox> comboBoxes = productComboBoxesHandler(pane, "create", values);
+        List<ComboBox> comboBoxes = productComboBoxesHandler(hbox1, "create", productValues);
 
-        List<String> categoriesList = ProductDto.getAllCategories(); // We get the categories list that we have 
+        List<String> categoriesList = CategoryDto.getAllCategoriesNames(); // We get the categories list that we have 
 
         ComboBox categoryComboBox = comboBoxes.get(0);
         ComboBox brandComboBox = comboBoxes.get(1);
@@ -41,7 +45,7 @@ public class ProductCrud {
             if (newCategory != null) {
                     
                 // We get all the corresponding brands for the newly selected category
-                List<String> brandsList = ProductDto.getAllBrandsByCategory(String.valueOf(newCategory)); 
+                List<String> brandsList = CategoryDto.getAllBrandsByCategory(String.valueOf(newCategory)); 
             
                 // Populate the brandComboBox with the brandsList
                 FXManager.populateComboBox(brandComboBox, brandsList);
@@ -51,24 +55,22 @@ public class ProductCrud {
 
         // We extract the data from the text fields when the button is clicked
         button.setOnAction(event -> {
-
-            if (FXManager.textFieldsCreationInputChecker(textFields) && 
-            
-            FXManager.comboBoxesCreationInputChecker(comboBoxes)) {
+                                                    // Model Text Field
+            if (productCreationValidator(comboBoxes, textFields.get(0))) {
 
                 String category = String.valueOf(categoryComboBox.getValue());
                 
                 String brand = String.valueOf(brandComboBox.getValue());
 
-                values.add(category); values.add(brand);
-
                 textFields.forEach(textField -> {
 
-                    values.add(String.valueOf(textField.getText()));
+                    productValues.add(String.valueOf(textField.getText()));
                 });
 
-                // We generate the columns - values map using the values list :
-                Map<String,Object> map = Parser.productCreationMapGenerator(values);
+                productValues.add(0,category); productValues.add(1,brand);
+
+                // We generate the columns - values map using the product values list :
+                Map<String,Object> map = ProductParser.productCreationMapGenerator(productValues);
     
                 // We dynamically generate the corresponding json :
                 String json = Parser.jsonGenerator(map);
@@ -100,18 +102,20 @@ public class ProductCrud {
     @SuppressWarnings("unchecked")
 
     // A method that extracts the data entered by the user and sends a put http request to the server :
-    public static void update_product(Parent pane, Button button, String ref, List<String> originalValues) {
+    public static void update_product(Parent hbox1, Parent hbox2, Button button, String ref, int categoryId, List<String> originalValues) {
 
         // The list of values we'll be using to generate the coluns - values map
-        List values = new ArrayList<>();
+        List productValues = new ArrayList<>();
+
+        List categoryValues = new ArrayList<>();
 
         // We put all the text fields in a list :
-        List<TextField> textFields = productTextFieldsHandler(pane, "update", originalValues);
+        List<TextField> textFields = productTextFieldsHandler(hbox1, hbox2, "update", originalValues);
 
         // We put all the combo boxes in a list :
-        List<ComboBox> comboBoxes = productComboBoxesHandler(pane, "update", originalValues);
+        List<ComboBox> comboBoxes = productComboBoxesHandler(hbox1, "update", originalValues);
 
-        List<String> categoriesList = ProductDto.getAllCategories(); // We get the categories list that we have 
+        List<String> categoriesList = CategoryDto.getAllCategoriesNames(); // We get the categories list that we have 
 
         ComboBox categoryComboBox = comboBoxes.get(0);
         ComboBox brandComboBox = comboBoxes.get(1);
@@ -122,9 +126,12 @@ public class ProductCrud {
         categoryComboBox.valueProperty().addListener((obs, oldCategory, newCategory) -> {
     
             if (newCategory != null) {
-                    
+
+                // We remove the original brand value once the user selects a category
+                brandComboBox.setPromptText("brand");
+
                 // We get all the corresponding brands for the newly selected category
-                List<String> brandsList = ProductDto.getAllBrandsByCategory(String.valueOf(newCategory)); 
+                List<String> brandsList = CategoryDto.getAllBrandsByCategory(String.valueOf(newCategory)); 
             
                 // Populate the brandComboBox with the brandsList
                 FXManager.populateComboBox(brandComboBox, brandsList);
@@ -135,31 +142,36 @@ public class ProductCrud {
         // We extract the data from the text fields when the button is clicked
         button.setOnAction(event -> {
 
-            if (FXManager.textFieldsUpdateInputChecker(textFields) ||
-            
-            FXManager.comboBoxesUpdateInputChecker(comboBoxes)) {
+            if (productUpdateValidator(comboBoxes, textFields)) {
 
                 String category = String.valueOf(categoryComboBox.getValue());
 
                 String brand = String.valueOf(brandComboBox.getValue());
 
-                values.add(category); values.add(brand);
+                if (category == "null") {
+
+                    category = originalValues.get(1);
+
+                    brand = originalValues.get(2);
+                }
+
+                categoryValues.add(category); categoryValues.add(brand);
 
                 textFields.forEach(textField -> {
 
-                    values.add(String.valueOf(textField.getText()));
+                    productValues.add(String.valueOf(textField.getText()));
                 });
 
-                System.out.println(values);
                 // We generate the columns - values map using the values list :
-                Map<String,Object> map = Parser.productUpdateMapGenerator(values);
-                System.out.println(map);
+                Map<String,Object> productMap = ProductParser.productUpdateMapGenerator(productValues);
+                Map<String,Object> categoryMap = ProductParser.categoryUpdateMapGenerator(categoryValues); 
+
     
                 // We dynamically generate the corresponding json :
-                String json = Parser.jsonGenerator(map);
-                    
+                String productJson = ProductParser.updateProductJsonGenerator(productMap, categoryMap);
+                                
                 // We use the json to send an http post request to the server to create the new product with the entered values :
-                String productUpdateResult = ProductDto.updateProduct(ref,json);
+                String productUpdateResult = ProductDto.updateProduct(ref,productJson);
                     
                 // We display the update result :
                 if (productUpdateResult.equals("Product Updated successfully."))
@@ -191,16 +203,16 @@ public class ProductCrud {
 
     }
 
-    public static List<TextField> productTextFieldsHandler(Parent pane, String operation, List<String> originalValues) {
+    public static List<TextField> productTextFieldsHandler(Parent firstPane, Parent secondPane, String operation, List<String> originalValues) {
 
         List<TextField> textFields = new ArrayList<TextField>();
 
         // We collect the text fields from the pane and apply correspondind input rules : 
-        TextField modelTextField= FXManager.getTextField(pane, "modelTextField");
+        TextField modelTextField= FXManager.getTextField(firstPane, "modelTextField");
         FXManager.setTextFieldAlphanumericFormatRule(modelTextField);
-        TextField descriptionTextField = FXManager.getTextField(pane, "descriptionTextField");
+        TextField descriptionTextField = FXManager.getTextField(secondPane, "descriptionTextField");
         FXManager.setTextFieldAlphanumericFormatRule(descriptionTextField);
-        TextField unitPriceTextField = FXManager.getTextField(pane, "unitPriceTextField");
+        TextField unitPriceTextField = FXManager.getTextField(secondPane, "unitPriceTextField");
         FXManager.setTextFieldFloatFormatRule(unitPriceTextField);
 
         if (operation.equals("update")) {   // if we want to update
@@ -231,6 +243,10 @@ public class ProductCrud {
             // We set the prompt text to be the original product's values : 
             category.setPromptText(originalValues.get(1));
             brand.setPromptText(originalValues.get(2));
+
+            // We fill the brand combo box with the corresponding brands :
+            List<String> brands = CategoryDto.getAllBrandsByCategory(originalValues.get(1));
+            FXManager.populateComboBox(brand, brands);
         }
 
         
@@ -239,6 +255,40 @@ public class ProductCrud {
         comboBoxes.add(brand);
 
         return comboBoxes;
+    }
+
+    public static boolean productCreationValidator(List<ComboBox> comboBoxes, TextField textField) {
+
+        for (ComboBox comboBox : comboBoxes) {
+
+            if (comboBox.getValue() == null) {
+
+                return false;
+            }
+        }
+
+        return !textField.getText().equals("");
+    }
+
+    public static boolean productUpdateValidator(List<ComboBox> comboBoxes, List<TextField> textFields) {
+
+        for (TextField textField : textFields) {
+
+            if (!textField.getText().equals("")) {
+
+                return true;
+            }
+        }
+
+        for (ComboBox comboBox : comboBoxes) {
+
+            if (comboBox.getValue() != null) {
+
+                return true;
+            }
+        }
+
+        return false;
     }
     
 }

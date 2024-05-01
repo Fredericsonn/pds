@@ -5,6 +5,7 @@ import java.util.*;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.HBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -33,7 +34,7 @@ public class FXManager {
         put("Enterprise", Arrays.asList("id","enterprise name","type","phone number", "email", "address id","house number","neighborhood","city","zip code","country"));
     }};
 
-    public static List<String> catalog_columns = Arrays.asList("ref","category","brand","model","description","unit price");
+    public static List<String> catalog_columns = Arrays.asList("ref","category id","category","brand","model","description","unit price");
 
 
 
@@ -97,11 +98,7 @@ public class FXManager {
             }
 
             else if (i != 3 ) labels.get(i-2).setText(values.get(i));
-
-
-
-            
-            
+          
             }
 
         
@@ -137,7 +134,7 @@ public class FXManager {
 
             if (columns.get(i).equals("id") || columns.get(i).equals("ref") ||
             
-            columns.get(i).equals("address id")) column.setVisible(false);
+            columns.get(i).equals("address id") || columns.get(i).equals("category id") ) column.setVisible(false);
 
             tableView.getColumns().add(column);
         }
@@ -333,5 +330,10 @@ public class FXManager {
     public static ComboBox getComboBox(Parent pane, String id) {
 
         return (ComboBox) pane.lookup("#" + id);
+    } 
+
+    public static HBox getHBox(Parent pane, String id) {
+
+        return (HBox) pane.lookup("#" + id);
     } 
 }

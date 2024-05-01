@@ -60,6 +60,10 @@ public class Category {
         this.brandName = brandName;
     }
 
+    public boolean equals(Category category) {
+        
+        return this.id == category.id && this.categoryName == category.categoryName && this.brandName == category.brandName;
+    }
     @Override
     public String toString() {
         return "category : " + this.categoryName + ", brand : " + this.brandName;

@@ -1,0 +1,1 @@
+select * from category where brand_name = "Dell" and category_name = "LAPTOP"

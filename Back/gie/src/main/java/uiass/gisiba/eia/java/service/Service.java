@@ -189,7 +189,7 @@ public class Service implements iService {
     }
 
     @Override
-    public void updateProduct(String ref, Map<String, Object> columnsNewValues) throws ProductNotFoundException {
+    public void updateProduct(String ref, Map<String, Object> columnsNewValues) throws ProductNotFoundException, CategoryNotFoundException {
 
         pdao.updateProduct(ref, columnsNewValues);
     }
@@ -200,6 +200,13 @@ public class Service implements iService {
 
         return catdao.getCategoryById(id);
     }
+
+    @Override
+    public Category getCategoryByNames(String categoryName, String brandName) throws CategoryNotFoundException {
+
+        return catdao.getCategoryByNames(categoryName, brandName);
+    }
+
 
     @Override
     public List getAllCategories() {
@@ -280,6 +287,7 @@ public class Service implements iService {
 
         idao.updateInventoryItem(itemId, quantity);
     }
+
 
 
 

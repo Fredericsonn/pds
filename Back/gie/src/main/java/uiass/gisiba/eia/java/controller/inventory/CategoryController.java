@@ -10,8 +10,8 @@ import com.google.gson.JsonObject;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import uiass.gisiba.eia.java.controller.Parser;
-import uiass.gisiba.eia.java.controller.Parsers.CategoryParsrer;
+import uiass.gisiba.eia.java.controller.Parsers.CategoryParser;
+import uiass.gisiba.eia.java.controller.Parsers.Parser;
 import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.dao.inventory.ProductRefGenerator;
@@ -27,6 +27,23 @@ public class CategoryController {
 
 /////////////////////////////////////////////////// GET METHODS //////////////////////////////////////////////////////////////////
 
+	public static void getAllCategories() {
+
+		Gson gson = new Gson();
+	  
+	    System.out.println("Server started.");
+	
+	    get("/categories", (req,res)-> {
+
+		List<Category> categories = service.getAllCategories();
+		
+		res.type("application/json");
+
+		return categories;
+	
+		   
+		}, gson::toJson);
+	}
 	public static void getAllCategoriesNames() {
 
 	    Gson gson = new Gson();
@@ -86,7 +103,7 @@ public class CategoryController {
 
     }
 
-/////////////////////////////////////////////////// POST METHODS //////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////// POST METHOD //////////////////////////////////////////////////////////////////
 
 	public static void postCategory() {
 
@@ -97,7 +114,7 @@ public class CategoryController {
 
 				String body = request.body();
 
-				Category category = CategoryParsrer.parseCategory(body);
+				Category category = CategoryParser.parseCategory(body);
 
 				service.addCategory(category.getCategoryName(), category.getBrandName());
 
@@ -107,7 +124,8 @@ public class CategoryController {
 		});
 	}
 
-/////////////////////////////////////////////////// PUT METHODS //////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////// PUT METHOD /////////////////////////////////////////////////////////////////////
+
     public static void updateCategoryController() {
 
         Gson gson = new Gson();
@@ -124,15 +142,15 @@ public class CategoryController {
 		    	String body = request.body(); 	
 
 		    	// We collect all the values to update from the request body in one list :
-		    	List categoryValues = CategoryParsrer.categoryValuesCollector(gson, body);
+		    	List categoryValues = CategoryParser.categoryValuesCollector(gson, body);
 				System.out.println(categoryValues);
 
 				// We convert the non null values to their corresponding enum values :
-				List validCategoryValues = CategoryParsrer.categoryValuesFormatter(categoryValues);
+				List validCategoryValues = CategoryParser.categoryValuesFormatter(categoryValues);
 				System.out.println(validCategoryValues);
 
 		    	// We select only the non null values with their corresponding columns :
-		    	Map<String, Object> category_columns_new_values = Parser.mapFormater(CategoryParsrer.categoryAttributes, validCategoryValues);
+		    	Map<String, Object> category_columns_new_values = Parser.mapFormater(CategoryParser.categoryAttributes, validCategoryValues);
 				System.out.println(category_columns_new_values);
 
 		    	// And finally we update the category :
