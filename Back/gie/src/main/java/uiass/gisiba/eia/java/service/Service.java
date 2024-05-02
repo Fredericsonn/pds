@@ -175,6 +175,12 @@ public class Service implements iService {
     }
 
     @Override
+    public List<Product> productSearchFilter(Map<String, Object> columnsNewValues)
+            throws ProductNotFoundException, CategoryNotFoundException {
+
+            return pdao.productSearchFilter(columnsNewValues);
+    }
+    @Override
     public void deleteProduct(String ref) throws ProductNotFoundException {
 
         pdao.deleteProduct(ref);
@@ -204,7 +210,6 @@ public class Service implements iService {
 
         return catdao.getCategoryByNames(categoryName, brandName);
     }
-
 
     @Override
     public List getAllCategories() {
@@ -285,6 +290,8 @@ public class Service implements iService {
 
         idao.updateInventoryItem(itemId, quantity);
     }
+
+
 
 
 

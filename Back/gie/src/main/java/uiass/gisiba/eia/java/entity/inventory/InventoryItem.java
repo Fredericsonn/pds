@@ -19,7 +19,7 @@ public class InventoryItem {
     @GeneratedValue(strategy =GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="product_ref")
     private Product product;
 

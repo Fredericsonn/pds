@@ -16,7 +16,7 @@ public class ProductDto {
     // Find a product by its ref :
     public static List<String> getProductByRef(String ref) {
 
-        String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/products/byRef/" + ref);
+        String responseBody = DataSender.getDataSender("products/byRef/" + ref);
 
         if (!responseBody.equals("Server Error.")) return ProductParser.parseProduct(responseBody);
 
@@ -26,7 +26,22 @@ public class ProductDto {
     // Find all the products :
     public static List<List<String>> getAllProducts() {
 
-        String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/products");
+        String responseBody = DataSender.getDataSender("products");
+
+        List<List<String>> products = new ArrayList<List<String>>();
+
+        JsonArray productsArray = new JsonParser().parse(responseBody).getAsJsonArray();
+
+        productsArray.forEach(product -> products.add(ProductParser.parseProduct(String.valueOf(product.getAsJsonObject()))));
+
+        return products;
+
+    }
+
+    // Find all the products :
+    public static List<List<String>> getFilteredProducts(String json) {
+
+        String responseBody = DataSender.postDataSender(json,"products/filter");
 
         List<List<String>> products = new ArrayList<List<String>>();
 
@@ -43,7 +58,7 @@ public class ProductDto {
     // Create a new product :
     public static String postProduct(String json) {
 
-        return DataSender.postDataSender(json, "products");
+        return DataSender.postDataSender(json, "products/post");
     }
 
 //////////////////////////////////////////////////// Delete METHOD /////////////////////////////////////////////////////////////

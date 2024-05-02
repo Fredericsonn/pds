@@ -18,7 +18,7 @@ public class ContactDto {
     // Find a contact by its id :
     public static List<String> getContactById(int id, String contactType) {
 
-        String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType + "/byId/" + id);
+        String responseBody = DataSender.getDataSender("contacts/" + contactType + "/byId/" + id);
 
         if (!responseBody.equals("Server Error.")) return ContactParser.parseContact(responseBody, contactType);
 
@@ -28,7 +28,9 @@ public class ContactDto {
     // Find a contact by its name :
     public static List<String> getContactByName(String name, String contactType) {
 
-        String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType + "/byName/" + name);
+        String responseBody = DataSender.getDataSender("/contacts/" + contactType + "/byName/" + name);
+
+        System.out.println(responseBody);
 
         if (!responseBody.equals("Server Error.")) return ContactParser.parseContact(responseBody, contactType);
 
@@ -38,7 +40,7 @@ public class ContactDto {
     // Find all the contacts (either all persons or all enterprises) :
     public static List<List<String>> getAllContactsByType(String contactType) {
 
-        String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType);
+        String responseBody = DataSender.getDataSender("contacts/" + contactType);
 
         List<List<String>> contacts = new ArrayList<List<String>>();
 
@@ -67,7 +69,7 @@ public class ContactDto {
     // Create a new contact :
     public static String postContact(String json, String contactType) {
 
-        return DataSender.postDataSender(json, "contacts/" + contactType);
+        return DataSender.postDataSender(json, "contacts/" + contactType + "/post");
     }
 
     // Send an email to a contact :

@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
-
+import uiass.gisiba.eia.java.dao.HQLQueryManager;
 import uiass.gisiba.eia.java.dao.exceptions.*;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;

@@ -1,4 +1,4 @@
-package uiass.gisiba.eia.java.dao.crm;
+package uiass.gisiba.eia.java.dao;
 
 import java.util.*;
 import uiass.gisiba.eia.java.entity.crm.Contact;
@@ -19,11 +19,11 @@ public class HQLQueryManager {
 
         List<String> columns = new ArrayList<>(columnsNewValues.keySet());
 
-        return columnsCollector(columns, table, primary_key);
+        return updateColumnsCollector(columns, table, primary_key);
     }
 
     // this method is used to generate the hql from a columns update state map
-    public static String columnsCollector(List<String> columns, String table, String primary_key) {
+    public static String updateColumnsCollector(List<String> columns, String table, String primary_key) {
         
         String hql = "UPDATE " + table + " set ";
 
@@ -54,7 +54,7 @@ public class HQLQueryManager {
                 if (exclusions.contains(column)) columns.remove(column);
             }
     
-            return columnsCollector(columns, table, primary_key);
+            return updateColumnsCollector(columns, table, primary_key);
         }
 
         return null;
@@ -94,6 +94,31 @@ public class HQLQueryManager {
 
         return hql;
     }
+
+    public static String productSelectHQLQueryGenerator(String table, Map<String,Object> columnsToSelect) {
+
+        List<String> columns = new ArrayList<>(columnsToSelect.keySet());
+
+        return productSelectColumnsCollector(columns, table);
+    }
+    // this method is used to generate the hql from a columns update state map
+    public static String productSelectColumnsCollector(List<String> columns, String table) {
+        
+        String hql = "select c from " + table + " c " + " where ";
+
+        for (String column : columns) {
+
+            if (column.equals("model") ) hql += column + " = :" + column + " and ";
+
+            else hql += "category." + column + " = :" + column + " and ";
+            
+        }
+
+        hql = hql.substring(0, hql.length()-5);
+        
+        return hql;
+    }
+
 
 
 }

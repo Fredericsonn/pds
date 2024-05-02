@@ -21,6 +21,8 @@ public class ProductParser extends Parser {
 
     public static List<String> product_columns = Arrays.asList("model","description","unitPrice");
 
+    public static List<String> filter_columns = Arrays.asList("categoryName","brandName","model");
+
     // A method that collects product data from a json :
     public static List productValuesCollector(Gson gson, String body) {
 
@@ -99,6 +101,26 @@ public class ProductParser extends Parser {
         }
 
         return products;
+
+    }
+
+/////////////////////////////// this method is used to parse the filter criteria map ///////////////////////////////////////////////
+
+    public static Map<String, Object> parseFilterCriteria(String json) {
+
+        Map<String, Object> criteria = new HashMap<String, Object>();
+
+        JsonObject criteriaObject = new JsonParser().parse(json).getAsJsonObject();
+
+        for (String column : filter_columns) {
+
+            String filter_column_value = collectString(criteriaObject, column);
+
+            if (filter_column_value != null) criteria.put(column, filter_column_value);
+
+        }
+
+        return criteria;
 
     }
 }

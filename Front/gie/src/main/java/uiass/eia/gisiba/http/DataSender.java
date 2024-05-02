@@ -38,14 +38,14 @@ public class DataSender {
         return "Server Error.";
     }
     
-    public static String postDataSender(String json, String entity) {
+    public static String postDataSender(String json, String path) {
 
         OkHttpClient client = new OkHttpClient();
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
 
         Request request = new Request.Builder()
-                .url("http://localhost:4567/" + entity + "/post")  
+                .url("http://localhost:4567/" + path)  
                 .post(requestBody)
                 .build();
 
@@ -106,14 +106,14 @@ public class DataSender {
 
             if (!response.isSuccessful()) {
 
-                return "Internal Serval Error";
+                return "Server Error.";
             }
 
             else return  response.body().string();
             
         } catch (IOException e) {
 
-            return "Internal Serval Error"; 
+            return "Server Error."; 
         }
     }
 

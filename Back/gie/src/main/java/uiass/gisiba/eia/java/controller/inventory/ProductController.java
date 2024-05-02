@@ -141,7 +141,7 @@ public class ProductController {
 
 	}
 
-/////////////////////////////////////////////////// POST METHOD //////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////// POST METHODs //////////////////////////////////////////////////////////////////
 
 public static void postProductController() {
 
@@ -170,5 +170,32 @@ public static void postProductController() {
 
 
 }
+
+	public static void productSearchFilter() {
+	
+		post("/products/filter" , new Route() {
+	
+			@Override
+			public String handle(Request request, Response response) throws ProductNotFoundException, CategoryNotFoundException  {
+
+				Gson gson = new Gson();
+
+				System.out.println("Server started.");
+		
+				String body = request.body();
+
+				System.out.println(body);
+		
+				Map<String,Object> criteria = ProductParser.parseFilterCriteria(body);
+		
+				List<Product> products = service.productSearchFilter(criteria);
+						
+				return gson.toJson(products);
+	
+	
+	}});
+	
+	
+	}
 
 }

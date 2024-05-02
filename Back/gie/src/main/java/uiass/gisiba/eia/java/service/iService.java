@@ -74,6 +74,8 @@ public interface iService {
 
     Product getProductById(String ref) throws ProductNotFoundException;
 
+    List<Product> productSearchFilter(Map<String,Object> columnsNewValues) throws ProductNotFoundException, CategoryNotFoundException;
+
     void deleteProduct(String ref) throws ProductNotFoundException;
 
     List<Product> getAllProducts();

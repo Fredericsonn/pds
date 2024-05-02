@@ -110,24 +110,21 @@ public class Main {
 
         Map<String,Object> map = new HashMap<String,Object>();
 
-        Map<String,Object> categoryMap = new HashMap<String,Object>();
+        map.put("model", "single");
 
-        map.put("unitPrice", 150.0);
+        map.put("categoryName", "CAMERA");
 
-        map.put("description", "a very good product");
+        map.put("brandName", "Panasonic");
 
-        categoryMap.put("categoryName", "LAPTOP");
-
-        categoryMap.put("brandName", "Dell");
-
-        map.put("category", categoryMap);
 
         try {
-            service.updateProduct("00ENDE", map);
+            System.out.println(service.productSearchFilter(map));
         } catch (ProductNotFoundException | CategoryNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        
 
 
 

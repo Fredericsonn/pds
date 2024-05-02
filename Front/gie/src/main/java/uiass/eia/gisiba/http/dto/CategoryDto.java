@@ -18,7 +18,7 @@ public class CategoryDto {
 
         List<List<String>> categories = new ArrayList<List<String>>();
 
-        String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/categories");
+        String responseBody = DataSender.getDataSender("categories");
 
         JsonArray categoriesArray = new JsonParser().parse(responseBody).getAsJsonArray();
 
@@ -33,7 +33,7 @@ public class CategoryDto {
 
         List<String> categories = new ArrayList<String>();
 
-        String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/categories/categoriesNames");
+        String responseBody = DataSender.getDataSender("categories/categoriesNames");
 
         JsonArray categoriesArray = new JsonParser().parse(responseBody).getAsJsonArray();
 
@@ -42,12 +42,12 @@ public class CategoryDto {
         return categories;
     }
 
-    // Find all the categories :
-    public static List<String> getAllBrandsByCategory(String category) {
+    // Find all the brands :
+    public static List<String> getAllBrands() {
 
         List<String> brands = new ArrayList<String>();
 
-        String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/categories/brandsNames/byCategory/" + category);
+        String responseBody = DataSender.getDataSender("categories/brandsNames");
 
         JsonArray brandsArray = new JsonParser().parse(responseBody).getAsJsonArray();
 
@@ -56,6 +56,28 @@ public class CategoryDto {
         return brands;
     }
 
+    // Find all the brands by a given category:
+    public static List<String> getAllBrandsByCategory(String category) {
+
+        List<String> brands = new ArrayList<String>();
+
+        String responseBody = DataSender.getDataSender("categories/brandsNames/byCategory/" + category);
+
+        JsonArray brandsArray = new JsonParser().parse(responseBody).getAsJsonArray();
+
+        brandsArray.forEach(brand -> brands.add(brand.getAsString()));
+
+        return brands;
+    }
+
+//////////////////////////////////////////////////// POST METHOD ///////////////////////////////////////////////////////////////////
+
+public static String postCategory(String json) {
+
+    if (json != null) return DataSender.postDataSender(json, "categories/post");
+
+    return "Please provide some new values to post.";
+}
 //////////////////////////////////////////////////// PUT METHOD ///////////////////////////////////////////////////////////////////
 
     public static String updateCategory(int id, String json) {

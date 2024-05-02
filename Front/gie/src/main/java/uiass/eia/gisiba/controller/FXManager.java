@@ -6,8 +6,10 @@ import java.util.*;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -237,7 +239,7 @@ public class FXManager {
             String newText = change.getControlNewText();
 
             // Allow only alphanumeric characters and a max length of 6
-            if (newText.matches("[a-zA-Z0-9]*")) { 
+            if (newText.matches("[a-zA-Z0-9\\s]*")) { 
 
                 return change;
 
@@ -348,5 +350,20 @@ public class FXManager {
     public static HBox getHBox(Parent pane, String id) {
 
         return (HBox) pane.lookup("#" + id);
+    } 
+
+    public static VBox getVBox(Parent pane, String id) {
+
+        return (VBox) pane.lookup("#" + id);
+    } 
+
+    public static ImageView getImageView(Parent pane, String id) {
+
+        return (ImageView) pane.lookup("#" + id);
+    } 
+
+    public static AnchorPane getAnchorPane(Parent pane, String id) {
+
+        return (AnchorPane) pane.lookup("#" + id);
     } 
 }

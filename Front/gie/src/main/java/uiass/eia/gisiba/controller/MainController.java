@@ -14,6 +14,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
@@ -78,72 +79,8 @@ public class MainController {
         // Tables
         TableView<List<String>> contactsTable = FXManager.getTableView(centerAnchorPane, "contactsTableView");
 
-        contactsTable.setOnMouseClicked(event -> {
-            if (!contactsTable.getSelectionModel().isEmpty()) {
-
-                // We get the selected row and extract the values
-                List<String> selectedItem = (List<String>) contactsTable.getSelectionModel().getSelectedItem();
-                int contactId = Integer.parseInt(selectedItem.get(0));
-                String firstAttribute = selectedItem.get(1);
-                String secondAttribute = selectedItem.get(2);
-                String phoneNumber = selectedItem.get(3);
-                String email = selectedItem.get(4);
-                int addressId = Integer.parseInt(selectedItem.get(5));
-                String houseNumber = selectedItem.get(6);
-                String neighborhood = selectedItem.get(7);
-                String city = selectedItem.get(8);
-                String zipCode = selectedItem.get(9);
-                String country = selectedItem.get(10);
-
-                String address = houseNumber + " " + neighborhood + " " +
-                
-                city + " " + zipCode + " " + country; // We formulate the full address using its id
-
-                // We put all the values in one list that we'll use to fill the labels
-                List<String> values = Arrays.asList(firstAttribute,secondAttribute,phoneNumber,email,address);
-
-                // We use the extracted values to fill the labels
-                FXManager.contactLabelsFiller(labels, values, contactType);
-
-                // We finally show the right pane
-                rightAnchorPane.setVisible(true);
-
-                // When the update button is clicked
-                update.setOnAction(update_event -> {
-                    // We collect ll the original values to be passed as the text fields prompt text
-                    List<String> originalValues = new ArrayList<String>(values);
-                    originalValues.addAll(Arrays.asList(houseNumber,neighborhood,city,zipCode,country));
-                    this.goToUpdateContactPage(contactType, contactId, addressId, originalValues);
-                });
-
-                // When the delete button is clicked
-                delete.setOnAction(delete_event -> {
-
-                    // We define the contact name based on its type
-                    String contactName = (contactType.equals("Person")) ? firstAttribute + " " + secondAttribute : firstAttribute;
-
-                    // Show a confirmation dialog
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("Confirmation");
-                    alert.setHeaderText("Contact Deletion");
-                    alert.setContentText("The contact " + contactName + " will be deleted, do you confirm this operation ?");
-                
-                    // Add "Yes" and "No" buttons
-                    ButtonType buttonTypeYes = new ButtonType("Yes");
-                    ButtonType buttonTypeNo = new ButtonType("No");
-                    alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
-                
-                    // Show the dialog and wait for user input
-                    ButtonType result = alert.showAndWait().orElse(null);
-                    if (result == buttonTypeYes) {
-                        // Call the deleteContact method if the user clicked "Yes"
-                        ContactCrud.deleteContact(contactType, contactId);
-                    }
-                });
-           
-        } 
-            
-        });
+        // We set the contacts table's columns event listeners
+        ContactCrud.contactsTableEventHandler(contactsTable, labels, rightAnchorPane, contactType, update, delete);
 
         // We send an http get request to get all the contacts of the given type
         List<List<String>> data = ContactDto.getAllContactsByType(contactType);  
@@ -162,6 +99,7 @@ public class MainController {
 
                 // We get the contact using that id
                 List<String> info = ContactDto.getContactByName(contactName, contactType);
+                System.out.println(info);
 
                 if (info != null) {  // if there is a contact with the given name
 
@@ -195,7 +133,7 @@ public class MainController {
                         // We collect ll the original values to be passed as the text fields prompt text
                         List<String> originalValues = new ArrayList<String>(values);
                         originalValues.addAll(Arrays.asList(houseNumber,neighborhood,city,zipCode,country));
-                        this.goToUpdateContactPage(contactType, contactId, addressId, originalValues);
+                        ContactCrud.goToUpdateContactPage(contactType, contactId, addressId, originalValues);
                     });
 
                     // When the delete button is clicked
@@ -233,7 +171,7 @@ public class MainController {
 
         // When the create new button is clicked
         createNew.setOnAction(event -> {
-            this.goToCreateContactPage(contactType);
+            ContactCrud.goToCreateContactPage(contactType);
             
         });
 
@@ -243,9 +181,8 @@ public class MainController {
             // We collect the receiver's email from the email label
             String receiverEmail = FXManager.getLabel(rightAnchorPane, "emailLabel").getText();
 
-            this.goToSendEmailPage(receiverEmail);
+            ContactCrud.goToSendEmailPage(receiverEmail);
         });
-
 
  
     }
@@ -279,164 +216,70 @@ public class MainController {
         Button update = FXManager.getButton(rightAnchorPane, "updateBtn");
         Button delete = FXManager.getButton(rightAnchorPane, "deleteBtn");
 
-        // Search text field
-        TextField txtField = FXManager.getTextField(centerAnchorPane, "enterRefTextField");
-        FXManager.setTextFieldAlphanumericFormatRule(txtField); // We block any non alphanumeric input
+        // Search text fields
+        // a method that collects the text fields and sets input rules :
+        List<TextField> textFields = ProductCrud.productSearchTextFieldsHandler(centerAnchorPane);
+
+        TextField categoryTextField = textFields.get(0);     // We get
+        TextField brandTextField = textFields.get(1);        // the text fields
+        TextField modelTextField = textFields.get(2);        // from the list
 
         // Labels
         List<Label> labels = FXManager.labelsCollector(rightAnchorPane, labelIds);
+
+        // Refresh Image
+        AnchorPane refresh = FXManager.getAnchorPane(centerAnchorPane, "refreshPane");
+        
 
         // Tables
         TableView<List<String>> productsTable = FXManager.getTableView(centerAnchorPane, "productsTableView");
 
         // A method that handles the table rows event listners
-        ProductCrud.productTableEventHandler(productsTable, labels, rightAnchorPane, update, delete);
+        ProductCrud.productTableEventHandler(productsTable, labels, rightAnchorPane,refresh, update, delete);
 
-        // We send an http get request to get all the contacts of the given type
-        List<List<String>> data = ProductDto.getAllProducts();  
-
-        // We populate the table using those collected contacts
-        List<String> columns = FXManager.catalog_columns;
-        FXManager.populateTableView(productsTable, columns, data);
+        // We the table with all the products
+        ProductCrud.fillWithProducts(productsTable);
 
         // When we press the search button
         search.setOnAction(event -> {
             
             // We collect the entered id (we suppose it's a number)
-            String ref = txtField.getText();
+            String categroyInput = categoryTextField.getText();
+            String brandInput = brandTextField.getText();
+            String modelInput = modelTextField.getText();
 
-            if (ref != "") {
+            List<String> values = Arrays.asList(categroyInput,brandInput,modelInput);
 
-                // We get the contact using that id
-                List<String> info = ProductDto.getProductByRef(ref);
+            String json = ProductCrud.filteredProductSearchJsonGenerator(values);
+            
 
-                if (info != null) {  // if there is a contact with the given id
+            if (ProductCrud.productSearchValidator(textFields)) {
 
-                    // We extract each attribute's value from the retrieved contact
-                    int categoryId = Integer.parseInt(info.get(1));
-                    String category = info.get(2);
-                    String brand = info.get(3);
-                    String model = info.get(4);
-                    String description = info.get(5);
-                    String unitPrice = info.get(6);
+                // We get the products that match the filter criteria
+                List<List<String>> data = ProductDto.getFilteredProducts(json);
 
-                    // We put all the values in one list that we'll use to fill the labels
-                    List<String> values = Arrays.asList(category, brand, model,description, unitPrice);
-    
-                    // We use the extracted values to fill the labels
-                    FXManager.catalogLabelsFiller(labels, values);
+                if (!data.isEmpty()) {  // if there are matching products 
 
-                    // We finally show the right pane
-                    rightAnchorPane.setVisible(true);
+                    // We fill the products table with the matching products
+                    ProductCrud.fillWithFilteredProducts(productsTable, data);
 
-                    // When the update button is clicked
-                    update.setOnAction(update_event -> {
-
-                        List<String> originalValues = new ArrayList<String>(values);
-
-                        ProductCrud.goToUpdateProductPage(ref,categoryId, originalValues);
-                    });
-
-                    // When the delete button is clicked
-                    delete.setOnAction(delete_event -> ProductCrud.deleteProduct(ref));
                 }
                 
                 // if no product corresponds to the provided ref we show an error alert
-                else FXManager.showAlert(AlertType.ERROR, "ERROR", "Product Not Found", ref + " doesn't correspond to any existing product.");
+                else FXManager.showAlert(AlertType.ERROR, "ERROR", "Products Not Found"," No existing products match the given criteria. Please check for spelling erros.");
             }
 
             // if the text field is empty and the search button is clicked
-            else FXManager.showAlert(AlertType.ERROR, "ERROR", "Empty Reference Field", "Please provide a product reference.");
+            else FXManager.showAlert(AlertType.ERROR, "ERROR", "Empty Search Fields", "Please provide some parameters for the search.");
         });
 
         // When the create new button is clicked
         createNew.setOnAction(event -> {
-            ProductCrud.goToCreateProductPage();
+            ProductCrud.whatToCreate();
             
         });
  
     }
-
-    // A method that display the contact creation pane
-    public void goToCreateContactPage(String contactType) {
-
-        // We create the stage that will contain the creation page
-        Stage stage = new Stage();
-        AnchorPane pane = new AnchorPane();
-        Scene scene = new Scene(pane);
-        String type = contactType.toLowerCase();
-        FXManager.loadFXML("/uiass/eia/gisiba/crm/contact/" + type + "/" + "create_" + type + "_pane.fxml", pane, getClass());  // here we load the creation page fxml file
-        
-        // We collect the confirm button from the fxml file
-        Button confirm = FXManager.getButton(pane, "confirmBtn");
-
-        // We add the corresponding event listener to the button
-        ContactCrud.create_contact(pane, confirm, contactType);
-        
-        // We add the stage info and show it
-        String iconPath = "/uiass/eia/gisiba/imgs/" + (contactType.equals("Person") ? "man" : "office-building") + ".png";
-        InputStream inputStream = getClass().getResourceAsStream(iconPath);
-        Image icon = new Image(inputStream);
-
-        stage.setScene(scene);
-        stage.setTitle(contactType.equals("Person") ? "Create Person" : "Create Enterprise");
-        stage.setResizable(false);
-        stage.getIcons().add(icon);
-        stage.show();
-
-    }
-
-    // A method that display the contact update pane
-    public void goToUpdateContactPage(String contactType, int contactId, int addressId, List<String> originalValues) {
-
-        // We create the stage that will contain the update page
-        Stage stage = new Stage();
-        AnchorPane pane = new AnchorPane();
-        Scene scene = new Scene(pane);
-        String type = contactType.toLowerCase();
-        FXManager.loadFXML("/uiass/eia/gisiba/crm/contact/" + type + "/" + "update_" + type + "_pane.fxml", pane, getClass()); // here we load the update page fxml file
-        
-        // We collect the confirm button from the fxml file
-        Button confirm = FXManager.getButton(pane, "confirmBtn");
-
-        // We add the corresponding event listener to the button
-        ContactCrud.update_contact(pane, confirm, contactType, contactId, addressId, originalValues);
-
-        // We add the stage info and show it
-        String iconPath = "/uiass/eia/gisiba/imgs/" + (contactType.equals("Person") ? "man" : "office-building") + ".png";
-        InputStream inputStream = getClass().getResourceAsStream(iconPath);
-        Image icon = new Image(inputStream);
-
-        stage.setScene(scene);
-        stage.setTitle(contactType.equals("Person") ? "Update Person" : "Update Enterprise");
-        stage.setResizable(false);
-        stage.getIcons().add(icon);
-        stage.show();
-
-    }
-
-    // A method that display the email sending pane
-    public void goToSendEmailPage(String receiverEmail) {
-
-        // We create the stage that will contain the email sending page
-        Stage stage = new Stage();
-        AnchorPane pane = new AnchorPane();
-        Scene scene = new Scene(pane);
-        FXManager.loadFXML("/uiass/eia/gisiba/crm/contact/send_email_pane.fxml", pane, getClass()); // here we load the email sending page fxml file
-
-        // We collect the send button from the fxml file
-        Button send = FXManager.getButton(pane, "sendEmailBtn");
-
-        // We add the corresponding event listener to the butto
-        ContactCrud.sendEmail(pane, send, receiverEmail);
-
-        // We add the stage info and show it
-        stage.setScene(scene);
-        stage.setTitle("Email Sending");
-        stage.setResizable(false);
-        stage.show();
-    }
-
 
 
 }

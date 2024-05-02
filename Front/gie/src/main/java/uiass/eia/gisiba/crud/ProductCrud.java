@@ -3,42 +3,43 @@ package uiass.eia.gisiba.crud;
 import java.io.InputStream;
 import java.util.*;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import uiass.eia.gisiba.controller.FXManager;
-import uiass.eia.gisiba.controller.MainController;
 import uiass.eia.gisiba.http.dto.CategoryDto;
 import uiass.eia.gisiba.http.dto.ProductDto;
 import uiass.eia.gisiba.http.parsers.Parser;
 import uiass.eia.gisiba.http.parsers.ProductParser;
+
 public class ProductCrud {
 
     @SuppressWarnings("unchecked")
 
     // A method that extracts the data entered by the user and sends a post http request to the server :
-    public static void create_product(Parent hbox1, Parent hbox2, Button button) {
+    public static void create_product(Parent pane, Button button) {
 
         // The list of values we'll be using to generate the columns - values map
         List productValues = new ArrayList<>();
 
+        List categoryValues = new ArrayList<>();
+
         // We put all the text fields in a list to check if all the fields got input :
-        List<TextField> textFields = productTextFieldsHandler(hbox1,hbox2, "create", productValues);
+        List<TextField> textFields = productTextFieldsHandler(pane, "create", productValues);
 
         // We put all the combo boxes in a list to check if an item was selected :
-        List<ComboBox> comboBoxes = productComboBoxesHandler(hbox1, "create", productValues);
+        List<ComboBox> comboBoxes = productComboBoxesHandler(pane, "create", productValues);
 
         List<String> categoriesList = CategoryDto.getAllCategoriesNames(); // We get the categories list that we have 
 
@@ -70,25 +71,24 @@ public class ProductCrud {
                 
                 String brand = String.valueOf(brandComboBox.getValue());
 
+                categoryValues.add(category); categoryValues.add(brand);
+
                 textFields.forEach(textField -> {
 
                     productValues.add(String.valueOf(textField.getText()));
                 });
 
-                productValues.add(0,category); productValues.add(1,brand);
-
-                // We generate the columns - values map using the product values list :
+                // We generate the columns - values map using the product and category values list :
                 Map<String,Object> map = ProductParser.productCreationMapGenerator(productValues);
+                Map<String,Object> categoryMap = ProductParser.categoryUpdateMapGenerator(categoryValues);
+      
+                map.put("category", categoryMap); // We add the category map to the product map to create the nested json object 
     
                 // We dynamically generate the corresponding json :
                 String json = Parser.jsonGenerator(map);
-
-                System.out.println(json);
     
                 // We use the json to send an http post request to the server to create the new product with the entered values :
                 String productCreationResult = ProductDto.postProduct(json);
-
-                System.out.println(productCreationResult);
     
                 // We display the creation result :
                 if (productCreationResult.equals("Product created successfully."))
@@ -110,7 +110,7 @@ public class ProductCrud {
     @SuppressWarnings("unchecked")
 
     // A method that extracts the data entered by the user and sends a put http request to the server :
-    public static void update_product(Parent hbox1, Parent hbox2, Button button, String ref, int categoryId, List<String> originalValues) {
+    public static void update_product(Parent pane, Button button, String ref, int categoryId, List<String> originalValues) {
 
         // The list of values we'll be using to generate the coluns - values map
         List productValues = new ArrayList<>();
@@ -118,10 +118,10 @@ public class ProductCrud {
         List categoryValues = new ArrayList<>();
 
         // We put all the text fields in a list :
-        List<TextField> textFields = productTextFieldsHandler(hbox1, hbox2, "update", originalValues);
+        List<TextField> textFields = productTextFieldsHandler(pane, "update", originalValues);
 
         // We put all the combo boxes in a list :
-        List<ComboBox> comboBoxes = productComboBoxesHandler(hbox1, "update", originalValues);
+        List<ComboBox> comboBoxes = productComboBoxesHandler(pane, "update", originalValues);
 
         List<String> categoriesList = CategoryDto.getAllCategoriesNames(); // We get the categories list that we have 
 
@@ -153,6 +153,7 @@ public class ProductCrud {
             if (productUpdateValidator(comboBoxes, textFields)) {
 
                 String category = String.valueOf(categoryComboBox.getValue());
+                
 
                 String brand = String.valueOf(brandComboBox.getValue());
 
@@ -160,7 +161,7 @@ public class ProductCrud {
 
                     category = originalValues.get(1);
 
-                    brand = originalValues.get(2);
+                    if (brand == "null") brand = originalValues.get(2);
                 }
 
                 categoryValues.add(category); categoryValues.add(brand);
@@ -211,7 +212,8 @@ public class ProductCrud {
 
     }
 
-    public static void productTableEventHandler(TableView productsTable, List<Label> labels, Parent pane,
+    // a method that sets the product table's columns event listeners
+    public static void productTableEventHandler(TableView productsTable, List<Label> labels, Parent pane, AnchorPane refresh,
     
         Button update, Button delete) {
 
@@ -237,6 +239,9 @@ public class ProductCrud {
                 // We finally show the right pane
                 pane.setVisible(true);
 
+                // We set the refresh button to refresh the table when clicked
+                refresh.setOnMouseClicked(imageClicked -> ProductCrud.fillWithProducts(productsTable));
+
                 // When the update button is clicked
                 update.setOnAction(update_event -> {
 
@@ -246,11 +251,82 @@ public class ProductCrud {
                 });
 
                 // When the delete button is clicked
-                delete.setOnAction(delete_event -> ProductCrud.deleteProduct(ref));
+                delete.setOnAction(delete_event -> {
+
+                    // We ask the user for the confirmation before the delete :
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("Confirmation");
+                    alert.setHeaderText("Product Deletion");
+                    alert.setContentText("The product " + brand + " " + model + " will be deleted, do you confirm this operation ?");
+                    
+                    // Add "Yes" and "No" buttons
+                    ButtonType buttonTypeYes = new ButtonType("Yes");
+                    ButtonType buttonTypeNo = new ButtonType("No");
+                    alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
+                    
+                    // Show the dialog and wait for user input
+                    ButtonType result = alert.showAndWait().orElse(null);
+                    if (result == buttonTypeYes) {
+                        // Call the deleteContact method if the user clicked "Yes"
+                        ProductCrud.deleteProduct(ref);
+                    }
+                });
            
         } 
             
         });
+    }
+
+    public static void fillWithProducts(TableView productsTable) {
+
+        // We send an http get request to get all the contacts of the given type
+        List<List<String>> data = ProductDto.getAllProducts();  
+
+        // We populate the table using those collected contacts
+        List<String> columns = FXManager.catalog_columns;
+        
+        FXManager.populateTableView(productsTable, columns, data);
+    }
+
+    public static void fillWithFilteredProducts(TableView productsTable, List<List<String>> data) {
+ 
+        // We populate the table using those collected contacts
+        List<String> columns = FXManager.catalog_columns;
+        
+        FXManager.populateTableView(productsTable, columns, data);
+    }
+
+    public static void whatToCreate() {
+
+        Stage stage = new Stage();
+        AnchorPane pane = new AnchorPane();
+        Scene scene = new Scene(pane);
+        
+        FXManager.loadFXML("/uiass/eia/gisiba/inventory/catalog/what_to_create_pane.fxml", pane, ProductCrud.class);
+
+        AnchorPane categoryPane = FXManager.getAnchorPane(pane, "categoryPane");
+        AnchorPane productPane = FXManager.getAnchorPane(pane, "productPane");
+
+        categoryPane.setOnMouseClicked(event -> {
+
+            CategoryCrud.goToCreateCategoryPage();
+
+            ((Stage) categoryPane.getScene().getWindow()).close();
+
+        } );
+
+        productPane.setOnMouseClicked(event -> {
+
+            goToCreateProductPage();
+
+            ((Stage) productPane.getScene().getWindow()).close();
+
+        });
+
+        stage.setScene(scene);
+        stage.setTitle("Creation choice");
+        stage.show();
+        
     }
 
     // A method that display the product creation pane
@@ -264,15 +340,11 @@ public class ProductCrud {
         // here we load the creation page fxml file
         FXManager.loadFXML("/uiass/eia/gisiba/inventory/catalog/create_update_catalog_pane.fxml", pane, ProductCrud.class); 
         
-        // We get the HBoxes that contain the nodes
-        HBox hbox1 = FXManager.getHBox(pane, "firstHBox");
-        HBox hbox2 = FXManager.getHBox(pane, "secondHBox");
-        
         // We collect the confirm button from the fxml file
         Button confirm = FXManager.getButton(pane, "confirmBtn");
 
         // We add the corresponding event listener to the button
-        ProductCrud.create_product(hbox1, hbox2, confirm);;
+        create_product(pane, confirm);;
         
         // We add the stage info and show it
         String iconPath = "/uiass/eia/gisiba/imgs/product.png";
@@ -297,16 +369,12 @@ public class ProductCrud {
 
         // here we load the update page fxml file
         FXManager.loadFXML("/uiass/eia/gisiba/inventory/catalog/create_update_catalog_pane.fxml", pane, ProductCrud.class); 
-
-        // We get the HBoxes that contain the nodes
-        HBox hbox1 = FXManager.getHBox(pane, "firstHBox");
-        HBox hbox2 = FXManager.getHBox(pane, "secondHBox");
         
         // We collect the confirm button from the fxml file
         Button confirm = FXManager.getButton(pane, "confirmBtn");
 
         // We add the corresponding event listener to the button
-        ProductCrud.update_product(hbox1,hbox2, confirm, ref, categoryId, originalValues);
+        update_product(pane, confirm, ref, categoryId, originalValues);
 
         // We add the stage info and show it
         String iconPath = "/uiass/eia/gisiba/imgs/product.png";
@@ -320,17 +388,24 @@ public class ProductCrud {
         stage.show();
 
     }
+
+    @SuppressWarnings("unchecked")
+    public static String filteredProductSearchJsonGenerator(List values) {
+
+        return Parser.jsonGenerator(ProductParser.filteredProductSearchMapGenerator(values));
+    }
+
     // A method that handles the text fields
-    public static List<TextField> productTextFieldsHandler(Parent firstPane, Parent secondPane, String operation, List<String> originalValues) {
+    public static List<TextField> productTextFieldsHandler(Parent pane, String operation, List<String> originalValues) {
 
         List<TextField> textFields = new ArrayList<TextField>();
 
         // We collect the text fields from the pane and apply correspondind input rules : 
-        TextField modelTextField= FXManager.getTextField(firstPane, "modelTextField");
+        TextField modelTextField= FXManager.getTextField(pane, "modelTextField");
         FXManager.setTextFieldAlphanumericFormatRule(modelTextField);
-        TextField descriptionTextField = FXManager.getTextField(secondPane, "descriptionTextField");
+        TextField descriptionTextField = FXManager.getTextField(pane, "descriptionTextField");
         FXManager.setTextFieldAlphanumericFormatRule(descriptionTextField);
-        TextField unitPriceTextField = FXManager.getTextField(secondPane, "unitPriceTextField");
+        TextField unitPriceTextField = FXManager.getTextField(pane, "unitPriceTextField");
         FXManager.setTextFieldFloatFormatRule(unitPriceTextField);
 
         if (operation.equals("update")) {   // if we want to update
@@ -375,6 +450,18 @@ public class ProductCrud {
         return comboBoxes;
     }
 
+    public static List<TextField> productSearchTextFieldsHandler(Parent pane) {
+
+        TextField categoryTextField = FXManager.getTextField(pane, "enterCategoryTextField");
+        FXManager.setTextFieldAlphanumericFormatRule(categoryTextField); // We block any non alphanumeric input
+        TextField brandTextField = FXManager.getTextField(pane, "enterBrandTextField");
+        FXManager.setTextFieldAlphanumericFormatRule(brandTextField); // We block any non alphanumeric input
+        TextField modelTextField = FXManager.getTextField(pane, "enterModelTextField");
+        FXManager.setTextFieldAlphanumericFormatRule(modelTextField); // We block any non alphanumeric input
+
+        return Arrays.asList(categoryTextField,brandTextField,modelTextField);
+    }
+
     public static boolean productCreationValidator(List<ComboBox> comboBoxes, TextField textField) {
 
         for (ComboBox comboBox : comboBoxes) {
@@ -401,6 +488,19 @@ public class ProductCrud {
         for (ComboBox comboBox : comboBoxes) {
 
             if (comboBox.getValue() != null) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean productSearchValidator(List<TextField> textFields) {
+
+        for (TextField textField : textFields) {
+
+            if (!textField.getText().equals("")) {
 
                 return true;
             }

@@ -14,11 +14,13 @@ public class ProductParser extends Parser {
 
     private static List<String> productAttributes = Arrays.asList("productRef","category","model","description","unitPrice");
 
-    private static List<String> product_creation__columns = Arrays.asList("categoryName", "brandName","model","description","unitPrice");
+    private static List<String> product_creation__columns = Arrays.asList("model","description","unitPrice");
 
     private static List<String> product_update__columns = Arrays.asList("model","description","unitPrice");
 
     private static List<String> category_columns = Arrays.asList("categoryName","brandName");
+
+    private static List<String> search_columns = Arrays.asList("categoryName","brandName", "model");
 
 
 //////////////////////////////////////////////// MAPS AND JSON GENERATORS ///////////////////////////////////////////////////////////
@@ -28,6 +30,21 @@ public class ProductParser extends Parser {
         Map<String,String> map = new HashMap<String,String>();
 
         List<String> attributes = product_creation__columns;
+        
+        for (int i=0 ; i < attributes.size() ; i++) {
+
+            map.put(attributes.get(i), values.get(i));
+
+        }
+
+        return map;
+    }
+
+    public static Map<String,Object> categoryCreationMapGenerator(List<String> values) {
+
+        Map<String,Object> map = new HashMap<String,Object>();
+
+        List<String> attributes = category_columns;
         
         for (int i=0 ; i < attributes.size() ; i++) {
 
@@ -70,6 +87,25 @@ public class ProductParser extends Parser {
             String value = values.get(i);
 
             if (value != "null" && !value.equals("")) map.put(attribute, value);
+
+        }
+
+        return map;
+    }
+
+    public static Map<String,Object> filteredProductSearchMapGenerator(List<String> values) {
+
+        Map<String,Object> map = new HashMap<String,Object>();
+
+        List<String> attributes = search_columns;
+
+        for (int i=0 ; i < attributes.size() ; i++) {
+
+            String attribute = attributes.get(i);
+
+            String value = values.get(i);
+
+            if (!value.equals("")) map.put(attribute, value);
 
         }
 

@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
-import uiass.gisiba.eia.java.dao.crm.HQLQueryManager;
+import uiass.gisiba.eia.java.dao.HQLQueryManager;
 import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
 import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
@@ -52,12 +52,23 @@ public class ProductDao implements iProductDao {
     }
 
     @Override
-    public List<Product> productSearchFilter(Map<String, Object> columnsNewValues)
+    public List<Product> productSearchFilter(Map<String, Object> columnsToSelect)
 
-            throws ProductNotFoundException, CategoryNotFoundException {
+        throws ProductNotFoundException, CategoryNotFoundException {
 
+            String hql = HQLQueryManager.productSelectHQLQueryGenerator("Catalog", columnsToSelect);
 
-                return null;
+            Query query = em.createQuery(hql);
+
+            columnsToSelect.keySet().forEach(column -> {
+                
+                String value = (String) columnsToSelect.get(column);
+
+                query.setParameter(column, value);
+
+            });
+
+            return query.getResultList();
     }
 
     @Override

@@ -30,6 +30,7 @@ public class AppTest {
         ProductController.deleteProductController();
         ProductController.updateProductController();
         ProductController.postProductController();
+        ProductController.productSearchFilter();
 
         CategoryController.getAllCategories();
         CategoryController.getAllCategoriesNames();

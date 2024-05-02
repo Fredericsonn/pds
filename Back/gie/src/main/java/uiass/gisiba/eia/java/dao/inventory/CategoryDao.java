@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
-import uiass.gisiba.eia.java.dao.crm.HQLQueryManager;
+import uiass.gisiba.eia.java.dao.HQLQueryManager;
 import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
 import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.Category;

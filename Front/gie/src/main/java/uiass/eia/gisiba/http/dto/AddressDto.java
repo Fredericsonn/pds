@@ -16,7 +16,7 @@ public class AddressDto {
 
     public static List<String> getAddressById(int id) {
 
-        String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/addresses/" + id);
+        String responseBody = DataSender.getDataSender("addresses/" + id);
 
         if (!responseBody.equals("Server Error.")) return ContactParser.parseAddress(responseBody);
 
@@ -26,7 +26,7 @@ public class AddressDto {
         // Find a contact by its address id :
         public static String addressFormulator(int id, String contactType) {
 
-            String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/contacts/" + contactType + "/byAddressId/" + id);
+            String responseBody = DataSender.getDataSender("contacts/" + contactType + "/byAddressId/" + id);
 
             if (!responseBody.equals("Internal Server Error")) {
 
@@ -43,7 +43,7 @@ public class AddressDto {
 
         List<List<String>> parsedAddresses = new ArrayList<List<String> >();
 
-        String responseBody = DataSender.responseBodyGenerator("http://localhost:4567/addresses");
+        String responseBody = DataSender.getDataSender("addresses");
 
         JsonArray contacts = new JsonParser().parse(responseBody).getAsJsonArray();
 
