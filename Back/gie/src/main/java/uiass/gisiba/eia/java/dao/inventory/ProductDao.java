@@ -11,15 +11,18 @@ import javax.persistence.Query;
 import uiass.gisiba.eia.java.dao.HQLQueryManager;
 import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
 import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.Category;
+import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
 import uiass.gisiba.eia.java.entity.inventory.Product;
 
 public class ProductDao implements iProductDao {
 
     private EntityManager em;
 	private EntityTransaction tr;
-    private static CategoryDao cdao = new CategoryDao();
+    private static iCategoryDao cdao = new CategoryDao();
+    private iInventoryItemDao idao = new InventoryItemDao();
     
     public ProductDao() {
         this.em= HibernateUtility.getEntityManger();
@@ -72,25 +75,11 @@ public class ProductDao implements iProductDao {
     }
 
     @Override
-    public void deleteProduct(String ref) throws ProductNotFoundException {
+    public void deleteProduct(String ref) throws ProductNotFoundException, InventoryItemNotFoundException {
 
-        tr.begin();
+        InventoryItem item = idao.getInventoryItemByProduct(ref);
 
-        Product product = em.find(Product.class, ref);
-
-        if (product != null) { 
-            
-            em.remove(product);
-
-            tr.commit();
-        }
-
-        else {
-            
-            tr.commit();
-
-            throw new ProductNotFoundException(ref);
-        }
+        idao.deleteInventoryItem(item.getId());
     }
 
     @Override

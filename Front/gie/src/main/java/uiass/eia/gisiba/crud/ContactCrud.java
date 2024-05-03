@@ -460,7 +460,7 @@ public class ContactCrud {
                 List<String> values = Arrays.asList(firstAttribute,secondAttribute,phoneNumber,email,address);
 
                 // We use the extracted values to fill the labels
-                FXManager.contactLabelsFiller(labels, values, contactType);
+                contactLabelsFiller(labels, values, contactType);
 
                 // We finally show the right pane
                 pane.setVisible(true);
@@ -501,6 +501,117 @@ public class ContactCrud {
         } 
             
         });
+    }
+
+    public static void contactSearchButtonHandler(Button search, TextField textField, List<Label> labels,
+    
+        String contactType, Parent pane, Button update, Button delete) {
+
+                // When we press the search button
+                search.setOnAction(event -> {
+            
+                    // We collect the entered name 
+                    String contactName = textField.getText();
+        
+                    if (!contactName.equals("")) {
+        
+                        // We get the contact using that id
+                        List<String> info = ContactDto.getContactByName(contactName, contactType);
+        
+                        if (info != null) {  // if there is a contact with the given name
+        
+                            // We extract each attribute's value from the retrieved contact
+                            int contactId = Integer.parseInt(info.get(0));
+                            String firstAttribute = info.get(1);
+                            String secondAttribute = info.get(2);
+                            String phoneNumber = info.get(3);
+                            String email = info.get(4);
+                            int addressId = Integer.parseInt(info.get(5));
+                            String houseNumber = info.get(6);
+                            String neighborhood = info.get(7);
+                            String city = info.get(8);
+                            String zipCode = info.get(9);
+                            String country = info.get(10);    
+                            String address = houseNumber + " " + neighborhood + " " +
+                        
+                            city + " " + zipCode + " " + country; 
+        
+                            // We put all the values in one list that we'll use to fill the labels
+                            List<String> values = Arrays.asList(firstAttribute,secondAttribute,phoneNumber,email,address);
+            
+                            // We use the extracted values to fill the labels
+                            ContactCrud.contactLabelsFiller(labels, values, contactType);
+        
+                            // We finally show the right pane
+                            pane.setVisible(true);
+        
+                            // When the update button is clicked
+                            update.setOnAction(update_event -> {
+                                // We collect ll the original values to be passed as the text fields prompt text
+                                List<String> originalValues = new ArrayList<String>(values);
+                                originalValues.addAll(Arrays.asList(houseNumber,neighborhood,city,zipCode,country));
+                                ContactCrud.goToUpdateContactPage(contactType, contactId, addressId, originalValues);
+                            });
+        
+                            // When the delete button is clicked
+                            delete.setOnAction(delete_event -> {
+                                // We ask the user for the confirmation before the delete :
+                                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                                alert.setTitle("Confirmation");
+                                alert.setHeaderText("Contact Deletion");
+                                alert.setContentText("The contact " + contactName + " will be deleted, do you confirm this operation ?");
+                            
+                                // Add "Yes" and "No" buttons
+                                ButtonType buttonTypeYes = new ButtonType("Yes");
+                                ButtonType buttonTypeNo = new ButtonType("No");
+                                alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
+                            
+                                // Show the dialog and wait for user input
+                                ButtonType result = alert.showAndWait().orElse(null);
+                                if (result == buttonTypeYes) {
+                                    // Call the deleteContact method if the user clicked "Yes"
+                                    ContactCrud.deleteContact(contactType, contactId);
+                                }
+                            });
+                                
+                        }
+                        
+                        // if no contact corresponds to the provided name we show an error alert
+                        else FXManager.showAlert(AlertType.ERROR, "ERROR", "Contact Not Found", contactName + " doesn't correspond to any existing contact.");
+                         
+                    }
+        
+                    // if the text field is empty and the search button is clicked
+                    else FXManager.showAlert(AlertType.ERROR, "ERROR", "Empty Name Field", "Please provide a contact name.");
+        
+                });
+    }
+
+    // Used to dynamically set each label's corresponding text given a contact values list and a contact type
+    public static void contactLabelsFiller(List<Label> labels,  List<String> values, String contactType) {
+
+        labels.get(labels.size() - 1).setWrapText(true); // Allow the label to have multi-line text
+
+        // We use the extracted values to fill the labels
+        for (int i = 0 ; i < values.size() ; i++) {
+
+            if (contactType.equals("Person")) {
+
+                // this if statement is responsible for filling the Full Name label in case the contact is a person
+                if (i == 0) { 
+
+                    labels.get(i).setText(values.get(i) + " " + values.get(i + 1)); // We concatenate the first and last names
+
+                }
+
+                else { if (i != 1)
+                labels.get(i-1).setText(values.get(i)); // if it's another attribute we just set the value directly
+                }
+            }
+
+            // if it's an enterprise we just set the value directly
+            else labels.get(i).setText(values.get(i)); 
+        }
     }
 
 

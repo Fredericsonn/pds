@@ -1,6 +1,6 @@
 package uiass.gisiba.eia.java.entity.sales;
 
-public enum SaleState {
+public enum Status {
 
     PENDING, VALIDATED, COMPLETED, CANCELED
 }

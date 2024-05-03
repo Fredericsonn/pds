@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
 import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
 import uiass.gisiba.eia.java.entity.inventory.Product;
 
@@ -33,6 +34,22 @@ public class InventoryItemDao implements iInventoryItemDao {
 
         else throw new InventoryItemNotFoundException(itemId);
 
+    }
+
+    @Override
+    public InventoryItem getInventoryItemByProduct(String ref) throws InventoryItemNotFoundException, ProductNotFoundException {
+
+        Product product = em.find(Product.class, ref);
+        
+        Query query = em.createQuery("from Inventory where product = :product");
+        
+        query.setParameter("product", product);
+
+        InventoryItem item = (InventoryItem) query.getSingleResult();
+
+        if(item != null) return item;
+
+        else throw new InventoryItemNotFoundException(product.getProductRef());
     }
 
     @Override
@@ -97,6 +114,8 @@ public class InventoryItemDao implements iInventoryItemDao {
 
         tr.commit();
     }
+
+
 
 
 }

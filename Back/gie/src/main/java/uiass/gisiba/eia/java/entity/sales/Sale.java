@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -20,7 +22,8 @@ import javax.persistence.OneToMany;
 public class Sale implements Serializable {
 
     @Id
-    @Column(name="sale_ref")
+    @GeneratedValue(strategy =GenerationType.IDENTITY)
+    @Column(name="sale_id")
     private int saleRef;
 
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
@@ -33,17 +36,17 @@ public class Sale implements Serializable {
     private double total;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="state")
-    private SaleState state;
+    @Column(name="status")
+    private Status status;
 
     // Constructors
 
-    public Sale(int saleRef, List<SaleOrder> orders, LocalDate saleDate, double total, SaleState state) {
+    public Sale(int saleRef, List<SaleOrder> orders, LocalDate saleDate, double total, Status status) {
         this.saleRef = saleRef;
         this.orders = orders;
         this.saleDate = saleDate;
         this.total = total;
-        this.state= state;
+        this.status= status;
     }
 
     public Sale() {
@@ -84,12 +87,12 @@ public class Sale implements Serializable {
         this.total = total;
     }
 
-    public SaleState getState() {
-        return state;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setState(SaleState state) {
-        this.state = state;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     

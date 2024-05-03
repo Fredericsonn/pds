@@ -29,7 +29,7 @@
             <SplitMenuButton fx:id="inventorySplitMenu" layoutX="14.0" layoutY="152.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="130.0" text="Inventory">
               <items>
                 <MenuItem fx:id="catalogSplitMenuItem" mnemonicParsing="false" onAction="#loadProductPane" text="Catalog" />
-                <MenuItem fx:id="inventorySplitMenuItem" mnemonicParsing="false" text="Inventory" />
+                <MenuItem fx:id="inventorySplitMenuItem" mnemonicParsing="false" text="Inventory" onAction="#loadInventoryPane" />
               </items>
                <font>
                   <Font name="Georgia" size="16.0" />

@@ -76,7 +76,7 @@ public interface iService {
 
     List<Product> productSearchFilter(Map<String,Object> columnsNewValues) throws ProductNotFoundException, CategoryNotFoundException;
 
-    void deleteProduct(String ref) throws ProductNotFoundException;
+    void deleteProduct(String ref) throws ProductNotFoundException, InventoryItemNotFoundException;
 
     List<Product> getAllProducts();
 
@@ -103,6 +103,8 @@ public interface iService {
 /////////////////////////////////////////////////////// Inventory Item ////////////////////////////////////////////////////////////////
 
     InventoryItem getInventoryItemById(int itemId) throws InventoryItemNotFoundException;
+
+    InventoryItem getInventoryItemByProduct(String ref) throws InventoryItemNotFoundException, ProductNotFoundException;
 
     List<InventoryItem> getAllInventoryItems();
 

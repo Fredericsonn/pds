@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import uiass.gisiba.eia.java.entity.crm.Enterprise;
+import uiass.gisiba.eia.java.entity.sales.Status;
 
 @Entity
 @DiscriminatorValue("Enterprise")
@@ -19,9 +20,11 @@ public class EnterprisePurchase extends Purchase {
     @JoinColumn(name="supplier_id")
     private Enterprise supplier;
 
-    public EnterprisePurchase(int purchaseId,List<PurchaseOrder> orders, LocalDate purchaseDate, double total, Enterprise supplier) {
+    public EnterprisePurchase(int purchaseId,List<PurchaseOrder> orders, LocalDate purchaseDate, double total, Status status,
+    
+    Enterprise supplier) {
 
-        super(purchaseId, orders, purchaseDate, total);
+        super(purchaseId, orders, purchaseDate, total, status);
 
         this.supplier = supplier;
     }

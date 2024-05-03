@@ -6,10 +6,16 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+
+import uiass.gisiba.eia.java.entity.sales.Status;
 
 
 
@@ -18,6 +24,7 @@ import javax.persistence.OneToMany;
 public class Purchase {
 
     @Id
+    @GeneratedValue(strategy =GenerationType.IDENTITY)
     @Column(name="purchase_id")
     private int purchaseId;
 
@@ -30,13 +37,18 @@ public class Purchase {
     @Column(name="total")
     private double total;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name="status")
+    private Status status;
+
     // Constructors
 
-    public Purchase(int purchaseId, List<PurchaseOrder> orders, LocalDate purchaseDate, double total) {
+    public Purchase(int purchaseId, List<PurchaseOrder> orders, LocalDate purchaseDate, double total, Status status) {
         this.purchaseId = purchaseId;
         this.orders = orders;
         this.purchaseDate = purchaseDate;
         this.total = total;
+        this.status = status;
 
     }
 
@@ -76,6 +88,14 @@ public class Purchase {
 
     public void setTotal(double total) {
         this.total = total;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
 

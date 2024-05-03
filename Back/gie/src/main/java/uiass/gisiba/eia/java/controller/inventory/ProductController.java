@@ -14,6 +14,7 @@ import uiass.gisiba.eia.java.controller.Parsers.CategoryParser;
 import uiass.gisiba.eia.java.controller.Parsers.Parser;
 import uiass.gisiba.eia.java.controller.Parsers.ProductParser;
 import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.Product;
 import uiass.gisiba.eia.java.service.Service;
@@ -82,7 +83,7 @@ public class ProductController {
 
 					service.deleteProduct(ref);   
 	
-				} catch (ProductNotFoundException  e) {
+				} catch (ProductNotFoundException | InventoryItemNotFoundException  e) {
 	
 					return e.getMessage();
 				}  

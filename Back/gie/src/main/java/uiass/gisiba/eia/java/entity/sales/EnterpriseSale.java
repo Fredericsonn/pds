@@ -19,7 +19,7 @@ public class EnterpriseSale extends Sale {
     @JoinColumn(name="customer_id")
     private Enterprise customer;
 
-    public EnterpriseSale(int saleId,List<SaleOrder> orders, LocalDate saleDate, double total, SaleState state, Enterprise customer) {
+    public EnterpriseSale(int saleId,List<SaleOrder> orders, LocalDate saleDate, double total, Status state, Enterprise customer) {
 
         super(saleId, orders, saleDate, total, state);
 

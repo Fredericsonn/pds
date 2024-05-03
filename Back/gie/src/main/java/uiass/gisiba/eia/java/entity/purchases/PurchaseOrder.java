@@ -13,7 +13,7 @@ import uiass.gisiba.eia.java.entity.inventory.Product;
 public class PurchaseOrder extends Order {
 
     @ManyToOne
-    @JoinColumn(name="purchase_ref")
+    @JoinColumn(name="purchase_id")
     private Purchase purchase;
 
     // Constructors

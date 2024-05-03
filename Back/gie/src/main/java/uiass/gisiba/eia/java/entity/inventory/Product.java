@@ -17,7 +17,7 @@ public class Product {
     @Column(name="product_ref")
     private String productRef;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name="category_id")
     private Category category;
 

@@ -27,6 +27,7 @@ import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
+import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.dao.inventory.ProductDao;
 import uiass.gisiba.eia.java.dao.inventory.iProductDao;
@@ -110,16 +111,11 @@ public class Main {
 
         Map<String,Object> map = new HashMap<String,Object>();
 
-        map.put("model", "single");
-
-        map.put("categoryName", "CAMERA");
-
-        map.put("brandName", "Panasonic");
-
+        //0JNLBP
 
         try {
-            System.out.println(service.productSearchFilter(map));
-        } catch (ProductNotFoundException | CategoryNotFoundException e) {
+            service.deleteProduct("0TX4KE");
+        } catch (InventoryItemNotFoundException | ProductNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

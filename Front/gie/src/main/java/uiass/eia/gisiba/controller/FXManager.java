@@ -34,12 +34,16 @@ public class FXManager {
 
     public static List<String> catalog_labels_ids = Arrays.asList("categoryLabel","brandModelLabel","unitPriceLabel", "descriptionLabel");
 
+    public static List<String> inventory_labels_ids = Arrays.asList("categoryLabel","brandModelLabel","quantityLabel", "dateAddedLabel");
+
     public static Map<String, List<String>> columns_names_per_contact_type = new HashMap<String, List<String>>() {{
         put("Person", Arrays.asList("id","first name","last name","phone number", "email", "address id","house number","neighborhood","city","zip code","country"));
         put("Enterprise", Arrays.asList("id","enterprise name","type","phone number", "email", "address id","house number","neighborhood","city","zip code","country"));
     }};
 
     public static List<String> catalog_columns = Arrays.asList("ref","category id","category","brand","model","description","unit price");
+
+    public static List<String> inventory_columns = Arrays.asList("id","category","brand","model","quantity", "date added");
 
 
 
@@ -67,56 +71,14 @@ public class FXManager {
         return labels;
     }
 
-    // Used to dynamically set each label's corresponding text given a contact values list and a contact type
-    public static void contactLabelsFiller(List<Label> labels,  List<String> values, String contactType) {
-
-        labels.get(labels.size() - 1).setWrapText(true); // Allow the label to have multi-line text
+    public static void labelsFiller(List<Label> labels,  List<String> values) {
 
         // We use the extracted values to fill the labels
         for (int i = 0 ; i < values.size() ; i++) {
 
-            if (contactType.equals("Person")) {
+                labels.get(i).setText(values.get(i)); 
 
-                // this if statement is responsible for filling the Full Name label in case the contact is a person
-                if (i == 0) { 
-
-                    labels.get(i).setText(values.get(i) + " " + values.get(i + 1)); // We concatenate the first and last names
-
-                }
-
-                else { if (i != 1)
-                labels.get(i-1).setText(values.get(i)); // if it's another attribute we just set the value directly
-                }
-            }
-
-            // if it's an enterprise we just set the value directly
-            else labels.get(i).setText(values.get(i)); 
         }
-    }
-
-    // Used to dynamically set each label's corresponding text given a product values list 
-    public static void catalogLabelsFiller(List<Label> labels,  List<String> values) {
-
-        labels.get(labels.size() - 1).setWrapText(true); // Allow the label to have multi-line text
-        
-        // We use the extracted values to fill the labels
-        for (int i = 1 ; i < values.size() ; i++) {
-
-            // this if statement is responsible for filling the brand and model labels 
-            if (i < 2)
-
-                labels.get(i-1).setText(values.get(i)); // if it's another attribute we just set the value directly
-
-            else if (i == 2) { 
-
-                labels.get(i-1).setText(values.get(i) + " " + values.get(i + 1)); // We concatenate the brand and the model
-            }
-
-            else if (i != 3 ) labels.get(i-2).setText(values.get(i));
-          
-            }
-
-        
     }
 
     // Used to dynamically populate tables given the data and the contact type  
@@ -213,6 +175,14 @@ public class FXManager {
         }
 
         return false;
+    }
+
+    public static void textFieldsEmptier(List<TextField> textFields) {
+
+        for (TextField textField : textFields) {
+            
+            textField.setText("");
+        }
     }
 
     // numeric only text field rule

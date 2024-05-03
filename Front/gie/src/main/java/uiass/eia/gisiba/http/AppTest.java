@@ -5,6 +5,7 @@ import java.util.Locale.Category;
 import java.util.Map;
 
 import uiass.eia.gisiba.http.dto.CategoryDto;
+import uiass.eia.gisiba.http.dto.InventoryDto;
 import uiass.eia.gisiba.http.dto.ProductDto;
 import uiass.eia.gisiba.http.parsers.Parser;
 import uiass.eia.gisiba.http.parsers.ProductParser;
@@ -23,6 +24,6 @@ public class AppTest {
 
         System.out.println(ProductDto.getFilteredProducts(json));*/
 
-
+        System.out.println(InventoryDto.getAllItems().get(6));
     }
 }

@@ -20,8 +20,10 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import uiass.eia.gisiba.crud.ContactCrud;
+import uiass.eia.gisiba.crud.InventoryItemCrud;
 import uiass.eia.gisiba.crud.ProductCrud;
 import uiass.eia.gisiba.http.dto.ContactDto;
+import uiass.eia.gisiba.http.dto.InventoryDto;
 import uiass.eia.gisiba.http.dto.ProductDto;
 
 public class MainController {
@@ -89,85 +91,7 @@ public class MainController {
         List<String> columns = FXManager.columns_names_per_contact_type.get(contactType);
         FXManager.populateTableView(contactsTable, columns, data);
 
-        // When we press the search button
-        search.setOnAction(event -> {
-            
-            // We collect the entered name 
-            String contactName = txtField.getText();
-
-            if (!contactName.equals("")) {
-
-                // We get the contact using that id
-                List<String> info = ContactDto.getContactByName(contactName, contactType);
-                System.out.println(info);
-
-                if (info != null) {  // if there is a contact with the given name
-
-                    // We extract each attribute's value from the retrieved contact
-                    int contactId = Integer.parseInt(info.get(0));
-                    String firstAttribute = info.get(1);
-                    String secondAttribute = info.get(2);
-                    String phoneNumber = info.get(3);
-                    String email = info.get(4);
-                    int addressId = Integer.parseInt(info.get(5));
-                    String houseNumber = info.get(6);
-                    String neighborhood = info.get(7);
-                    String city = info.get(8);
-                    String zipCode = info.get(9);
-                    String country = info.get(10);    
-                    String address = houseNumber + " " + neighborhood + " " +
-                
-                    city + " " + zipCode + " " + country; 
-
-                    // We put all the values in one list that we'll use to fill the labels
-                    List<String> values = Arrays.asList(firstAttribute,secondAttribute,phoneNumber,email,address);
-    
-                    // We use the extracted values to fill the labels
-                    FXManager.contactLabelsFiller(labels, values, contactType);
-
-                    // We finally show the right pane
-                    rightAnchorPane.setVisible(true);
-
-                    // When the update button is clicked
-                    update.setOnAction(update_event -> {
-                        // We collect ll the original values to be passed as the text fields prompt text
-                        List<String> originalValues = new ArrayList<String>(values);
-                        originalValues.addAll(Arrays.asList(houseNumber,neighborhood,city,zipCode,country));
-                        ContactCrud.goToUpdateContactPage(contactType, contactId, addressId, originalValues);
-                    });
-
-                    // When the delete button is clicked
-                    delete.setOnAction(delete_event -> {
-                        // We ask the user for the confirmation before the delete :
-                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                        alert.setTitle("Confirmation");
-                        alert.setHeaderText("Contact Deletion");
-                        alert.setContentText("The contact " + contactName + " will be deleted, do you confirm this operation ?");
-                    
-                        // Add "Yes" and "No" buttons
-                        ButtonType buttonTypeYes = new ButtonType("Yes");
-                        ButtonType buttonTypeNo = new ButtonType("No");
-                        alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
-                    
-                        // Show the dialog and wait for user input
-                        ButtonType result = alert.showAndWait().orElse(null);
-                        if (result == buttonTypeYes) {
-                            // Call the deleteContact method if the user clicked "Yes"
-                            ContactCrud.deleteContact(contactType, contactId);
-                        }
-                    });
-                        
-                }
-                
-                // if no contact corresponds to the provided name we show an error alert
-                else FXManager.showAlert(AlertType.ERROR, "ERROR", "Contact Not Found", contactName + " doesn't correspond to any existing contact.");
-                 
-            }
-
-            // if the text field is empty and the search button is clicked
-            else FXManager.showAlert(AlertType.ERROR, "ERROR", "Empty Name Field", "Please provide a contact name.");
-
-        });
+        ContactCrud.contactSearchButtonHandler(search, txtField, labels, contactType, rightAnchorPane, update, delete);
 
         // When the create new button is clicked
         createNew.setOnAction(event -> {
@@ -240,6 +164,12 @@ public class MainController {
         // We the table with all the products
         ProductCrud.fillWithProducts(productsTable);
 
+        // We set the refresh button to refresh the table when clicked
+        refresh.setOnMouseClicked(imageClicked -> {
+
+            FXManager.textFieldsEmptier(textFields);
+            ProductCrud.fillWithProducts(productsTable);
+        });
         // When we press the search button
         search.setOnAction(event -> {
             
@@ -279,6 +209,48 @@ public class MainController {
             
         });
  
+    }
+
+    @FXML
+    public void loadInventoryPane() {
+
+        FXManager.loadFXML("/uiass/eia/gisiba/inventory/inventory/inventory_center_pane.fxml", centerAnchorPane, getClass());
+        FXManager.loadFXML("/uiass/eia/gisiba/inventory/inventory/inventory_right_pane.fxml", rightAnchorPane, getClass());
+
+        rightAnchorPane.setVisible(false);
+
+        // Labels
+        List<String> labelsIds = FXManager.inventory_labels_ids;
+
+        // Search text fields
+        // a method that collects the text fields and sets input rules :
+        List<TextField> textFields = ProductCrud.productSearchTextFieldsHandler(centerAnchorPane);
+        TextField categoryTextField = textFields.get(0);     // We get
+        TextField brandTextField = textFields.get(1);        // the text fields
+        TextField modelTextField = textFields.get(2);        // from the list
+
+        // Labels
+        List<Label> labels = FXManager.labelsCollector(rightAnchorPane, labelsIds);
+
+        // Buttons
+        Button search = FXManager.getButton(centerAnchorPane, "searchBtn");
+        Button add = FXManager.getButton(rightAnchorPane, "addBtn");
+        Button view = FXManager.getButton(rightAnchorPane, "viewBtn");
+
+        // Refresh Image
+        AnchorPane refresh = FXManager.getAnchorPane(centerAnchorPane, "refreshPane");
+
+        // Table Views
+        TableView<List<String>> inventoryTableView = FXManager.getTableView(centerAnchorPane, "itemsTableView");
+
+        InventoryItemCrud.itemsTableEventHandler(inventoryTableView, labels, rightAnchorPane, refresh, add, view);
+
+        InventoryItemCrud.fillWithItems(inventoryTableView);
+
+
+
+        
+
     }
 
 

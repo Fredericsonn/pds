@@ -231,16 +231,13 @@ public class ProductCrud {
                 String unitPrice = selectedItem.get(6);
 
                 // We put all the values in one list that we'll use to fill the labels
-                List<String> values = Arrays.asList(ref,category,brand,model,unitPrice,description);
+                List<String> values = Arrays.asList(category,brand + " " +model,unitPrice,description);
 
                 // We use the extracted values to fill the labels
-                FXManager.catalogLabelsFiller(labels, values);
+                FXManager.labelsFiller(labels, values);
 
                 // We finally show the right pane
                 pane.setVisible(true);
-
-                // We set the refresh button to refresh the table when clicked
-                refresh.setOnMouseClicked(imageClicked -> ProductCrud.fillWithProducts(productsTable));
 
                 // When the update button is clicked
                 update.setOnAction(update_event -> {
@@ -275,6 +272,31 @@ public class ProductCrud {
         } 
             
         });
+    }
+
+    // Used to dynamically set each label's corresponding text given a product values list 
+    public static void catalogLabelsFiller(List<Label> labels,  List<String> values) {
+
+        labels.get(labels.size() - 1).setWrapText(true); // Allow the label to have multi-line text
+        
+        // We use the extracted values to fill the labels
+        for (int i = 1 ; i < values.size() ; i++) {
+
+            // this if statement is responsible for filling the brand and model labels 
+            if (i < 2)
+
+                labels.get(i-1).setText(values.get(i)); // if it's another attribute we just set the value directly
+
+            else if (i == 2) { 
+
+                labels.get(i-1).setText(values.get(i) + " " + values.get(i + 1)); // We concatenate the brand and the model
+            }
+
+            else if (i != 3 ) labels.get(i-2).setText(values.get(i));
+          
+            }
+
+        
     }
 
     public static void fillWithProducts(TableView productsTable) {

@@ -181,7 +181,7 @@ public class Service implements iService {
             return pdao.productSearchFilter(columnsNewValues);
     }
     @Override
-    public void deleteProduct(String ref) throws ProductNotFoundException {
+    public void deleteProduct(String ref) throws ProductNotFoundException, InventoryItemNotFoundException {
 
         pdao.deleteProduct(ref);
     }
@@ -256,6 +256,12 @@ public class Service implements iService {
     }
 
     @Override
+    public InventoryItem getInventoryItemByProduct(String ref) throws InventoryItemNotFoundException, ProductNotFoundException {
+
+        return idao.getInventoryItemByProduct(ref);
+    }
+
+    @Override
     public List<InventoryItem> getAllInventoryItems() {
 
         return idao.getAllInventoryItems();
@@ -290,6 +296,8 @@ public class Service implements iService {
 
         idao.updateInventoryItem(itemId, quantity);
     }
+
+
 
 
 
