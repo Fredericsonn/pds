@@ -41,10 +41,11 @@ public class ProductCrud {
         // We put all the combo boxes in a list to check if an item was selected :
         List<ComboBox> comboBoxes = productComboBoxesHandler(pane, "create", productValues);
 
-        List<String> categoriesList = CategoryDto.getAllCategoriesNames(); // We get the categories list that we have 
+        List<String> categoriesList = CategoryDto.getAllCategoryColumnNames("category"); // We get the categories list that we have 
 
         ComboBox categoryComboBox = comboBoxes.get(0);
         ComboBox brandComboBox = comboBoxes.get(1);
+        ComboBox modelComboBox = comboBoxes.get(2);
 
         FXManager.populateComboBox(categoryComboBox, categoriesList); // We add the categories as the category combo box items
 
@@ -54,24 +55,39 @@ public class ProductCrud {
             if (newCategory != null) {
                     
                 // We get all the corresponding brands for the newly selected category
-                List<String> brandsList = CategoryDto.getAllBrandsByCategory(String.valueOf(newCategory)); 
+                List<String> brandsList = CategoryDto.getAllColumnByFilterColumn("brand", "category", String.valueOf(newCategory)); 
             
                 // Populate the brandComboBox with the brandsList
                 FXManager.populateComboBox(brandComboBox, brandsList);
             }
         });
+
+        brandComboBox.valueProperty().addListener((obs, oldbrand, newbrand) -> {
+    
+            if (newbrand != null) {
+                    
+                // We get all the corresponding brands for the newly selected brand
+                List<String> modelsList = CategoryDto.getAllColumnByFilterColumn("model", "brand", String.valueOf(newbrand)); 
+            
+                // Populate the brandComboBox with the brandsList
+                FXManager.populateComboBox(modelComboBox, modelsList);
+            }
+        });
+
         
 
         // We extract the data from the text fields when the button is clicked
         button.setOnAction(event -> {
-                                                    // Model Text Field
+                                                    // Name Text Field
             if (productCreationValidator(comboBoxes, textFields.get(0))) {
 
                 String category = String.valueOf(categoryComboBox.getValue());
                 
                 String brand = String.valueOf(brandComboBox.getValue());
 
-                categoryValues.add(category); categoryValues.add(brand);
+                String model = String.valueOf(modelComboBox.getValue());
+
+                categoryValues.add(category); categoryValues.add(brand); categoryValues.add(model);
 
                 textFields.forEach(textField -> {
 
@@ -123,10 +139,11 @@ public class ProductCrud {
         // We put all the combo boxes in a list :
         List<ComboBox> comboBoxes = productComboBoxesHandler(pane, "update", originalValues);
 
-        List<String> categoriesList = CategoryDto.getAllCategoriesNames(); // We get the categories list that we have 
+        List<String> categoriesList = CategoryDto.getAllCategoryColumnNames("category"); // We get the categories list that we have 
 
         ComboBox categoryComboBox = comboBoxes.get(0);
         ComboBox brandComboBox = comboBoxes.get(1);
+        ComboBox modelComboBox = comboBoxes.get(2);
 
         FXManager.populateComboBox(categoryComboBox, categoriesList); // We add the categories as the category combo box items
 
@@ -139,10 +156,23 @@ public class ProductCrud {
                 brandComboBox.setPromptText("brand");
 
                 // We get all the corresponding brands for the newly selected category
-                List<String> brandsList = CategoryDto.getAllBrandsByCategory(String.valueOf(newCategory)); 
-            
+                List<String> brandsList = CategoryDto.getAllColumnByFilterColumn("brand", "category", String.valueOf(newCategory)); 
+
                 // Populate the brandComboBox with the brandsList
                 FXManager.populateComboBox(brandComboBox, brandsList);
+
+                // We fill the models combo box once a category and a brand are selected
+                brandComboBox.valueProperty().addListener((brandObs, oldbrand, newbrand) -> {
+    
+                    if (newbrand != null) {
+                    
+                        // We get all the corresponding models for the newly selected brand and category
+                        List<String> modelsList = CategoryDto.getAllModelsByBrandAndCategory(String.valueOf(newbrand), String.valueOf(newCategory)); 
+            
+                        // Populate the modelComboBox with the brandsList
+                        FXManager.populateComboBox(modelComboBox, modelsList);
+            }
+        });
 
             }
         });
@@ -154,17 +184,17 @@ public class ProductCrud {
 
                 String category = String.valueOf(categoryComboBox.getValue());
                 
-
                 String brand = String.valueOf(brandComboBox.getValue());
 
-                if (category == "null") {
+                String model = String.valueOf(modelComboBox.getValue());
 
-                    category = originalValues.get(1);
+                if (category == "null") category = originalValues.get(1);
 
-                    if (brand == "null") brand = originalValues.get(2);
-                }
+                if (brand == "null") brand = originalValues.get(2);
 
-                categoryValues.add(category); categoryValues.add(brand);
+                if (model == "null") model = originalValues.get(3);
+                
+                categoryValues.add(category); categoryValues.add(brand); categoryValues.add(model);
 
                 textFields.forEach(textField -> {
 
@@ -173,11 +203,12 @@ public class ProductCrud {
 
                 // We generate the columns - values map using the values list :
                 Map<String,Object> productMap = ProductParser.productUpdateMapGenerator(productValues);
-                Map<String,Object> categoryMap = ProductParser.categoryUpdateMapGenerator(categoryValues); 
-
+                Map<String,Object> categoryMap = ProductParser.categoryUpdateMapGenerator(categoryValues);
+                System.out.println(categoryMap);
     
                 // We dynamically generate the corresponding json :
                 String productJson = ProductParser.updateProductJsonGenerator(productMap, categoryMap);
+                System.out.println(productJson);
                                 
                 // We use the json to send an http post request to the server to create the new product with the entered values :
                 String productUpdateResult = ProductDto.updateProduct(ref,productJson);
@@ -227,14 +258,15 @@ public class ProductCrud {
                 String category = selectedItem.get(2);
                 String brand = selectedItem.get(3);
                 String model = selectedItem.get(4);
-                String description = selectedItem.get(5);
-                String unitPrice = selectedItem.get(6);
+                String name = selectedItem.get(5);
+                String description = selectedItem.get(6);
 
                 // We put all the values in one list that we'll use to fill the labels
-                List<String> values = Arrays.asList(category,brand + " " +model,unitPrice,description);
+                List<String> values = Arrays.asList(category,brand,model,name,description);
+                List<String> valuesToShow = Arrays.asList(category,brand + " " + model + " " + name,description);
 
                 // We use the extracted values to fill the labels
-                FXManager.labelsFiller(labels, values);
+                FXManager.labelsFiller(labels, valuesToShow);
 
                 // We finally show the right pane
                 pane.setVisible(true);
@@ -274,31 +306,6 @@ public class ProductCrud {
         });
     }
 
-    // Used to dynamically set each label's corresponding text given a product values list 
-    public static void catalogLabelsFiller(List<Label> labels,  List<String> values) {
-
-        labels.get(labels.size() - 1).setWrapText(true); // Allow the label to have multi-line text
-        
-        // We use the extracted values to fill the labels
-        for (int i = 1 ; i < values.size() ; i++) {
-
-            // this if statement is responsible for filling the brand and model labels 
-            if (i < 2)
-
-                labels.get(i-1).setText(values.get(i)); // if it's another attribute we just set the value directly
-
-            else if (i == 2) { 
-
-                labels.get(i-1).setText(values.get(i) + " " + values.get(i + 1)); // We concatenate the brand and the model
-            }
-
-            else if (i != 3 ) labels.get(i-2).setText(values.get(i));
-          
-            }
-
-        
-    }
-
     public static void fillWithProducts(TableView productsTable) {
 
         // We send an http get request to get all the contacts of the given type
@@ -311,8 +318,8 @@ public class ProductCrud {
     }
 
     public static void fillWithFilteredProducts(TableView productsTable, List<List<String>> data) {
- 
-        // We populate the table using those collected contacts
+        
+        // The columns we'll use for the table
         List<String> columns = FXManager.catalog_columns;
         
         FXManager.populateTableView(productsTable, columns, data);
@@ -423,24 +430,22 @@ public class ProductCrud {
         List<TextField> textFields = new ArrayList<TextField>();
 
         // We collect the text fields from the pane and apply correspondind input rules : 
-        TextField modelTextField= FXManager.getTextField(pane, "modelTextField");
-        FXManager.setTextFieldAlphanumericFormatRule(modelTextField);
+        TextField nameTextField= FXManager.getTextField(pane, "nameTextField");
+        FXManager.setTextFieldAlphanumericFormatRule(nameTextField);
         TextField descriptionTextField = FXManager.getTextField(pane, "descriptionTextField");
         FXManager.setTextFieldAlphanumericFormatRule(descriptionTextField);
-        TextField unitPriceTextField = FXManager.getTextField(pane, "unitPriceTextField");
-        FXManager.setTextFieldFloatFormatRule(unitPriceTextField);
+
 
         if (operation.equals("update")) {   // if we want to update
 
             // We set the prompt text to be the original product's values : 
-            modelTextField.setPromptText(originalValues.get(3));
-            unitPriceTextField.setPromptText(originalValues.get(4));
-            descriptionTextField.setPromptText(originalValues.get(5));
+            nameTextField.setPromptText(originalValues.get(3));
+            descriptionTextField.setPromptText(originalValues.get(4));
         }
 
         
         // We put all the corresponding text fields in a list to later check if all the fields got input :
-        textFields.addAll(Arrays.asList(modelTextField,descriptionTextField,unitPriceTextField));
+        textFields.addAll(Arrays.asList(nameTextField,descriptionTextField));
 
         return textFields;
     }
@@ -452,36 +457,42 @@ public class ProductCrud {
         // We collect the text fields from the pane : 
         ComboBox category= FXManager.getComboBox(pane, "categoryComboBox");
         ComboBox brand = FXManager.getComboBox(pane, "brandComboBox");
+        ComboBox model = FXManager.getComboBox(pane, "modelComboBox");
 
         if (operation.equals("update")) {   // if we want to update
 
             // We set the prompt text to be the original product's values : 
-            category.setPromptText(originalValues.get(1));
-            brand.setPromptText(originalValues.get(2));
+            category.setPromptText(originalValues.get(0));
+            brand.setPromptText(originalValues.get(1));
+            model.setPromptText(originalValues.get(2));
 
             // We fill the brand combo box with the corresponding brands :
-            List<String> brands = CategoryDto.getAllBrandsByCategory(originalValues.get(1));
+            List<String> brands = CategoryDto.getAllColumnByFilterColumn("brand", "category", originalValues.get(1));
             FXManager.populateComboBox(brand, brands);
+
+            // We fill the model combo box with the corresponding models :
+            List<String> models = CategoryDto.getAllColumnByFilterColumn("model", "brand", originalValues.get(2));
+            FXManager.populateComboBox(model, models);
         }
 
         
         // We put all the corresponding text fields in a list to later check if all the fields got input :
         comboBoxes.add(category);
         comboBoxes.add(brand);
+        comboBoxes.add(model);
 
         return comboBoxes;
     }
 
-    public static List<TextField> productSearchTextFieldsHandler(Parent pane) {
+    public static List<ComboBox> productSearchComboBoxesHandler(Parent pane) {
 
-        TextField categoryTextField = FXManager.getTextField(pane, "enterCategoryTextField");
-        FXManager.setTextFieldAlphanumericFormatRule(categoryTextField); // We block any non alphanumeric input
-        TextField brandTextField = FXManager.getTextField(pane, "enterBrandTextField");
-        FXManager.setTextFieldAlphanumericFormatRule(brandTextField); // We block any non alphanumeric input
-        TextField modelTextField = FXManager.getTextField(pane, "enterModelTextField");
-        FXManager.setTextFieldAlphanumericFormatRule(modelTextField); // We block any non alphanumeric input
+        ComboBox categoryComboBox = FXManager.getComboBox(pane, "categoryComboBox");
+        ComboBox brandComboBox = FXManager.getComboBox(pane, "brandComboBox");
+        ComboBox modelComboBox = FXManager.getComboBox(pane, "modelComboBox");
 
-        return Arrays.asList(categoryTextField,brandTextField,modelTextField);
+        CategoryCrud.searchCategoryPopulator(Arrays.asList(categoryComboBox,brandComboBox,modelComboBox));
+
+        return Arrays.asList(categoryComboBox,brandComboBox,modelComboBox);
     }
 
     public static boolean productCreationValidator(List<ComboBox> comboBoxes, TextField textField) {
@@ -518,11 +529,11 @@ public class ProductCrud {
         return false;
     }
 
-    public static boolean productSearchValidator(List<TextField> textFields) {
+    public static boolean productSearchValidator(List<ComboBox> comboBoxs) {
 
-        for (TextField textField : textFields) {
+        for (ComboBox comboBox : comboBoxs) {
 
-            if (!textField.getText().equals("")) {
+            if (comboBox.getValue() != null) {
 
                 return true;
             }

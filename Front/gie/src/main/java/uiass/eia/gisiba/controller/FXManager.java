@@ -3,6 +3,7 @@ package uiass.eia.gisiba.controller;
 import java.io.IOException;
 import java.util.*;
 
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -32,18 +33,18 @@ public class FXManager {
         put("Enterprise", Arrays.asList("enterpriseNameLabel","enterpriseTypeLabel","phoneNumberLabel","emailLabel","addressLabel"));
     }};
 
-    public static List<String> catalog_labels_ids = Arrays.asList("categoryLabel","brandModelLabel","unitPriceLabel", "descriptionLabel");
+    public static List<String> catalog_labels_ids = Arrays.asList("categoryLabel","brandModelNameLabel", "descriptionLabel");
 
-    public static List<String> inventory_labels_ids = Arrays.asList("categoryLabel","brandModelLabel","quantityLabel", "dateAddedLabel");
+    public static List<String> inventory_labels_ids = Arrays.asList("categoryLabel","brandModelNameLabel","unitPriceLabel","quantityLabel", "dateAddedLabel");
 
     public static Map<String, List<String>> columns_names_per_contact_type = new HashMap<String, List<String>>() {{
         put("Person", Arrays.asList("id","first name","last name","phone number", "email", "address id","house number","neighborhood","city","zip code","country"));
         put("Enterprise", Arrays.asList("id","enterprise name","type","phone number", "email", "address id","house number","neighborhood","city","zip code","country"));
     }};
 
-    public static List<String> catalog_columns = Arrays.asList("ref","category id","category","brand","model","description","unit price");
+    public static List<String> catalog_columns = Arrays.asList("ref","category id","category","brand","model","name","description");
 
-    public static List<String> inventory_columns = Arrays.asList("id","category","brand","model","quantity", "date added");
+    public static List<String> inventory_columns = Arrays.asList("id","category","brand","model","name","unit price","quantity", "date added");
 
 
 
@@ -176,7 +177,7 @@ public class FXManager {
 
         return false;
     }
-
+    
     public static void textFieldsEmptier(List<TextField> textFields) {
 
         for (TextField textField : textFields) {

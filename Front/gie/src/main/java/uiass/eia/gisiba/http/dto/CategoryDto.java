@@ -26,14 +26,13 @@ public class CategoryDto {
 
         return categories;
 
-
     }
-    // Find all the categories names :
-    public static List<String> getAllCategoriesNames() {
+    // Find all the names corresponding to a given column in the catgeory table :
+    public static List<String> getAllCategoryColumnNames(String column) {
 
         List<String> categories = new ArrayList<String>();
 
-        String responseBody = DataSender.getDataSender("categories/categoriesNames");
+        String responseBody = DataSender.getDataSender("categories/" + column);
 
         JsonArray categoriesArray = new JsonParser().parse(responseBody).getAsJsonArray();
 
@@ -42,12 +41,12 @@ public class CategoryDto {
         return categories;
     }
 
-    // Find all the brands :
-    public static List<String> getAllBrands() {
+    // Find all the column names by a given column:
+    public static List<String> getAllColumnByFilterColumn(String column, String filerColumn, String value) {
 
         List<String> brands = new ArrayList<String>();
 
-        String responseBody = DataSender.getDataSender("categories/brandsNames");
+        String responseBody = DataSender.getDataSender("categories/" + column + "/" + filerColumn + "/" + value);
 
         JsonArray brandsArray = new JsonParser().parse(responseBody).getAsJsonArray();
 
@@ -57,17 +56,19 @@ public class CategoryDto {
     }
 
     // Find all the brands by a given category:
-    public static List<String> getAllBrandsByCategory(String category) {
+    public static List<String> getAllModelsByBrandAndCategory(String brand, String category) {
 
-        List<String> brands = new ArrayList<String>();
+        List<String> models;
 
-        String responseBody = DataSender.getDataSender("categories/brandsNames/byCategory/" + category);
+        List<String> modelsByBrand = getAllColumnByFilterColumn("model", "brand", brand);
 
-        JsonArray brandsArray = new JsonParser().parse(responseBody).getAsJsonArray();
+        List<String> modelsByCategory = getAllColumnByFilterColumn("model", "category", category);
 
-        brandsArray.forEach(brand -> brands.add(brand.getAsString()));
+        modelsByCategory.retainAll(modelsByBrand);
 
-        return brands;
+        models = new ArrayList<String>(modelsByCategory);
+
+        return models;
     }
 
 //////////////////////////////////////////////////// POST METHOD ///////////////////////////////////////////////////////////////////

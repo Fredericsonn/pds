@@ -28,7 +28,7 @@
                         </ImageView>
                      </children>
                   </AnchorPane>
-                  <Label fx:id="categoryLabel" alignment="CENTER" prefHeight="42.0" prefWidth="118.0" text="Category / Brand">
+                  <Label fx:id="categoryLabel" alignment="CENTER" prefHeight="42.0" prefWidth="118.0" text="Brand / Model ">
                      <font>
                         <Font size="13.5" />
                      </font>

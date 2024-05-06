@@ -1,7 +1,7 @@
 package uiass.gisiba.eia.java.entity.sales;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -16,6 +16,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 
+import uiass.gisiba.eia.java.entity.inventory.Status;
+
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -24,13 +26,13 @@ public class Sale implements Serializable {
     @Id
     @GeneratedValue(strategy =GenerationType.IDENTITY)
     @Column(name="sale_id")
-    private int saleRef;
+    private int saleId;
 
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
     private List<SaleOrder> orders;
 
     @Column(name="sale_date")
-    private LocalDate saleDate;
+    private Date saleDate;
 
     @Column(name="total")
     private double total;
@@ -41,8 +43,7 @@ public class Sale implements Serializable {
 
     // Constructors
 
-    public Sale(int saleRef, List<SaleOrder> orders, LocalDate saleDate, double total, Status status) {
-        this.saleRef = saleRef;
+    public Sale(List<SaleOrder> orders, Date saleDate, double total, Status status) {
         this.orders = orders;
         this.saleDate = saleDate;
         this.total = total;
@@ -55,12 +56,12 @@ public class Sale implements Serializable {
 
     // Getters - Setters
     
-    public int getSaleRef() {
-        return saleRef;
+    public int getSaleId() {
+        return saleId;
     }
 
-    public void setSaleRef(int saleRef) {
-        this.saleRef = saleRef;
+    public void setSaleId(int saleId) {
+        this.saleId = saleId;
     }
 
     public List<SaleOrder> getOrders() {
@@ -71,11 +72,11 @@ public class Sale implements Serializable {
         this.orders = orders;
     }
 
-    public LocalDate getSaleDate() {
+    public Date getSaleDate() {
         return saleDate;
     }
 
-    public void setSaleDate(LocalDate saleDate) {
+    public void setSaleDate(Date saleDate) {
         this.saleDate = saleDate;
     }
 

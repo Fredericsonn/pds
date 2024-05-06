@@ -6,6 +6,8 @@ import uiass.gisiba.eia.java.controller.crm.ContactController;
 import uiass.gisiba.eia.java.controller.inventory.CategoryController;
 import uiass.gisiba.eia.java.controller.inventory.InventoryItemController;
 import uiass.gisiba.eia.java.controller.inventory.ProductController;
+import uiass.gisiba.eia.java.controller.purchase.PurchaseController;
+import uiass.gisiba.eia.java.dao.inventory.iInventoryItemDao;
 
 
 public class AppTest {
@@ -33,17 +35,28 @@ public class AppTest {
         ProductController.productSearchFilter();
 
         CategoryController.getAllCategories();
-        CategoryController.getAllCategoriesNames();
-        CategoryController.getAllBrandsByCategory();
+        CategoryController.getAllColumnNames();
+        CategoryController.getAllColumnByFilterColumn();
         CategoryController.updateCategoryController();
-        CategoryController.getAllBrandsNames();
         CategoryController.postCategory();
 
         InventoryItemController.getAllItems();
+        InventoryItemController.itemSearchFilter();
         InventoryItemController.getItemById();
+        InventoryItemController.getItemByProduct();
         InventoryItemController.getItemQuantity();
         InventoryItemController.postItemController();
         InventoryItemController.deleteItemController();
+
+        PurchaseController.getAllPurchases();
+        PurchaseController.getAllPurchasesBySupplierType();
+        PurchaseController.getAllPurchasesByStatus();
+        PurchaseController.getAllPurchasesBySupplier();
+        PurchaseController.deletePurchaseController();
+        PurchaseController.postPurchase();
+        PurchaseController.updatePurchaseOrdersController();
+        PurchaseController.updatePurchaseStatusController();
+
 
 
         

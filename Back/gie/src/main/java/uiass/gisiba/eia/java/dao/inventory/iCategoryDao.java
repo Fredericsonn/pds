@@ -9,17 +9,15 @@ public interface iCategoryDao {
 
     Category getCategoryById(int id) throws CategoryNotFoundException;
 
-    Category getCategoryByNames(String categoryName, String brandName) throws CategoryNotFoundException;
+    Category getCategoryByNames(String categoryName, String brandName, String modelName) throws CategoryNotFoundException;
 
     List getAllCategories();
 
-    List<String> getAllCategoriesNames();
+    List<String> getAllColumnNames(String column);
 
-    List<String> getAllBrandsNames();
+    List<String> getAllColumnByFilterColumn(String column, String filterColumn, String value);
 
-    List<String> getAllBrandsByCategory(String category);
-
-    void addCategory(String categoryName, String brandName);
+    void addCategory(String categoryName, String brandName, String modelName);
 
     void updateCategory(int id, Map<String,Object> columnsNewValues) throws CategoryNotFoundException;
 }

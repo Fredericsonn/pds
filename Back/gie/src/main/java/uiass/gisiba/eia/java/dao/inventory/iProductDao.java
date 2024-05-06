@@ -12,7 +12,7 @@ import uiass.gisiba.eia.java.entity.inventory.Product;
 
 public interface iProductDao {
 
-    void addProduct(Category categoryBrand, String model, String description, double unitPrice);
+    void addProduct(Category categoryBrand, String model, String description);
 
     Product getProductById(String ref) throws ProductNotFoundException;
 

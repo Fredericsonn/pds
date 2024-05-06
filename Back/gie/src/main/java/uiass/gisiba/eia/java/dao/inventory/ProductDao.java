@@ -30,9 +30,9 @@ public class ProductDao implements iProductDao {
     }
 
     @Override
-    public void addProduct(Category categoryBrand, String model, String description, double unitPrice) {
+    public void addProduct(Category categoryBrand, String model, String description) {
 
-        Product product = new Product(categoryBrand,model,description, unitPrice);
+        Product product = new Product(categoryBrand,model,description);
 
         tr.begin();
         em.persist(product);
@@ -147,9 +147,11 @@ public class ProductDao implements iProductDao {
     
                 String brandName = categoryParams.keySet().contains("brandName") ? (String) categoryParams.get("brandName") : null;
 
-                if (categoryName != null && brandName != null) {
+                String modelName = categoryParams.keySet().contains("modelName") ? (String) categoryParams.get("modelName") : null;
 
-                    Category category = cdao.getCategoryByNames(categoryName, brandName);
+                if (categoryName != null && brandName != null && modelName != null) {
+
+                    Category category = cdao.getCategoryByNames(categoryName, brandName, modelName);
         
                     if (!product.getCategory().equals(category)) product.setCategory(category);
             

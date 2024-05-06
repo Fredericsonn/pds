@@ -12,10 +12,12 @@ import spark.Response;
 import spark.Route;
 import uiass.gisiba.eia.java.controller.Parsers.InventoryItemParser;
 import uiass.gisiba.eia.java.controller.Parsers.Parser;
+import uiass.gisiba.eia.java.controller.Parsers.ProductParser;
 import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
+import uiass.gisiba.eia.java.entity.inventory.Product;
 import uiass.gisiba.eia.java.service.Service;
 import uiass.gisiba.eia.java.service.iService;
 
@@ -36,6 +38,28 @@ public class InventoryItemController {
 		int id = Integer.parseInt(req.params(":id"));      
 
 		InventoryItem item = service.getInventoryItemById(id);        
+		
+		res.type("application/json");
+
+		return item;    
+	
+		   
+		}, gson::toJson);
+
+
+    }
+
+	public static void getItemByProduct() {
+
+	    Gson gson = new Gson();
+	  
+	    System.out.println("Server started.");
+	
+	    get("/inventoryItems/byProduct/:ref", (req,res)-> {
+
+		String ref = req.params(":ref");      
+
+		InventoryItem item = service.getInventoryItemByProduct(ref);        
 		
 		res.type("application/json");
 
@@ -175,16 +199,46 @@ public static void postItemController() {
 			// We create the product using the parse method in the Parser class
 			InventoryItem item = InventoryItemParser.parseInventoryItem(body);
 
-			service.addInventoryItem(item.getProduct(), item.getQuantity(), item.getDateAdded());;
+			service.addInventoryItem(item.getProduct(), item.getUnitPrice(), item.getQuantity(), item.getDateAdded());;
 
 			// The server response : 
 		    return "Item created successfully.";
 
-
-
-
 }});
 
-
 }
+
+	public static void itemSearchFilter() {
+	
+		post("/inventoryItems/filter" , new Route() {
+	
+			@Override
+			public String handle(Request request, Response response) throws ProductNotFoundException, CategoryNotFoundException  {
+
+				Gson gson = new Gson();
+
+				System.out.println("Server started.");
+		
+				String body = request.body();
+		
+				Map<String,Object> criteria = ProductParser.parseFilterCriteria(body);
+
+				List<InventoryItem> items;
+
+				try {
+
+					items = service.getFilteredItems(criteria);
+
+				} catch (InventoryItemNotFoundException | ProductNotFoundException e) {
+
+					return "no items match the given criteria";
+
+				}
+						
+				return gson.toJson(items);
+	
+	}});
+	
+	
+	}
 }

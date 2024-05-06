@@ -112,6 +112,8 @@ public class ProductController {
 
 		    	String body = request.body(); 	
 
+				System.out.println(body);
+
 		    	// We collect all the values to update from the request body in one list :
 		    	List productValues = ProductParser.productValuesCollector(gson, body);
 
@@ -161,7 +163,7 @@ public static void postProductController() {
 			Product product = ProductParser.parseProduct(body);
 
 			// We persist the product
-			service.addProduct(product.getCategory(), product.getModel(), product.getDescription(), product.getUnitPrice());
+			service.addProduct(product.getCategory(), product.getName(), product.getDescription());
 
 			// The server response : 
 		    return "Product created successfully.";
@@ -184,8 +186,6 @@ public static void postProductController() {
 				System.out.println("Server started.");
 		
 				String body = request.body();
-
-				System.out.println(body);
 		
 				Map<String,Object> criteria = ProductParser.parseFilterCriteria(body);
 		

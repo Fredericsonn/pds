@@ -2,6 +2,7 @@ package uiass.gisiba.eia.java.service;
 
 import java.net.UnknownHostException;
 import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 import java.util.Map;
 
@@ -16,21 +17,36 @@ import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
+import uiass.gisiba.eia.java.dao.exceptions.InvalidOrderTypeException;
 import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.NoContactsFoundInCountry;
+import uiass.gisiba.eia.java.dao.exceptions.OperationNotModifiableException;
+import uiass.gisiba.eia.java.dao.exceptions.OrderNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.PurchaseNotFoundException;
 import uiass.gisiba.eia.java.dao.inventory.CategoryDao;
 import uiass.gisiba.eia.java.dao.inventory.InventoryItemDao;
+import uiass.gisiba.eia.java.dao.inventory.OrderDao;
 import uiass.gisiba.eia.java.dao.inventory.ProductDao;
 import uiass.gisiba.eia.java.dao.inventory.iCategoryDao;
 import uiass.gisiba.eia.java.dao.inventory.iInventoryItemDao;
+import uiass.gisiba.eia.java.dao.inventory.iOrderDao;
 import uiass.gisiba.eia.java.dao.inventory.iProductDao;
+import uiass.gisiba.eia.java.dao.purchase.PurchaseDao;
+import uiass.gisiba.eia.java.dao.purchase.iPurchaseDao;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
+import uiass.gisiba.eia.java.entity.crm.Enterprise;
 import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
+import uiass.gisiba.eia.java.entity.crm.Person;
 import uiass.gisiba.eia.java.entity.inventory.Category;
 import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
+import uiass.gisiba.eia.java.entity.inventory.Order;
 import uiass.gisiba.eia.java.entity.inventory.Product;
+import uiass.gisiba.eia.java.entity.inventory.Status;
+import uiass.gisiba.eia.java.entity.purchases.Purchase;
+import uiass.gisiba.eia.java.entity.purchases.PurchaseOrder;
+import uiass.gisiba.eia.java.entity.sales.Sale;
 
 
 public class Service implements iService {
@@ -40,6 +56,8 @@ public class Service implements iService {
     private iProductDao pdao = new ProductDao();
     private iCategoryDao catdao = new CategoryDao();
     private iInventoryItemDao idao = new InventoryItemDao();
+    private iOrderDao odao = new OrderDao();
+    private iPurchaseDao psdao = new PurchaseDao();
     private EmailSender es = new EmailSender();
 
 /////////////////////////////////////////////////////// ADDRESS ////////////////////////////////////////////////////////////////
@@ -161,11 +179,9 @@ public class Service implements iService {
 /////////////////////////////////////////////////////// PRODUCT ////////////////////////////////////////////////////////////////
 
     @Override
-    public void addProduct(Category categoryBrand, String model, String description,
+    public void addProduct(Category categoryBrand, String model, String description) {
 
-            double unitPrice) {
-
-        pdao.addProduct(categoryBrand,model, description, unitPrice);
+        pdao.addProduct(categoryBrand,model, description);
     }
 
     @Override
@@ -206,9 +222,21 @@ public class Service implements iService {
     }
 
     @Override
-    public Category getCategoryByNames(String categoryName, String brandName) throws CategoryNotFoundException {
+    public List<String> getAllColumnNames(String column) {
 
-        return catdao.getCategoryByNames(categoryName, brandName);
+        return catdao.getAllColumnNames(column);
+    }
+
+    @Override
+    public List<String> getAllColumnByFilterColumn(String column, String filterColumn, String value) {
+
+        return catdao.getAllColumnByFilterColumn(column, filterColumn, value);
+    }
+
+    @Override
+    public Category getCategoryByNames(String categoryName, String brandName, String modelName) throws CategoryNotFoundException {
+
+        return catdao.getCategoryByNames(categoryName, brandName, modelName);
     }
 
     @Override
@@ -216,29 +244,11 @@ public class Service implements iService {
 
         return catdao.getAllCategories();
     }
-    @Override
-    public List<String> getAllCategoriesNames() {
-
-        return catdao.getAllCategoriesNames();
-
-    }
 
     @Override
-    public List<String> getAllBrandsNames() {
+    public void addCategory(String categoryName, String brandName, String modelName) {
 
-        return catdao.getAllBrandsNames();
-    }
-
-    @Override
-    public List<String> getAllBrandsByCategory(String category) {
-
-        return catdao.getAllBrandsByCategory(category);
-    }
-
-    @Override
-    public void addCategory(String categoryName, String brandName) {
-
-        catdao.addCategory(categoryName, brandName);
+        catdao.addCategory(categoryName, brandName, modelName);
     }
 
     @Override
@@ -268,15 +278,24 @@ public class Service implements iService {
     }
 
     @Override
+    public List<InventoryItem> getFilteredItems(Map<String, Object> columnsNewValues)
+    
+            throws InventoryItemNotFoundException, ProductNotFoundException {
+
+                return idao.getFilteredItems(columnsNewValues);
+    }
+
+
+    @Override
     public int getItemQuantity(int itemId) throws InventoryItemNotFoundException {
  
         return idao.getItemQuantity(itemId);
     }
 
     @Override
-    public void addInventoryItem(Product product, int quantity, Date dateAdded) {
+    public void addInventoryItem(Product product, double unitPrice, int quantity, Date dateAdded) {
 
-        idao.addInventoryItem(product, quantity, dateAdded);
+        idao.addInventoryItem(product, unitPrice, quantity, dateAdded);
     }
 
     @Override
@@ -296,6 +315,143 @@ public class Service implements iService {
 
         idao.updateInventoryItem(itemId, quantity);
     }
+
+/////////////////////////////////////////////////////// Orders ////////////////////////////////////////////////////////////////
+
+    @Override
+    public Order getOrderById(int orderId, String orderType) throws InvalidOrderTypeException, OrderNotFoundException {
+
+        return odao.getOrderById(orderId, orderType);
+    }
+
+    @Override
+    public List<Order> getAllOrdersByType(String orderType) {
+
+        return odao.getAllOrdersByType(orderType);
+    }
+
+    public List<Order> getAllOrdersByStatus(String orderType, Status status) throws InvalidOrderTypeException {
+
+        return odao.getAllOrdersByStatus(orderType, status);
+    }
+
+    @Override
+    public List<Order> getAllOrdersBetweenDates(String orderType, Date startDate, Date endDate)
+    
+            throws InvalidOrderTypeException {
+
+        return odao.getAllOrdersBetweenDates(orderType, startDate, endDate);
+    }
+
+
+    @Override
+    public void addPurchaseOrder(Product product, int quantity, Time orderTime, Purchase purchase) {
+
+        odao.addPurchaseOrder(product, quantity, orderTime, purchase);
+    }
+
+    @Override
+    public void addSaleOrder(Product product, int quantity, Time orderTime, Sale sale) {
+
+        odao.addSaleOrder(product, quantity, orderTime, sale);
+    }
+
+    @Override
+    public void deleteOrder(int orderId, String orderType) throws InvalidOrderTypeException, OrderNotFoundException {
+
+        odao.deleteOrder(orderId, orderType);
+    }
+
+    @Override
+    public void updateOrder(int orderId, int quantity, String orderType)
+
+            throws InvalidOrderTypeException, OrderNotFoundException {
+
+        odao.updateOrder(orderId, quantity, orderType);
+                
+    }
+
+/////////////////////////////////////////////////////// Purchase /////////////////////////////////////////////////////////////////////
+
+    @Override
+    public Purchase getPurchaseById(int id) throws PurchaseNotFoundException {
+
+        return psdao.getPurchaseById(id);
+    }
+
+    @Override
+    public List<Purchase> getAllPurchases() {
+
+        return psdao.getAllPurchases();
+    }
+
+    @Override
+    public List<Purchase> getAllPurchasesByContactType(String type) throws InvalidContactTypeException {
+
+        return psdao.getAllPurchasesByContactType(type);
+    }
+
+    @Override
+    public List<Purchase> getAllPurchasesBySupplier(Person supplier) {
+
+        return psdao.getAllPurchasesBySupplier(supplier);
+    }
+
+    @Override
+    public List<Purchase> getAllPurchasesBySupplier(Enterprise supplier) {
+
+        return psdao.getAllPurchasesBySupplier(supplier);
+    }
+
+    @Override
+    public List<Purchase> getAllPurchasesByStatus(Status status) {
+
+        return psdao.getAllPurchasesByStatus(status);
+    }
+
+    @Override
+    public List<Purchase> getAllPurchasesBetweenDates(Date startDate, Date endDate) {
+
+        return psdao.getAllPurchasesBetweenDates(startDate, endDate);
+    }
+ 
+    @Override
+    public void addPurchase(List<PurchaseOrder> orders, Date purchaseDate, double total, Person supplier, Status status) {
+
+        psdao.addPurchase(orders, purchaseDate, total, supplier, status);
+    }
+
+    @Override
+    public void addPurchase(List<PurchaseOrder> orders, Date purchaseDate, double total, Enterprise supplier, Status status) {
+
+        psdao.addPurchase(orders, purchaseDate, total, supplier, status);
+    }
+
+    @Override
+    public void deletePurchase(int id) throws PurchaseNotFoundException {
+
+        psdao.deletePurchase(id);
+    }
+
+    @Override
+    public void updatePurchaseOrders(int id, List<PurchaseOrder> newOrders) throws PurchaseNotFoundException,
+    
+            OperationNotModifiableException {
+
+        psdao.updatePurchaseOrders(id, newOrders);
+    }
+
+    @Override
+    public void updatePurchaseStatus(int id, Status status) throws PurchaseNotFoundException {
+
+        psdao.updatePurchaseStatus(id, status);
+    }
+
+
+
+
+
+
 
 
 

@@ -1,7 +1,7 @@
 package uiass.gisiba.eia.java.entity.inventory;
 
 import java.io.Serializable;
-import java.time.LocalTime;
+import java.sql.Time;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -27,11 +27,11 @@ public class Order implements Serializable {
     private int quantity;
 
     @Column(name="time")
-    private LocalTime orderTime;
+    private Time orderTime;
 
     // Constructors
 
-    public Order(Product product, int quantity, LocalTime orderTime) {
+    public Order(Product product, int quantity, Time orderTime) {
 
         this.product = product;
         this.quantity = quantity;
@@ -68,11 +68,11 @@ public class Order implements Serializable {
         this.quantity = quantity;
     }
 
-    public LocalTime getOrderTime() {
+    public Time getOrderTime() {
         return orderTime;
     }
 
-    public void setOrderTime(LocalTime orderTime) {
+    public void setOrderTime(Time orderTime) {
         this.orderTime = orderTime;
     }
 

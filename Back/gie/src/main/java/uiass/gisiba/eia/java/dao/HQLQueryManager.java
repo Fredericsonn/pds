@@ -101,6 +101,7 @@ public class HQLQueryManager {
 
         return productSelectColumnsCollector(columns, table);
     }
+
     // this method is used to generate the hql from a columns update state map
     public static String productSelectColumnsCollector(List<String> columns, String table) {
         
@@ -108,15 +109,64 @@ public class HQLQueryManager {
 
         for (String column : columns) {
 
-            if (column.equals("model") ) hql += column + " = :" + column + " and ";
+            if (table.equals("Inventory")) hql += "product.";
 
-            else hql += "category." + column + " = :" + column + " and ";
+            hql += "category." + column + " = :" + column + " and ";
             
         }
 
         hql = hql.substring(0, hql.length()-5);
         
         return hql;
+    }
+
+    public static boolean validOrderType(String type) {
+        return type.equals("Purchase") || type.equals("Sale");
+    }
+
+    public static String orderTableNameHandler(String orderType) {
+
+        String table = orderType.equals("Purchase") ? "Purchase_Order" : "Sale_Order";
+
+        return table;
+    }
+
+    public static String orderAttributeNameHandler(String orderType) {
+
+        String table = orderType.equals("Purchase") ? "purchase" : "sale";
+
+        return table;
+    }
+
+    public static String selectOrdersBetweenDatesHQLQueryGenerator(String orderType) {
+
+        String table = orderTableNameHandler(orderType);
+
+        String attribute = orderAttributeNameHandler(orderType);
+
+        String hql = "select o from " + table + " o where o." + attribute + "." + attribute + "Date" + 
+        
+        " between :startDate and :endDate";
+
+        return hql;
+    }
+
+    public static String selectOperationsBetweenDatesHQLQueryGenerator(String type) {
+
+        String table = orderTableNameHandler(type);
+
+        String attribute = orderAttributeNameHandler(type);
+
+        String hql = "from " + table + " where " + attribute + "Date" + 
+        
+        " between :startDate and :endDate";
+
+        return hql;
+    }
+
+    public static boolean operationContactTypeValidator(String type) {
+
+        return type.equals("Person") || type.equals("Enterprise");
     }
 
 

@@ -14,19 +14,19 @@
          <children>
             <ComboBox fx:id="categoryComboBox" prefHeight="62.0" prefWidth="203.0" promptText="category" />
             <ComboBox fx:id="brandComboBox" prefHeight="62.0" prefWidth="203.0" promptText="brand" />
-            <TextField fx:id="modelTextField" prefHeight="62.0" prefWidth="194.0" promptText="Model" />
+            <ComboBox fx:id="modelComboBox" prefHeight="62.0" prefWidth="203.0" promptText="model" />
          </children>
       </HBox>
       <HBox fx:id="secondHBox" alignment="CENTER" layoutX="2.0" layoutY="205.0" prefHeight="100.0" prefWidth="871.0" spacing="95.0">
          <children>
-            <TextField fx:id="unitPriceTextField" prefHeight="62.0" prefWidth="203.0" promptText="Unit Price" />
+            <TextField fx:id="nameTextField" prefHeight="62.0" prefWidth="203.0" promptText="Name" />
             <TextField fx:id="descriptionTextField" prefHeight="62.0" prefWidth="439.0" promptText="Description" />
          </children>
       </HBox>
       <Label layoutX="68.0" layoutY="48.0" prefHeight="29.0" prefWidth="144.0" text="Category :" />
       <Label layoutX="341.0" layoutY="48.0" prefHeight="29.0" prefWidth="144.0" text="Brand :" />
       <Label layoutX="614.0" layoutY="48.0" prefHeight="29.0" prefWidth="144.0" text="Model :" />
-      <Label layoutX="71.0" layoutY="190.0" prefHeight="29.0" prefWidth="144.0" text="Unit Price :" />
+      <Label layoutX="71.0" layoutY="190.0" prefHeight="29.0" prefWidth="144.0" text="Name :" />
       <Label layoutX="368.0" layoutY="190.0" prefHeight="29.0" prefWidth="144.0" text="Description :" />
    </children>
 </AnchorPane>

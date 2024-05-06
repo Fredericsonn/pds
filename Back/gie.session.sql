@@ -1,0 +1,1 @@
+select * from purchase_order where purchase_id = 26

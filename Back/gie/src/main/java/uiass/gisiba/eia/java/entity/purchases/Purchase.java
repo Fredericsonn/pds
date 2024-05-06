@@ -1,6 +1,6 @@
 package uiass.gisiba.eia.java.entity.purchases;
 
-import java.time.LocalDate;
+import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -15,7 +15,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 
-import uiass.gisiba.eia.java.entity.sales.Status;
+import uiass.gisiba.eia.java.entity.inventory.Status;
 
 
 
@@ -32,7 +32,7 @@ public class Purchase {
     private List<PurchaseOrder> orders;
 
     @Column(name="purchase_date")
-    private LocalDate purchaseDate;
+    private Date purchaseDate;
 
     @Column(name="total")
     private double total;
@@ -43,8 +43,7 @@ public class Purchase {
 
     // Constructors
 
-    public Purchase(int purchaseId, List<PurchaseOrder> orders, LocalDate purchaseDate, double total, Status status) {
-        this.purchaseId = purchaseId;
+    public Purchase(List<PurchaseOrder> orders, Date purchaseDate, double total, Status status) {
         this.orders = orders;
         this.purchaseDate = purchaseDate;
         this.total = total;
@@ -74,11 +73,11 @@ public class Purchase {
         this.orders = orders;
     }
 
-    public LocalDate getPurchaseDate() {
+    public Date getPurchaseDate() {
         return purchaseDate;
     }
 
-    public void setPurchaseDate(LocalDate purchaseDate) {
+    public void setPurchaseDate(Date purchaseDate) {
         this.purchaseDate = purchaseDate;
     }
 
@@ -97,6 +96,8 @@ public class Purchase {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+    
 
 
 

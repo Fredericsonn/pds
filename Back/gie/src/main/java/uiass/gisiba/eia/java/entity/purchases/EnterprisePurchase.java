@@ -1,5 +1,6 @@
 package uiass.gisiba.eia.java.entity.purchases;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import uiass.gisiba.eia.java.entity.crm.Enterprise;
-import uiass.gisiba.eia.java.entity.sales.Status;
+import uiass.gisiba.eia.java.entity.inventory.Status;
 
 @Entity
 @DiscriminatorValue("Enterprise")
@@ -20,11 +21,11 @@ public class EnterprisePurchase extends Purchase {
     @JoinColumn(name="supplier_id")
     private Enterprise supplier;
 
-    public EnterprisePurchase(int purchaseId,List<PurchaseOrder> orders, LocalDate purchaseDate, double total, Status status,
+    public EnterprisePurchase(List<PurchaseOrder> orders, Date purchaseDate, double total, Status status,
     
     Enterprise supplier) {
 
-        super(purchaseId, orders, purchaseDate, total, status);
+        super(orders, purchaseDate, total, status);
 
         this.supplier = supplier;
     }
@@ -38,6 +39,14 @@ public class EnterprisePurchase extends Purchase {
 
     public void setSupplier(Enterprise supplier) {
         this.supplier = supplier;
+    }
+
+    @Override
+    public String toString() {
+
+        return "id : " + this.getPurchaseId() + ",orders : " + this.getOrders() + ", supplier : " + this.supplier + ", type : enterprise" +  ", purchase date : " + this.getPurchaseDate()
+
+        + ", status : " + this.getStatus() + ", total : " + this.getTotal();
     }
 
 }

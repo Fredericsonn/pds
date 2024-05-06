@@ -13,7 +13,7 @@ public class InventoryDto {
 
     public static List<String> getItemById(int id) {
 
-        String responseBody = DataSender.getDataSender("inventpryItems/byId/" + id);
+        String responseBody = DataSender.getDataSender("inventoryItems/byId/" + id);
 
         if (!responseBody.equals("Server Error.")) return InventoryItemParser.parseItem(responseBody);
 
@@ -23,6 +23,15 @@ public class InventoryDto {
     public static List<String> getProductByItemId(int id) {
 
         String responseBody = DataSender.getDataSender("inventoryItems/byId/" + id);
+
+        if (!responseBody.equals("Server Error.")) return InventoryItemParser.parseItemProduct(responseBody);
+
+        return null;
+    }
+
+    public static List<String> getItemByProduct(String ref) {
+
+        String responseBody = DataSender.getDataSender("inventoryItems/byProduct/" + ref);
 
         if (!responseBody.equals("Server Error.")) return InventoryItemParser.parseItemProduct(responseBody);
 
@@ -43,5 +52,20 @@ public class InventoryDto {
         });
 
         return items;
+    }
+
+    // Find all the products :
+    public static List<List<String>> getFilteredItems(String json) {
+
+        String responseBody = DataSender.postDataSender(json,"inventoryItems/filter");
+
+        List<List<String>> items = new ArrayList<List<String>>();
+
+        JsonArray itemsArray = new JsonParser().parse(responseBody).getAsJsonArray();
+
+        itemsArray.forEach(item -> items.add(InventoryItemParser.parseItem(String.valueOf(item.getAsJsonObject()))));
+
+        return items;
+
     }
 }

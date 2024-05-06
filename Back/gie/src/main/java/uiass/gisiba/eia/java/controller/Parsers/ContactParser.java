@@ -7,8 +7,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
+import uiass.gisiba.eia.java.entity.crm.Enterprise;
+import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
 import uiass.gisiba.eia.java.entity.crm.Person;
 
 public class ContactParser extends Parser {
@@ -74,11 +77,11 @@ public class ContactParser extends Parser {
     }
 
 ///////////////////////////////////////////// SINGLE PARSERS ///////////////////////////////////////////////////////////////////////
-    public static Contact parseContact(String responseBody, String contactType) {
+    public static Person parsePerson(String responseBody)  {
     		
     	JsonObject contact = new JsonParser().parse(responseBody).getAsJsonObject();
 
-        List<String> attributes = attributes_by_type_map.get(contactType);
+        List<String> attributes = attributes_by_type_map.get("Person");
 
         List<String> contactStringInfo = new ArrayList<String>();
         
@@ -119,14 +122,70 @@ public class ContactParser extends Parser {
 
 		Address address = new Address(country, city, zipCode, neighborhood, houseNumber);
 		address.setAddressId(addressId);
-		Person person = new Person(first_or_enterprise_name, last_name_or_enterprise_type, phoneNumber, email, address);
-		person.setId(id);
+		
+	
+        Person person = new Person(first_or_enterprise_name, last_name_or_enterprise_type, phoneNumber, email, address);
 
-		return person;
+        person.setId(id);
 
-					 
+        return person;      
+		 
     }
 
+    public static Enterprise parseEnterprise(String responseBody)  {
+    		
+    	JsonObject contact = new JsonParser().parse(responseBody).getAsJsonObject();
+
+        List<String> attributes = attributes_by_type_map.get("Person");
+
+        List<String> contactStringInfo = new ArrayList<String>();
+        
+        List<Integer> contactIntInfo = new ArrayList<Integer>();
+
+        for (String attribute : attributes) {
+
+            if (attribute.equals("id")) {
+                
+                contactIntInfo.add(collectInt(contact, attribute));
+            }
+            else contactStringInfo.add(collectString(contact, attribute));
+        }
+    
+        JsonObject addressObject = contact.has("address") ? contact.get("address").getAsJsonObject() : null;
+
+        for (String attribute : addressAttributes) {
+
+            if (attribute.equals("addressId") || attribute.equals("houseNumber")) {
+                
+                contactIntInfo.add(collectInt(addressObject, attribute));
+            }
+            else contactStringInfo.add(collectString(addressObject, attribute));
+        }
+
+        String first_or_enterprise_name = contactStringInfo.get(0); 
+        String last_name_or_enterprise_type = contactStringInfo.get(1);
+        int id = contactIntInfo.get(0);
+        String phoneNumber = contactStringInfo.get(2);
+        String email = contactStringInfo.get(3);
+
+        int addressId = contactIntInfo.get(1);
+        int houseNumber = contactIntInfo.get(2);
+        String neighborhood = contactStringInfo.get(4);
+        String city =  contactStringInfo.get(5);
+        String zipCode = contactStringInfo.get(6);
+        String country = contactStringInfo.get(8);
+
+		Address address = new Address(country, city, zipCode, neighborhood, houseNumber);
+		address.setAddressId(addressId);
+		
+	
+        Enterprise enterprise = new Enterprise(first_or_enterprise_name, EntrepriseType.valueOf(last_name_or_enterprise_type), phoneNumber, email, address);
+
+        enterprise.setId(id);
+
+        return enterprise;      
+		 
+    }
     public static Address parseAddress(String responseBody) {
 
     	JsonObject addressObject = new JsonParser().parse(responseBody).getAsJsonObject();
@@ -158,9 +217,9 @@ public class ContactParser extends Parser {
     }
 ///////////////////////////////////////////// Collection Parsers /////////////////////////////////////////////////////////////////
 
-    public static List<Contact> parseContacts(String responseBody, String contactType) {
+    public static List<Person> parsePersons(String responseBody, String contactType) {
 
-        List<Contact> contacts = new ArrayList<Contact>();
+        List<Person> contacts = new ArrayList<Person>();
 
         JsonArray contactsArray = new JsonParser().parse(responseBody).getAsJsonArray();
 
@@ -168,13 +227,32 @@ public class ContactParser extends Parser {
 
             String contactJsonBody = contactsArray.get(i).toString();
 
-            Contact contact = parseContact(contactJsonBody, contactType);
+            Person contact = parsePerson(contactJsonBody);
 
             contacts.add(contact);
         }
 
         return contacts;
     }
+
+    public static List<Enterprise> parseEnterprise(String responseBody, String contactType) {
+
+        List<Enterprise> contacts = new ArrayList<Enterprise>();
+
+        JsonArray contactsArray = new JsonParser().parse(responseBody).getAsJsonArray();
+
+        for (int i = 0 ; i < contactsArray.size() ; i++) {
+
+            String contactJsonBody = contactsArray.get(i).toString();
+
+            Enterprise contact = parseEnterprise(contactJsonBody);
+
+            contacts.add(contact);
+        }
+
+        return contacts;
+    }
+
 
     public static List<Address> parseAddresses(String responseBody) {
 

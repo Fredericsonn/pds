@@ -9,7 +9,7 @@ import uiass.gisiba.eia.java.entity.inventory.Category;
 
 public class CategoryParser extends Parser {
 
-    public static List<String> categoryAttributes = Arrays.asList("categoryName","brandName");
+    public static List<String> categoryAttributes = Arrays.asList("categoryName","brandName", "modelName");
 
     public static Category parseCategory(String requestBody) {
 
@@ -19,7 +19,9 @@ public class CategoryParser extends Parser {
 
         String brandName = categoryObject.get("brandName").getAsString();
 
-        return new Category(categoryName, brandName);
+        String modelName = categoryObject.get("modelName").getAsString();
+
+        return new Category(categoryName, brandName, modelName);
 
     }
 
@@ -46,8 +48,10 @@ public class CategoryParser extends Parser {
             String categoryName = collectString(category, "categoryName");
     
             String brandName = collectString(category, "brandName");
+
+            String modelName = collectString(category, "modelName");
     
-            return Arrays.asList(categoryName,brandName);
+            return Arrays.asList(categoryName,brandName,modelName);
         }
 
         else return null;

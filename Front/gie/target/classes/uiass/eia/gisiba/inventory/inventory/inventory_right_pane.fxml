@@ -6,14 +6,41 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="rightAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="270.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Label fx:id="categoryLabel" layoutX="98.0" layoutY="30.0" prefHeight="22.0" prefWidth="178.0" text="category" />
-        <Label fx:id="brandModelLabel" layoutX="98.0" layoutY="52.0" prefHeight="18.0" prefWidth="155.0" text="brand, model" />
-        <Label fx:id="quantityLabel" layoutX="98.0" layoutY="74.0" prefHeight="18.0" prefWidth="155.0" text="quantity in stock" />
-        <Label fx:id="dateAddedLabel" layoutX="98.0" layoutY="90.0" prefHeight="36.0" prefWidth="155.0" text="date added" />
-      <ImageView fx:id="productImg" fitHeight="86.0" fitWidth="90.0" layoutX="5.0" layoutY="33.0">
+      <VBox layoutX="105.0" layoutY="29.0" prefHeight="118.0" prefWidth="163.0" spacing="2.0">
+         <children>
+              <Label fx:id="categoryLabel" prefHeight="18.0" prefWidth="178.0" text="category">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+              <Label fx:id="brandModelNameLabel" prefHeight="18.0" prefWidth="155.0" text="brand, model, name">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="unitPriceLabel" prefHeight="18.0" prefWidth="155.0" text="unit price">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+              <Label fx:id="quantityLabel" prefHeight="18.0" prefWidth="155.0" text="quantity in stock">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+              <Label fx:id="dateAddedLabel" prefHeight="18.0" prefWidth="155.0" text="date added">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+      <ImageView fx:id="productImg" fitHeight="100.0" fitWidth="103.0" layoutY="29.0">
          <image>
             <Image url="@../../imgs/product-item.png" />
          </image>

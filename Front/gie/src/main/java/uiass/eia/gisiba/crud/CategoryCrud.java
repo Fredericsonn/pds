@@ -27,48 +27,56 @@ public class CategoryCrud {
         // ComboBoxes
         ComboBox categoryComboBox = FXManager.getComboBox(pane, "categoryComboBox");
         ComboBox brandComboBox = FXManager.getComboBox(pane, "brandComboBox");
+        ComboBox modelComboBox = FXManager.getComboBox(pane, "modelComboBox");
 
         // TextField
-        TextField categoryTextField = FXManager.getTextField(pane, "categoryTextField");
         TextField brandTextField = FXManager.getTextField(pane, "brandTextField");
+        TextField modelTextField = FXManager.getTextField(pane, "modelTextField");
 
-        // We populate the category and brand combo boxes
-        categoryPopulator(Arrays.asList(categoryComboBox,brandComboBox));
+        // We populate the brand and model combo boxes
+        createCategoryPopulator(Arrays.asList(categoryComboBox,brandComboBox,modelComboBox));
 
         // We set the corresponding event listener to disable the non used nodes
-        nodesHandler(categoryComboBox, brandComboBox, categoryTextField, brandTextField);
+        nodesHandler(brandComboBox, modelComboBox, brandTextField, modelTextField);
 
         // When comfirm is clicked
         button.setOnAction(event -> {
+
+            String category = (String) categoryComboBox.getValue();
+
+            if (category != null) {  // if a category is selected from the combo box
+
+                if (categoryCreationValidator(brandComboBox, modelComboBox, brandTextField, modelTextField)) {
+    
+                    String brand = inputHandler(brandComboBox, brandTextField); // We get the entered brand
+    
+                    String model = inputHandler(modelComboBox, modelTextField); // We get the entered model
+        
+                    // we create a map that will be converted into json
+                    Map<String, Object> map = ProductParser.categoryCreationMapGenerator(Arrays.asList(category,brand,model));
+        
+                    // we generate the json from the map
+                    String json = Parser.jsonGenerator(map);
+        
+                    // we call send the json to the back end to create the new category
+                    String categoryCreationResult = CategoryDto.postCategory(json);
+        
+                    // We display the creation result :
+                    if (categoryCreationResult.equals("Brand - Model created successfully"))
+        
+                        FXManager.showAlert(AlertType.CONFIRMATION, "Confirmation", "Creation Status  :", categoryCreationResult);
             
-            if (categoryCreationValidator(categoryComboBox, brandComboBox, categoryTextField, brandTextField)) {
-
-                String categroy = inputHandler(categoryComboBox, categoryTextField); // We get the entered category
-
-                String brand = inputHandler(brandComboBox, brandTextField); // We get the entered brand
-    
-                // we create a map that will be converted into json
-                Map<String, Object> map = ProductParser.categoryCreationMapGenerator(Arrays.asList(categroy,brand));
-    
-                // we generate the json from the map
-                String json = Parser.jsonGenerator(map);
-    
-                // we call send the json to the back end to create the new category
-                String categoryCreationResult = CategoryDto.postCategory(json);
-    
-                // We display the creation result :
-                if (categoryCreationResult.equals("Category created successfully"))
-    
-                    FXManager.showAlert(AlertType.CONFIRMATION, "Confirmation", "Creation Status  :", categoryCreationResult);
+                    else FXManager.showAlert(AlertType.ERROR, "ERROR", "Creation Status  :", "Internal Server Error");
         
-                else FXManager.showAlert(AlertType.ERROR, "ERROR", "Creation Status  :", "Internal Server Error");
+                    whereToGoNext();
+            
+                    ((Stage) button.getScene().getWindow()).close(); // We close the create page after confirming the creation
+                }
     
-                whereToGoNext();
-        
-                ((Stage) button.getScene().getWindow()).close(); // We close the create page after confirming the creation
+                else FXManager.showAlert(AlertType.ERROR, "ERROR", "Missing Values", "Please provide both a brand and a model.");
             }
 
-            else FXManager.showAlert(AlertType.ERROR, "ERROR", "Missing Values", "Please provide both a category and a brand.");
+            else FXManager.showAlert(AlertType.ERROR, "ERROR", "Missing Category", "Please provide a category.");
         });
     }
 
@@ -167,35 +175,123 @@ public class CategoryCrud {
          
     }
 
-    public static void categoryPopulator(List<ComboBox> comboBoxes) {
+    public static void searchCategoryPopulator(List<ComboBox> comboBoxes) {
 
         ComboBox categoryComboBox = comboBoxes.get(0);
 
         ComboBox brandComboBox = comboBoxes.get(1);
 
-        List<String> categoriesList = CategoryDto.getAllCategoriesNames(); // We get all the categories that we have 
+        ComboBox modelComboBox = comboBoxes.get(2);
 
-        List<String> brandsList = CategoryDto.getAllBrands(); // We get all the brands that we have 
+        List<String> categoriesList = CategoryDto.getAllCategoryColumnNames("category"); // We get all the categories that we have 
+
+        List<String> brandsList = CategoryDto.getAllCategoryColumnNames("brand"); // We get all the brands that we have 
+
+        List<String> modelsList = CategoryDto.getAllCategoryColumnNames("model"); // We get all the models that we have 
 
         FXManager.populateComboBox(categoryComboBox, categoriesList); // We add the categories as the category combo box items
 
         FXManager.populateComboBox(brandComboBox, brandsList); // We add the brands as the brand combo box items
 
+        FXManager.populateComboBox(modelComboBox, modelsList); // We add the brands as the brand combo box items
+
+        // When a category is selected :
         categoryComboBox.valueProperty().addListener(event -> {
 
-            brandComboBox.setPromptText("brand");
+            brandComboBox.setPromptText("brand");  // set the brand combo box's prompt text to "brand"
 
-            String category = (String) categoryComboBox.getValue();
+            modelComboBox.setPromptText("model");  // set the brand combo box's prompt text to "model"
 
-            List<String> brandsByCategory = CategoryDto.getAllBrandsByCategory(category);
+            String category = (String) categoryComboBox.getValue();  // we get the selected category
 
-            brandsList.removeAll(brandsByCategory);
+            // We get the corresponding data and populate the combo boxes
+            List<String> brandsByCategory = CategoryDto.getAllColumnByFilterColumn("brand", "category", category);
 
-            FXManager.populateComboBox(brandComboBox, brandsList);
+            List<String> modelsByCategory = CategoryDto.getAllColumnByFilterColumn("model", "category", category);
+
+            FXManager.populateComboBox(brandComboBox, brandsByCategory);
+
+            FXManager.populateComboBox(modelComboBox, modelsByCategory);
+
         });
 
     }
 
+    public static void createCategoryPopulator(List<ComboBox> comboBoxes) {
+
+        ComboBox categoryComboBox = comboBoxes.get(0);
+
+        ComboBox brandComboBox = comboBoxes.get(1);
+
+        ComboBox modelComboBox = comboBoxes.get(2);
+
+        // we get all the categories and populate the category conbo box so that the user can select one 
+        List<String> categoriesList = CategoryDto.getAllCategoryColumnNames("category");
+
+        FXManager.populateComboBox(categoryComboBox, categoriesList);
+
+        // When a category is selected :
+        categoryComboBox.valueProperty().addListener(event -> {
+
+            brandComboBox.setPromptText("brand");  // set the brand combo box's prompt text to "brand"
+
+            modelComboBox.setPromptText("model");  // set the brand combo box's prompt text to "model"
+
+            String category = (String) categoryComboBox.getValue();  // we get the selected category
+
+            // We get the corresponding data and populate the combo boxes
+            List<String> brandsByCategory = CategoryDto.getAllColumnByFilterColumn("brand", "category", category);
+
+            List<String> modelsByCategory = CategoryDto.getAllColumnByFilterColumn("model", "category", category);
+
+            FXManager.populateComboBox(brandComboBox, brandsByCategory);
+
+            FXManager.populateComboBox(modelComboBox, modelsByCategory);
+
+        });
+
+        brandComboBox.valueProperty().addListener(event -> {
+
+            if (modelComboBox.getValue() == null) {
+
+                modelComboBox.setPromptText("model");  // set the brand combo box's prompt text to "model"
+
+                String brand = (String) brandComboBox.getValue();  // we get the selected brand
+    
+                // We get the corresponding data and populate the models combo box
+                List<String> modelsByBrand = CategoryDto.getAllColumnByFilterColumn("model", "brand", brand);
+    
+                List<String> models = modelComboBox.getItems();
+    
+                models.removeAll(modelsByBrand); // we remove the already existing models of the selected brand to prevent duplications
+    
+                FXManager.populateComboBox(modelComboBox, models);
+            }
+
+        });
+
+        modelComboBox.valueProperty().addListener(event -> {
+
+            if (modelComboBox.getValue() == null) {
+
+                brandComboBox.setPromptText("brand");  // set the brand combo box's prompt text to "brand"
+
+                String model = (String) modelComboBox.getValue();  // we get the selected model
+    
+                // We get the corresponding data and populate the brands combo box
+                List<String> brandsByModel = CategoryDto.getAllColumnByFilterColumn("brand", "model", model);
+    
+                List<String> brands = brandComboBox.getItems();
+    
+                brands.removeAll(brandsByModel); // we remove the already existing brands of the selected model to prevent duplications
+    
+                FXManager.populateComboBox(modelComboBox, brands);
+            }
+
+        });
+
+
+    }
     public static boolean categoryCreationValidator(ComboBox categoryComboBox, ComboBox brandComboBox,
     
     TextField categoryTextField, TextField brandTextField  ) {

@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import uiass.gisiba.eia.java.entity.crm.Contact;
+import uiass.gisiba.eia.java.entity.inventory.Status;
 import uiass.gisiba.eia.java.entity.sales.SaleOrder;
-import uiass.gisiba.eia.java.entity.sales.Status;
 
 public class SaleDao implements iSaleDao {
 

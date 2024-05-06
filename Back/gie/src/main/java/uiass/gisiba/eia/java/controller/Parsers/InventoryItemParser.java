@@ -21,6 +21,8 @@ public class InventoryItemParser extends Parser {
 
         Gson gson = new Gson();
 
+        double unitPrice = collectDouble(itemObject, "unitPrice");
+
         int quantity = collectInt(itemObject, "quantity");
 
         String dateAddedString = collectString(itemObject, "dateAdded");
@@ -49,7 +51,7 @@ public class InventoryItemParser extends Parser {
             product = ProductParser.parseProduct(productJson);
         }
 
-        return new InventoryItem(product, quantity, dateAdded);
+        return new InventoryItem(product, unitPrice, quantity, dateAdded);
              
     }
 

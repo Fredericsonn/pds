@@ -38,19 +38,42 @@ public class CategoryDao implements iCategoryDao{
     }
 
     @Override
-    public Category getCategoryByNames(String categoryName, String brandName) throws CategoryNotFoundException {
+    public Category getCategoryByNames(String categoryName, String brandName, String modelName) throws CategoryNotFoundException {
 
-        Query query = em.createQuery("select c from Category c where categoryName = :categoryName and brandName = :brandName");
+        Query query = em.createQuery("select c from Category c where categoryName = :categoryName and brandName = :brandName and modelName = :modelName");
 
         query.setParameter("categoryName", categoryName);
 
         query.setParameter("brandName", brandName);
+
+        query.setParameter("modelName", modelName);
 
         Category category = (Category) query.getSingleResult();
 
         if (category != null) return category;
 
         else throw new CategoryNotFoundException(categoryName,brandName);
+    }
+
+    @Override
+    public List<String> getAllColumnNames(String column) {
+
+        Query query = em.createQuery("select DISTINCT " + column + "Name" + " from Category");
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<String> getAllColumnByFilterColumn(String column,String filterColumn, String value) {
+
+        String hql = "select DISTINCT " + column + "Name from Category where " + filterColumn + "Name =:" + filterColumn;
+
+        Query query = em.createQuery(hql);
+
+        query.setParameter(filterColumn, value);
+
+        return query.getResultList();
+
     }
 
     @Override
@@ -62,42 +85,9 @@ public class CategoryDao implements iCategoryDao{
     }
 
     @Override
-    public List<String> getAllCategoriesNames() {
+    public void addCategory(String categoryName, String brandName, String modelName) {
 
-        String hql = "select DISTINCT categoryName from Category";
-
-        Query query = em.createQuery(hql);
-
-        return query.getResultList();
-    }
-
-    @Override
-    public List<String> getAllBrandsNames() {
-
-        String hql = "select DISTINCT brandName from Category";
-
-        Query query = em.createQuery(hql);
-
-        return query.getResultList();
-    }
-
-
-    @Override
-    public List<String> getAllBrandsByCategory(String category) {
-
-        String hql = "select DISTINCT brandName from Category where categoryName = :categoryName";
-
-        Query query = em.createQuery(hql);
-
-        query.setParameter("categoryName", category);
-
-        return query.getResultList();
-    }
-
-    @Override
-    public void addCategory(String categoryName, String brandName) {
-
-        Category category = new Category(categoryName, brandName);
+        Category category = new Category(categoryName, brandName, modelName);
 
         tr.begin();
 
@@ -137,6 +127,8 @@ public class CategoryDao implements iCategoryDao{
 		tr.commit();
   
     }
+
+
 
 
 

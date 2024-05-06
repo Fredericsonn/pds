@@ -1,4 +1,4 @@
-package uiass.gisiba.eia.java.entity.sales;
+package uiass.gisiba.eia.java.entity.inventory;
 
 public enum Status {
 

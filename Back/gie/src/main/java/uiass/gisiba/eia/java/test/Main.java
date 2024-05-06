@@ -19,6 +19,7 @@ import javax.transaction.Transaction;
 
 import com.google.gson.Gson;
 
+import uiass.gisiba.eia.java.controller.Parsers.PurchaseParser;
 import uiass.gisiba.eia.java.controller.crm.AddressController;
 import uiass.gisiba.eia.java.controller.crm.ContactController;
 import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
@@ -27,8 +28,11 @@ import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
+import uiass.gisiba.eia.java.dao.exceptions.InvalidOrderTypeException;
 import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.OrderNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.PurchaseNotFoundException;
 import uiass.gisiba.eia.java.dao.inventory.ProductDao;
 import uiass.gisiba.eia.java.dao.inventory.iProductDao;
 import uiass.gisiba.eia.java.entity.crm.Address;
@@ -36,6 +40,8 @@ import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
 import uiass.gisiba.eia.java.entity.inventory.Category;
 import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
 import uiass.gisiba.eia.java.entity.inventory.Product;
+import uiass.gisiba.eia.java.entity.purchases.Purchase;
+import uiass.gisiba.eia.java.entity.purchases.PurchaseOrder;
 import uiass.gisiba.eia.java.service.Service;
 import uiass.gisiba.eia.java.service.iService;
 
@@ -46,8 +52,8 @@ public class Main {
 
     public Main() {}
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) {    //drop table purchase_order, sale_order, purchase, sale, inventory, catalog, category
+        
         EntityManager em = HibernateUtility.getEntityManger();
 
         EntityTransaction tr = em.getTransaction();
@@ -105,28 +111,25 @@ public class Main {
         em.persist(new InventoryItem(product, 5, Date.valueOf(LocalDate.now())));
         tr.commit();*/
 
-        /*Category cat = new Category(ProductCategory.CAMERA, ProductBrand.Canon);
-
-        service.addProduct(cat, "GX-ALPHA", "Good Camera", 200);*/
-
-        Map<String,Object> map = new HashMap<String,Object>();
-
-        //0JNLBP
+       
+        /*try {
+            Purchase purchase = service.getPurchaseById(56);
+            System.out.println(purchase);
+        } catch (PurchaseNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }*/
 
         try {
-            service.deleteProduct("0TX4KE");
-        } catch (InventoryItemNotFoundException | ProductNotFoundException e) {
+            Purchase purchase = service.getPurchaseById(26);
+            System.out.println(PurchaseParser.purchaseAdapter(purchase));
+        } catch (PurchaseNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        
-
-
 
         
-        
-
     
 }
 }

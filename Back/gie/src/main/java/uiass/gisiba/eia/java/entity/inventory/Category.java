@@ -20,11 +20,15 @@ public class Category {
     @Column(name="brand_name")
     private String brandName;
 
+    @Column(name="model_name")
+    private String modelName;
+
     // Constructors
 
-    public Category(String categoryName, String brandName) {
+    public Category(String categoryName, String brandName, String modelName) {
         this.categoryName = categoryName;
         this.brandName = brandName;
+        this.modelName = modelName;
     }
 
     public Category() {
@@ -57,14 +61,26 @@ public class Category {
         this.brandName = brandName;
     }
 
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
+    }
+
     public boolean equals(Category category) {
         
-        return this.id == category.id && this.categoryName == category.categoryName && this.brandName == category.brandName;
+        return this.id == category.id && this.categoryName == category.categoryName && this.brandName == category.brandName
+        
+        && this.modelName == category.modelName;
     }
     @Override
     public String toString() {
-        return "category : " + this.categoryName + ", brand : " + this.brandName;
+        return "category : " + this.categoryName + ", brand : " + this.brandName + ", model : " + this.modelName;
     }
+
+
 
     
 }

@@ -14,7 +14,7 @@ public class AppTest {
 
     public static void main(String[] args) {
 
-        /*Map<String,Object> map = new HashMap<String,Object>();
+        Map<String,Object> map = new HashMap<String,Object>();
 
         map.put("categoryName", "CAMERA");
 
@@ -22,8 +22,8 @@ public class AppTest {
 
         String json = Parser.jsonGenerator(map);
 
-        System.out.println(ProductDto.getFilteredProducts(json));*/
+        //System.out.println(ProductDto.getFilteredProducts(json));
 
-        System.out.println(InventoryDto.getAllItems().get(6));
+        System.out.println(InventoryDto.getFilteredItems(json));
     }
 }

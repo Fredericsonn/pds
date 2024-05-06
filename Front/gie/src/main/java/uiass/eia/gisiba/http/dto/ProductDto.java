@@ -6,7 +6,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
 import uiass.eia.gisiba.http.DataSender;
-import uiass.eia.gisiba.http.parsers.Parser;
 import uiass.eia.gisiba.http.parsers.ProductParser;
 
 public class ProductDto {
@@ -70,10 +69,10 @@ public class ProductDto {
 
 //////////////////////////////////////////////////// Put METHOD /////////////////////////////////////////////////////////////
 
-public static String updateProduct(String ref, String json) {
+    public static String updateProduct(String ref, String json) {
 
-    if (json != null) return DataSender.putDataSender(json, "products/put/" + ref );
+        if (json != null) return DataSender.putDataSender(json, "products/put/" + ref );
 
-    return "Please provide some new values to update.";
-}
+        return "Please provide some new values to update.";
+    }
 }

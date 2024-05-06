@@ -17,26 +17,22 @@ public class ProductParser extends Parser {
 
     private static Service service = new Service();
 
-    public static List<String> productAttributes = Arrays.asList("productRef","model","description","unitPrice");
+    public static List<String> productAttributes = Arrays.asList("productRef","name","description");
 
-    public static List<String> product_columns = Arrays.asList("model","description","unitPrice");
+    public static List<String> product_columns = Arrays.asList("name","description");
 
-    public static List<String> filter_columns = Arrays.asList("categoryName","brandName","model");
+    public static List<String> filter_columns = Arrays.asList("categoryName","brandName","modelName");
 
     // A method that collects product data from a json :
     public static List productValuesCollector(Gson gson, String body) {
 
         JsonObject product = gson.fromJson(body, JsonObject.class);
 
-        String model = collectString(product, "model");
+        String name = collectString(product, "name");
 
         String description = collectString(product, "description");
 
-        String unitPrice = collectString(product, "unitPrice");
-
-        if (unitPrice != null) return Arrays.asList(model,description,Double.parseDouble(unitPrice)); 
-
-        return Arrays.asList(model,description,unitPrice);
+        return Arrays.asList(name,description);
 
     }
 
@@ -44,30 +40,22 @@ public class ProductParser extends Parser {
     		
         JsonObject productObject = new JsonParser().parse(responseBody).getAsJsonObject();
 
-        List<String> productStringInfo = new ArrayList<String>();
+        List<String> productInfo = new ArrayList<String>();
     
-        List<Double> productDoubleInfo = new ArrayList<Double>();
-
         // The list containing attributes names used to parse the json
         List<String> pAttributes = new ArrayList<String>(productAttributes);
 
         // We iterate through our attributes and call the collectors to collect the values from the json
         for (String attribute : pAttributes) {
 
-            if (attribute.equals("unitPrice")) {
-            
-                productDoubleInfo.add(collectDouble(productObject, attribute));
-            }
-            else productStringInfo.add(collectString(productObject, attribute));
+            productInfo.add(collectString(productObject, attribute));
         }
 
-        String ref = productStringInfo.get(0); 
+        String ref = productInfo.get(0); 
 
-        String model = productStringInfo.get(1);
+        String name = productInfo.get(1);
 
-        String description = productStringInfo.get(2);
-
-        double unitPrice = productDoubleInfo.get(0);
+        String description = productInfo.get(2);
 
         JsonObject categoryObject = productObject.get("category").getAsJsonObject();
 
@@ -75,9 +63,11 @@ public class ProductParser extends Parser {
 
         String brandName = collectString(categoryObject, "brandName");
 
-        Category category = service.getCategoryByNames(categoryName, brandName);    
+        String modelName = collectString(categoryObject, "modelName");
 
-        Product product = new Product(category,model,description,unitPrice);
+        Category category = service.getCategoryByNames(categoryName, brandName, modelName);    
+
+        Product product = new Product(category,name,description);
 
         return product;
                  

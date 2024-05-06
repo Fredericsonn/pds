@@ -22,11 +22,15 @@ public class InventoryItemParser extends Parser {
 
         String model = product.get(4);
 
+        String name = product.get(5);
+
+        String unitPrice = collectString(itemObject, "unitPrice");
+
         String quantity = collectString(itemObject, "quantity");
         
         String dateAdded = collectString(itemObject, "dateAdded");
     
-        return Arrays.asList(id, category, brand, model,quantity,dateAdded);
+        return Arrays.asList(id, category, brand, model, name, unitPrice, quantity, dateAdded);
                      
     }
 

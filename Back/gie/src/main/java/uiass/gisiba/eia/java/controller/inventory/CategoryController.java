@@ -5,7 +5,6 @@ import static spark.Spark.*;
 import java.util.*;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import spark.Request;
 import spark.Response;
@@ -40,15 +39,18 @@ public class CategoryController {
 		   
 		}, gson::toJson);
 	}
-	public static void getAllCategoriesNames() {
+	
+	public static void getAllColumnNames() {
 
 	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
-	    get("/categories/categoriesNames", (req,res)-> {
+	    get("/categories/:column", (req,res)-> {
 
-		List<String> categories = service.getAllCategoriesNames();
+		String column = req.params("column");
+
+		List<String> categories = service.getAllColumnNames(column);
 		
 		res.type("application/json");
 
@@ -59,15 +61,21 @@ public class CategoryController {
 
     }
 
-	public static void getAllBrandsNames() {
+	public static void getAllColumnByFilterColumn() {
 
 	    Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
-	    get("/categories/brandsNames", (req,res)-> {
+	    get("/categories/:column/:filterColumn/:value", (req,res)-> {
 
-		List<String> brands = service.getAllBrandsNames();
+		String column = req.params("column");
+
+		String filterColumn = req.params("filterColumn");
+
+		String value = req.params("value");
+
+		List<String> brands = service.getAllColumnByFilterColumn(column, filterColumn, value);
 		
 		res.type("application/json");
 
@@ -78,26 +86,6 @@ public class CategoryController {
 
     }
 
-	public static void getAllBrandsByCategory() {
-
-	    Gson gson = new Gson();
-	  
-	    System.out.println("Server started.");
-	
-	    get("/categories/brandsNames/byCategory/:categoryName", (req,res)-> {
-		
-		String category = req.params(":categoryName");
-
-		List<String> brands = service.getAllBrandsByCategory(category);
-		
-		res.type("application/json");
-
-		return brands;
-	
-		   
-		}, gson::toJson);
-
-    }
 
 /////////////////////////////////////////////////// POST METHOD //////////////////////////////////////////////////////////////////
 
@@ -112,7 +100,7 @@ public class CategoryController {
 
 				Category category = CategoryParser.parseCategory(body);
 
-				service.addCategory(category.getCategoryName(), category.getBrandName());
+				service.addCategory(category.getCategoryName(), category.getBrandName(), category.getModelName());
 
 				return "Category created successfully";
 			}

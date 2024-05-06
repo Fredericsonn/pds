@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
@@ -142,18 +143,17 @@ public class MainController {
 
         // Search text fields
         // a method that collects the text fields and sets input rules :
-        List<TextField> textFields = ProductCrud.productSearchTextFieldsHandler(centerAnchorPane);
+        List<ComboBox> comboBoxes = ProductCrud.productSearchComboBoxesHandler(centerAnchorPane);
 
-        TextField categoryTextField = textFields.get(0);     // We get
-        TextField brandTextField = textFields.get(1);        // the text fields
-        TextField modelTextField = textFields.get(2);        // from the list
+        ComboBox categoryComboBox = comboBoxes.get(0);     // We get
+        ComboBox brandComboBox = comboBoxes.get(1);        // the text fields
+        ComboBox modelComboBox = comboBoxes.get(2);        // from the list
 
         // Labels
         List<Label> labels = FXManager.labelsCollector(rightAnchorPane, labelIds);
 
         // Refresh Image
-        AnchorPane refresh = FXManager.getAnchorPane(centerAnchorPane, "refreshPane");
-        
+        AnchorPane refresh = FXManager.getAnchorPane(centerAnchorPane, "refreshPane");  
 
         // Tables
         TableView<List<String>> productsTable = FXManager.getTableView(centerAnchorPane, "productsTableView");
@@ -167,23 +167,23 @@ public class MainController {
         // We set the refresh button to refresh the table when clicked
         refresh.setOnMouseClicked(imageClicked -> {
 
-            FXManager.textFieldsEmptier(textFields);
+            //FXManager.textFieldsEmptier(textFields);
             ProductCrud.fillWithProducts(productsTable);
         });
+
         // When we press the search button
         search.setOnAction(event -> {
             
             // We collect the entered id (we suppose it's a number)
-            String categroyInput = categoryTextField.getText();
-            String brandInput = brandTextField.getText();
-            String modelInput = modelTextField.getText();
+            String categroyInput = (String) categoryComboBox.getValue();
+            String brandInput = (String) brandComboBox.getValue();
+            String modelInput = (String) modelComboBox.getValue();
 
             List<String> values = Arrays.asList(categroyInput,brandInput,modelInput);
 
-            String json = ProductCrud.filteredProductSearchJsonGenerator(values);
-            
+            String json = ProductCrud.filteredProductSearchJsonGenerator(values);            
 
-            if (ProductCrud.productSearchValidator(textFields)) {
+            if (ProductCrud.productSearchValidator(comboBoxes)) {
 
                 // We get the products that match the filter criteria
                 List<List<String>> data = ProductDto.getFilteredProducts(json);
@@ -196,11 +196,11 @@ public class MainController {
                 }
                 
                 // if no product corresponds to the provided ref we show an error alert
-                else FXManager.showAlert(AlertType.ERROR, "ERROR", "Products Not Found"," No existing products match the given criteria. Please check for spelling erros.");
+                else FXManager.showAlert(AlertType.ERROR, "ERROR", "Products Not Found"," No existing products match the given criteria.");
             }
 
             // if the text field is empty and the search button is clicked
-            else FXManager.showAlert(AlertType.ERROR, "ERROR", "Empty Search Fields", "Please provide some parameters for the search.");
+            else FXManager.showAlert(AlertType.ERROR, "ERROR", "No Selected Parameter", "Please provide some parameters for the search.");
         });
 
         // When the create new button is clicked
@@ -224,10 +224,10 @@ public class MainController {
 
         // Search text fields
         // a method that collects the text fields and sets input rules :
-        List<TextField> textFields = ProductCrud.productSearchTextFieldsHandler(centerAnchorPane);
-        TextField categoryTextField = textFields.get(0);     // We get
-        TextField brandTextField = textFields.get(1);        // the text fields
-        TextField modelTextField = textFields.get(2);        // from the list
+        List<ComboBox> comboBoxes = ProductCrud.productSearchComboBoxesHandler(centerAnchorPane);
+        ComboBox categoryComboBox = comboBoxes.get(0);     // We get
+        ComboBox brandComboBox = comboBoxes.get(1);        // the text fields
+        ComboBox modelComboBox = comboBoxes.get(2);        // from the list
 
         // Labels
         List<Label> labels = FXManager.labelsCollector(rightAnchorPane, labelsIds);
@@ -246,6 +246,38 @@ public class MainController {
         InventoryItemCrud.itemsTableEventHandler(inventoryTableView, labels, rightAnchorPane, refresh, add, view);
 
         InventoryItemCrud.fillWithItems(inventoryTableView);
+
+        // When we press the search button
+        search.setOnAction(event -> {
+            
+            // We collect the entered id (we suppose it's a number)
+            String categroyInput = (String) categoryComboBox.getValue();
+            String brandInput = (String) brandComboBox.getValue();
+            String modelInput = (String) modelComboBox.getValue();
+
+            List<String> values = Arrays.asList(categroyInput,brandInput,modelInput);
+
+            String json = ProductCrud.filteredProductSearchJsonGenerator(values);            
+
+            if (ProductCrud.productSearchValidator(comboBoxes)) {
+
+                // We get the products that match the filter criteria
+                List<List<String>> data = InventoryDto.getFilteredItems(json);
+
+                if (!data.isEmpty()) {  // if there are matching products 
+
+                    // We fill the products table with the matching products
+                    InventoryItemCrud.fillWithFilteredItems(inventoryTableView, data);
+
+                }
+                
+                // if no product corresponds to the provided ref we show an error alert
+                else FXManager.showAlert(AlertType.ERROR, "ERROR", "Items Not Found"," No existing items match the given criteria.");
+            }
+
+            // if the text field is empty and the search button is clicked
+            else FXManager.showAlert(AlertType.ERROR, "ERROR", "No Selected Parameter", "Please provide some parameters for the search.");
+        });
 
 
 

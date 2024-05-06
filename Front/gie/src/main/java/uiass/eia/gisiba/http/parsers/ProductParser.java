@@ -12,15 +12,15 @@ import com.google.gson.JsonParser;
 
 public class ProductParser extends Parser {
 
-    private static List<String> productAttributes = Arrays.asList("productRef","category","model","description","unitPrice");
+    private static List<String> productAttributes = Arrays.asList("productRef","category","name","description");
 
-    private static List<String> product_creation__columns = Arrays.asList("model","description","unitPrice");
+    private static List<String> product_creation__columns = Arrays.asList("name","description");
 
-    private static List<String> product_update__columns = Arrays.asList("model","description","unitPrice");
+    private static List<String> product_update__columns = Arrays.asList("name","description");
 
-    private static List<String> category_columns = Arrays.asList("categoryName","brandName");
+    private static List<String> category_columns = Arrays.asList("categoryName","brandName", "modelName");
 
-    private static List<String> search_columns = Arrays.asList("categoryName","brandName", "model");
+    private static List<String> search_columns = Arrays.asList("categoryName","brandName", "modelName");
 
 
 //////////////////////////////////////////////// MAPS AND JSON GENERATORS ///////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ public class ProductParser extends Parser {
 
             String value = values.get(i);
 
-            if (value != "null" && !value.equals("")) map.put(attribute, value);
+            if (value != null && !value.equals("")) map.put(attribute, value);
 
         }
 
@@ -105,7 +105,7 @@ public class ProductParser extends Parser {
 
             String value = values.get(i);
 
-            if (!value.equals("")) map.put(attribute, value);
+            if (value != null) map.put(attribute, value);
 
         }
 
@@ -127,8 +127,6 @@ public class ProductParser extends Parser {
     
         List<String> productStringInfo = new ArrayList<String>();
         
-        List<Double> productDoubleInfo = new ArrayList<Double>();
-
         List<String> categoryInfo = new ArrayList<String>();
     
         // The list containing attributes names used to parse the json
@@ -146,9 +144,9 @@ public class ProductParser extends Parser {
                 categoryInfo.add(collectString(categoryObject, "categoryName"));
 
                 categoryInfo.add(collectString(categoryObject, "brandName"));
-            }
 
-            else if (attribute.equals("unitPrice")) productDoubleInfo.add(collectDouble(productObject, attribute));
+                categoryInfo.add(collectString(categoryObject, "modelName"));
+            }
             
             else productStringInfo.add(collectString(productObject, attribute));
         }
@@ -161,13 +159,13 @@ public class ProductParser extends Parser {
     
         String brand = categoryInfo.get(2);
     
-        String model = productStringInfo.get(1);
+        String model = categoryInfo.get(3);
+
+        String name = productStringInfo.get(1);
     
         String description = productStringInfo.get(2);
     
-        String unitPrice = String.valueOf(productDoubleInfo.get(0)) + "$";
-
-        return Arrays.asList(ref, categoryId,category, brand, model, description, unitPrice);
+        return Arrays.asList(ref, categoryId, category, brand, model, name, description);
                      
     }
 
