@@ -4,6 +4,7 @@ import java.util.*;
 import java.sql.Date;
 
 import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
 import uiass.gisiba.eia.java.entity.inventory.Product;
 
@@ -11,9 +12,13 @@ public interface iInventoryItemDao {
 
     InventoryItem getInventoryItemById(int itemId) throws InventoryItemNotFoundException;
 
+    InventoryItem getInventoryItemByProduct(String ref) throws InventoryItemNotFoundException, ProductNotFoundException;
+
     List<InventoryItem> getAllInventoryItems();
 
-    void addInventoryItem(Product product, int quantity, Date dateAdded);
+    List<InventoryItem> getFilteredItems(Map<String,Object> columnsNewValues) throws InventoryItemNotFoundException, ProductNotFoundException;
+    
+    void addInventoryItem(Product product, double unitPrice, int quantity, Date dateAdded);
 
     int getItemQuantity(int itemId) throws InventoryItemNotFoundException;
 

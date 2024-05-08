@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import uiass.gisiba.eia.java.entity.crm.Contact;
+import uiass.gisiba.eia.java.entity.inventory.Status;
 import uiass.gisiba.eia.java.entity.sales.SaleOrder;
-import uiass.gisiba.eia.java.entity.sales.SaleState;
 
 public class SaleDao implements iSaleDao {
 
@@ -16,7 +16,7 @@ public class SaleDao implements iSaleDao {
     }
 
     @Override
-    public void addSale(List<SaleOrder> orders, LocalDate saleDate, double total, SaleState state, Contact customer) {
+    public void addSale(List<SaleOrder> orders, LocalDate saleDate, double total, Status state, Contact customer) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'addSale'");
     }

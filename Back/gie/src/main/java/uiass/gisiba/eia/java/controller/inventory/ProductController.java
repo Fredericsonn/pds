@@ -10,13 +10,13 @@ import com.google.gson.JsonObject;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import uiass.gisiba.eia.java.controller.Parser;
+import uiass.gisiba.eia.java.controller.Parsers.CategoryParser;
+import uiass.gisiba.eia.java.controller.Parsers.Parser;
+import uiass.gisiba.eia.java.controller.Parsers.ProductParser;
+import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
-import uiass.gisiba.eia.java.dao.inventory.ProductRefGenerator;
-import uiass.gisiba.eia.java.entity.inventory.Category;
 import uiass.gisiba.eia.java.entity.inventory.Product;
-import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
-import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
 import uiass.gisiba.eia.java.service.Service;
 
 public class ProductController {
@@ -35,11 +35,11 @@ public class ProductController {
 
 		String ref = String.valueOf(req.params(":ref"));
 
-		Product contact = service.getProductById(ref);
+		Product product = service.getProductById(ref);
 		
 		res.type("application/json");
 
-		return contact;
+		return product;
 	
 		   
 		}, gson::toJson);
@@ -56,52 +56,10 @@ public class ProductController {
 	    get("/products", (req,res)-> {
 
 		List<Product> products = service.getAllProducts();
-
-		System.out.println(products);
 		
 		res.type("application/json");
 
 		return products;
-	
-		   
-		}, gson::toJson);
-
-    }
-
-	public static void getAllCategories() {
-
-	    Gson gson = new Gson();
-	  
-	    System.out.println("Server started.");
-	
-	    get("/products/categories", (req,res)-> {
-
-		List<ProductCategory> categories = service.getAllCategories();
-		
-		res.type("application/json");
-
-		return categories;
-	
-		   
-		}, gson::toJson);
-
-    }
-
-	public static void getAllBrandsByCategory() {
-
-	    Gson gson = new Gson();
-	  
-	    System.out.println("Server started.");
-	
-	    get("/products/brands/byCategory/:category", (req,res)-> {
-		
-		ProductCategory category = ProductCategory.valueOf(req.params(":category"));
-
-		List<ProductBrand> brands = service.getAllBrandsByCategory(category);
-		
-		res.type("application/json");
-
-		return brands;
 	
 		   
 		}, gson::toJson);
@@ -125,7 +83,7 @@ public class ProductController {
 
 					service.deleteProduct(ref);   
 	
-				} catch (ProductNotFoundException  e) {
+				} catch (ProductNotFoundException | InventoryItemNotFoundException  e) {
 	
 					return e.getMessage();
 				}  
@@ -139,10 +97,7 @@ public class ProductController {
 
 /////////////////////////////////////////////////// PUT METHOD //////////////////////////////////////////////////////////////////
 
-    public static void updateproductController() {
-
-
-	    // A list of the product table's columns
+    public static void updateProductController() {
 
         Gson gson = new Gson();
 
@@ -153,22 +108,30 @@ public class ProductController {
 
 	            System.out.println("Server started.");
 
-		        String ref = request.params(":ref");  // We take the id of the product to update from the url
+		        String ref = request.params(":ref");  // We take the ref of the product to update from the url
 
 		    	String body = request.body(); 	
 
+				System.out.println(body);
+
 		    	// We collect all the values to update from the request body in one list :
-		    	List productValues = Parser.productValuesCollector(gson, body);
+		    	List productValues = ProductParser.productValuesCollector(gson, body);
+
+				List categoryValues = CategoryParser.categoryValuesCollector(gson, body);
 
 		    	// We select only the non null values with their corresponding columns :
-		    	Map<String, Object> product_columns_new_values = Parser.mapFormater(Parser.product_columns, productValues);
+		    	Map<String, Object> product_columns_new_values = Parser.mapFormater(ProductParser.product_columns, productValues);
 
+				Map<String, Object> category_columns_new_values = Parser.mapFormater(CategoryParser.categoryAttributes, categoryValues);
+
+				product_columns_new_values.put("category", category_columns_new_values);
+				
 		    	// And finally we update the product :
 		    	try {
 				  
 			  		service.updateProduct(ref, product_columns_new_values);
 
-		    	} catch (ProductNotFoundException  e) {
+		    	} catch (ProductNotFoundException | CategoryNotFoundException  e) {
 
 			    	return e.getMessage();
 		    	}
@@ -181,36 +144,59 @@ public class ProductController {
 
 	}
 
-/////////////////////////////////////////////////// POST METHOD //////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////// POST METHODs //////////////////////////////////////////////////////////////////
 
-public static void postproductController() {
+public static void postProductController() {
 
 	// A list of the product table's columns
 
     post("/products/post" , new Route() {
 
         @Override
-        public String handle(Request request, Response response) throws ProductNotFoundException  {
+        public String handle(Request request, Response response) throws ProductNotFoundException, CategoryNotFoundException  {
 
 	        System.out.println("Server started.");
 
 		    String body = request.body(); 	
 
 			// We create the product using the parse method in the Parser class
-			Product product = Parser.parseProduct(body);
+			Product product = ProductParser.parseProduct(body);
 
 			// We persist the product
-			service.addProduct(product.getCategory(), product.getModel(), product.getDescription(), product.getUnitPrice());
+			service.addProduct(product.getCategory(), product.getName(), product.getDescription());
 
 			// The server response : 
 		    return "Product created successfully.";
-
-
 
 
 }});
 
 
 }
+
+	public static void productSearchFilter() {
+	
+		post("/products/filter" , new Route() {
+	
+			@Override
+			public String handle(Request request, Response response) throws ProductNotFoundException, CategoryNotFoundException  {
+
+				Gson gson = new Gson();
+
+				System.out.println("Server started.");
+		
+				String body = request.body();
+		
+				Map<String,Object> criteria = ProductParser.parseFilterCriteria(body);
+		
+				List<Product> products = service.productSearchFilter(criteria);
+						
+				return gson.toJson(products);
+	
+	
+	}});
+	
+	
+	}
 
 }

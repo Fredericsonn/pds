@@ -1,7 +1,7 @@
 package uiass.gisiba.eia.java.entity.sales;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -9,10 +9,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+
+import uiass.gisiba.eia.java.entity.inventory.Status;
 
 
 @Entity
@@ -20,30 +24,30 @@ import javax.persistence.OneToMany;
 public class Sale implements Serializable {
 
     @Id
-    @Column(name="sale_ref")
-    private int saleRef;
+    @GeneratedValue(strategy =GenerationType.IDENTITY)
+    @Column(name="sale_id")
+    private int saleId;
 
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
     private List<SaleOrder> orders;
 
     @Column(name="sale_date")
-    private LocalDate saleDate;
+    private Date saleDate;
 
     @Column(name="total")
     private double total;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="state")
-    private SaleState state;
+    @Column(name="status")
+    private Status status;
 
     // Constructors
 
-    public Sale(int saleRef, List<SaleOrder> orders, LocalDate saleDate, double total, SaleState state) {
-        this.saleRef = saleRef;
+    public Sale(List<SaleOrder> orders, Date saleDate, double total, Status status) {
         this.orders = orders;
         this.saleDate = saleDate;
         this.total = total;
-        this.state= state;
+        this.status= status;
     }
 
     public Sale() {
@@ -52,12 +56,12 @@ public class Sale implements Serializable {
 
     // Getters - Setters
     
-    public int getSaleRef() {
-        return saleRef;
+    public int getSaleId() {
+        return saleId;
     }
 
-    public void setSaleRef(int saleRef) {
-        this.saleRef = saleRef;
+    public void setSaleId(int saleId) {
+        this.saleId = saleId;
     }
 
     public List<SaleOrder> getOrders() {
@@ -68,11 +72,11 @@ public class Sale implements Serializable {
         this.orders = orders;
     }
 
-    public LocalDate getSaleDate() {
+    public Date getSaleDate() {
         return saleDate;
     }
 
-    public void setSaleDate(LocalDate saleDate) {
+    public void setSaleDate(Date saleDate) {
         this.saleDate = saleDate;
     }
 
@@ -84,12 +88,12 @@ public class Sale implements Serializable {
         this.total = total;
     }
 
-    public SaleState getState() {
-        return state;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setState(SaleState state) {
-        this.state = state;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     

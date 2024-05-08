@@ -21,23 +21,20 @@ public class Product {
     @JoinColumn(name="category_id")
     private Category category;
 
-    @Column(name="model")
-    private String model;
+    @Column(name="name")
+    private String name;
 
     @Column(name = "description")
     private String description;
-    
-    @Column(name = "unit_price")
-    private double unitPrice;
+
 
     // Constructors
 
-    public Product(Category category, String model, String description, double unitPrice) {
+    public Product(Category category, String name, String description) {
         this.productRef = ProductRefGenerator.generateProductRef();
         this.category = category;
-        this.model = model;
+        this.name = name;
         this.description = description;
-        this.unitPrice = unitPrice;
     }
 
     public Product() {
@@ -62,12 +59,12 @@ public class Product {
         this.category = category;
     }
 
-    public String getModel() {
-        return model;
+    public String getName() {
+        return name;
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -78,13 +75,6 @@ public class Product {
         this.description = description;
     }
 
-    public double getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(double unitPrice) {
-        this.unitPrice = unitPrice;
-    }
 
     
 
@@ -93,9 +83,7 @@ public class Product {
 
         return "ref : " + this.productRef + ", category : " + this.category.getCategoryName() +  ", brand : "  + 
         
-        this.category.getBrandName() +  ", model : " + this.model + ", description : " + this.description + ", unit price: " +
-        
-        this.unitPrice;
+        this.category.getBrandName() +  ", name : " + this.name + ", description : " + this.description;
         
         
     }

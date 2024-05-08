@@ -1,10 +1,16 @@
 package uiass.eia.gisiba.controller;
 
+import java.io.IOException;
 import java.util.*;
 
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -15,6 +21,7 @@ import javafx.scene.control.TableView;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -26,18 +33,32 @@ public class FXManager {
         put("Enterprise", Arrays.asList("enterpriseNameLabel","enterpriseTypeLabel","phoneNumberLabel","emailLabel","addressLabel"));
     }};
 
-    public static List<String> catalog_labels_ids = Arrays.asList("categoryLabel","brandModelLabel","unitPriceLabel", "descriptionLabel");
+    public static List<String> catalog_labels_ids = Arrays.asList("categoryLabel","brandModelNameLabel", "descriptionLabel");
+
+    public static List<String> inventory_labels_ids = Arrays.asList("categoryLabel","brandModelNameLabel","unitPriceLabel","quantityLabel", "dateAddedLabel");
 
     public static Map<String, List<String>> columns_names_per_contact_type = new HashMap<String, List<String>>() {{
         put("Person", Arrays.asList("id","first name","last name","phone number", "email", "address id","house number","neighborhood","city","zip code","country"));
         put("Enterprise", Arrays.asList("id","enterprise name","type","phone number", "email", "address id","house number","neighborhood","city","zip code","country"));
     }};
 
-    public static List<String> catalog_columns = Arrays.asList("ref","category","brand","model","description","unit price");
+    public static List<String> catalog_columns = Arrays.asList("ref","category id","category","brand","model","name","description");
+
+    public static List<String> inventory_columns = Arrays.asList("id","category","brand","model","name","unit price","quantity", "date added");
 
 
 
-
+    // A method that loads an fxml file into a pane
+    public static void loadFXML(String fxmlFile, AnchorPane pane, Class c) {
+        
+        try {
+            FXMLLoader loader = new FXMLLoader(c.getResource(fxmlFile));
+            Parent content = loader.load();
+            pane.getChildren().setAll(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     // Used to collect labels in a pane given a list of ids
     public static List<Label> labelsCollector(Parent pane, List<String> labelsIds) {
 
@@ -51,60 +72,14 @@ public class FXManager {
         return labels;
     }
 
-    // Used to dynamically set each label's corresponding text given a contact values list and a contact type
-    public static void contactLabelsFiller(List<Label> labels,  List<String> values, String contactType) {
-
-        labels.get(labels.size() - 1).setWrapText(true); // Allow the label to have multi-line text
+    public static void labelsFiller(List<Label> labels,  List<String> values) {
 
         // We use the extracted values to fill the labels
         for (int i = 0 ; i < values.size() ; i++) {
 
-            if (contactType.equals("Person")) {
+                labels.get(i).setText(values.get(i)); 
 
-                // this if statement is responsible for filling the Full Name label in case the contact is a person
-                if (i == 0) { 
-
-                    labels.get(i).setText(values.get(i) + " " + values.get(i + 1)); // We concatenate the first and last names
-
-                }
-
-                else { if (i != 1)
-                labels.get(i-1).setText(values.get(i)); // if it's another attribute we just set the value directly
-                }
-            }
-
-            // if it's an enterprise we just set the value directly
-            else labels.get(i).setText(values.get(i)); 
         }
-    }
-
-    // Used to dynamically set each label's corresponding text given a product values list 
-    public static void catalogLabelsFiller(List<Label> labels,  List<String> values) {
-
-        labels.get(labels.size() - 1).setWrapText(true); // Allow the label to have multi-line text
-        
-        // We use the extracted values to fill the labels
-        for (int i = 1 ; i < values.size() ; i++) {
-
-            // this if statement is responsible for filling the brand and model labels 
-            if (i < 2)
-
-                labels.get(i-1).setText(values.get(i)); // if it's another attribute we just set the value directly
-
-            else if (i == 2) { 
-
-                labels.get(i-1).setText(values.get(i) + " " + values.get(i + 1)); // We concatenate the brand and the model
-            }
-
-            else if (i != 3 ) labels.get(i-2).setText(values.get(i));
-
-
-
-            
-            
-            }
-
-        
     }
 
     // Used to dynamically populate tables given the data and the contact type  
@@ -135,7 +110,9 @@ public class FXManager {
                 }
             });
 
-            if (columns.get(i).equals("id") || columns.get(i).equals("address id")) column.setVisible(false);
+            if (columns.get(i).equals("id") || columns.get(i).equals("ref") ||
+            
+            columns.get(i).equals("address id") || columns.get(i).equals("category id") ) column.setVisible(false);
 
             tableView.getColumns().add(column);
         }
@@ -200,6 +177,14 @@ public class FXManager {
 
         return false;
     }
+    
+    public static void textFieldsEmptier(List<TextField> textFields) {
+
+        for (TextField textField : textFields) {
+            
+            textField.setText("");
+        }
+    }
 
     // numeric only text field rule
     public static void setTextFieldNumericFormatRule(TextField numericTextField) {
@@ -225,7 +210,7 @@ public class FXManager {
             String newText = change.getControlNewText();
 
             // Allow only alphanumeric characters and a max length of 6
-            if (newText.matches("[a-zA-Z0-9]*")) { 
+            if (newText.matches("[a-zA-Z0-9\\s]*")) { 
 
                 return change;
 
@@ -331,5 +316,25 @@ public class FXManager {
     public static ComboBox getComboBox(Parent pane, String id) {
 
         return (ComboBox) pane.lookup("#" + id);
+    } 
+
+    public static HBox getHBox(Parent pane, String id) {
+
+        return (HBox) pane.lookup("#" + id);
+    } 
+
+    public static VBox getVBox(Parent pane, String id) {
+
+        return (VBox) pane.lookup("#" + id);
+    } 
+
+    public static ImageView getImageView(Parent pane, String id) {
+
+        return (ImageView) pane.lookup("#" + id);
+    } 
+
+    public static AnchorPane getAnchorPane(Parent pane, String id) {
+
+        return (AnchorPane) pane.lookup("#" + id);
     } 
 }

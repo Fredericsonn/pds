@@ -19,9 +19,12 @@ public class InventoryItem {
     @GeneratedValue(strategy =GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="product_ref")
     private Product product;
+
+    @Column(name = "unit_price")
+    private double unitPrice;
 
     @Column(name="quantity")
     private int quantity;
@@ -30,9 +33,11 @@ public class InventoryItem {
     private Date dateAdded;
 
     // Constructors
-    public InventoryItem(Product product, int quantity, Date dateAdded) {
+    public InventoryItem(Product product, double unitPrice, int quantity, Date dateAdded) {
 
         this.product = product;
+
+        this.unitPrice = unitPrice;
 
         this.quantity = quantity;   
         
@@ -60,6 +65,15 @@ public class InventoryItem {
     public void setProduct(Product product) {
         this.product = product;
     }
+
+    public double getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(double unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
     
     public int getQuantity() {
         return quantity;
@@ -77,13 +91,16 @@ public class InventoryItem {
         this.dateAdded = dateAdded;
     }
 
+    
+
     @Override
     public String toString() {
 
-        return "id : " + this.id + ", ref : " + this.product.getProductRef() + ", quantity : " + this.quantity
+        return "id : " + this.id + ", ref : " + this.product.getProductRef() + ", unit price : " + this.unitPrice + ", quantity : " + this.quantity
         
         + ", added on : " + this.dateAdded;
     }
+
 
     
 

@@ -1,16 +1,20 @@
 package uiass.gisiba.eia.java.dao.inventory;
 
-import java.time.LocalTime;
+import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
+import uiass.gisiba.eia.java.dao.HQLQueryManager;
 import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
+import uiass.gisiba.eia.java.dao.exceptions.InvalidOrderTypeException;
 import uiass.gisiba.eia.java.dao.exceptions.OrderNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.Order;
 import uiass.gisiba.eia.java.entity.inventory.Product;
+import uiass.gisiba.eia.java.entity.inventory.Status;
 import uiass.gisiba.eia.java.entity.purchases.Purchase;
 import uiass.gisiba.eia.java.entity.purchases.PurchaseOrder;
 import uiass.gisiba.eia.java.entity.sales.Sale;
@@ -24,27 +28,33 @@ public class OrderDao implements iOrderDao {
     public OrderDao() {
         this.em= HibernateUtility.getEntityManger();
 	    tr=em.getTransaction();
+    }                                     
+
+
+
+    @Override
+    public Order getOrderById(int orderId, String orderType) throws InvalidOrderTypeException, OrderNotFoundException {
+
+        if (HQLQueryManager.validOrderType(orderType)) {
+
+            Order order = null;
+        
+            if (orderType.equals("Purchase"))  order = (Order) em.find(PurchaseOrder.class, orderId);
+    
+            else if (orderType.equals("Sale"))  order = (Order) em.find(SaleOrder.class, orderId);
+    
+            if (order != null) return order;
+
+            throw new OrderNotFoundException(orderId);
+
+        }
+
+        throw new InvalidOrderTypeException(orderType);
+
     }
 
     @Override
-    public Order getOrderById(int orderId, String orderType) throws ClassNotFoundException, OrderNotFoundException {
-
-        Class type = Class.forName(orderType);
-
-        tr.begin();
-
-        Order order = (Order) em.find(type, orderId);
-
-        tr.commit();
-
-        if (order != null) return order;
-
-        throw new OrderNotFoundException(orderId);
-
-    }
-
-    @Override
-    public List<Order> getAllOrders(String orderType) {
+    public List<Order> getAllOrdersByType(String orderType) {
 
         Query query = em.createQuery("from " + orderType);
 
@@ -52,9 +62,50 @@ public class OrderDao implements iOrderDao {
     }
 
     @Override
-    public void addPurchaseOrder(Product product, int quantity, LocalTime orderTime, Purchase purchase) {
+    public List<Order> getAllOrdersByStatus(String orderType, Status status) throws InvalidOrderTypeException {
 
-        PurchaseOrder order = new PurchaseOrder(product, quantity, orderTime, purchase);
+        if (HQLQueryManager.validOrderType(orderType)) {
+
+            String table = HQLQueryManager.orderTableNameHandler(orderType);
+
+            Query query = em.createQuery("from " + table + " where status = :status");
+
+            query.setParameter("status", status);
+
+            return query.getResultList();
+        }
+
+        throw new InvalidOrderTypeException(orderType);
+        
+    }
+
+    @Override
+    public List<Order> getAllOrdersBetweenDates(String orderType, Date startDate, Date endDate)
+    
+            throws InvalidOrderTypeException {
+
+        if (HQLQueryManager.validOrderType(orderType)) {
+
+            String hql = HQLQueryManager.selectOrdersBetweenDatesHQLQueryGenerator(orderType);
+
+            Query query = em.createQuery(hql);
+
+            query.setParameter("startDate", startDate);
+
+            query.setParameter("endDate", endDate);
+    
+            return query.getResultList();
+        }
+
+        throw new InvalidOrderTypeException(orderType);
+    }
+
+    @Override
+    public void addPurchaseOrder(Product product, int quantity, Time orderTime, Purchase purchase) {
+
+        PurchaseOrder order = new PurchaseOrder(product, quantity, orderTime);
+
+        order.setPurchase(purchase);
 
         tr.begin();
 
@@ -64,9 +115,11 @@ public class OrderDao implements iOrderDao {
     }
 
     @Override
-    public void addSaleOrder(Product product, int quantity, LocalTime orderTime, Sale sale) {
+    public void addSaleOrder(Product product, int quantity, Time orderTime, Sale sale) {
 
-        SaleOrder order = new SaleOrder(product, quantity, orderTime, sale);
+        SaleOrder order = new SaleOrder(product, quantity, orderTime);
+
+        order.setSale(sale);
 
         tr.begin();
 
@@ -76,7 +129,7 @@ public class OrderDao implements iOrderDao {
     }
 
     @Override
-    public void deleteOrder(int orderId, String orderType) throws ClassNotFoundException, OrderNotFoundException  {
+    public void deleteOrder(int orderId, String orderType) throws InvalidOrderTypeException, OrderNotFoundException  {
 
         Order order = getOrderById(orderId, orderType);
 
@@ -89,7 +142,7 @@ public class OrderDao implements iOrderDao {
     }
 
     @Override
-    public void updateOrder(int orderId, int quantity, String orderType) throws ClassNotFoundException, OrderNotFoundException {
+    public void updateOrder(int orderId, int quantity, String orderType) throws InvalidOrderTypeException, OrderNotFoundException {
 
         Order order = getOrderById(orderId, orderType);
 
@@ -101,6 +154,10 @@ public class OrderDao implements iOrderDao {
 
         tr.commit();
     }
+
+
+
+
 
 
 

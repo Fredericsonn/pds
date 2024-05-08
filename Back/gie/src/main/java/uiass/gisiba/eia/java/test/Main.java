@@ -1,24 +1,38 @@
 package uiass.gisiba.eia.java.test;
 
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 import javax.transaction.Transaction;
 
 import com.google.gson.Gson;
 
+import uiass.gisiba.eia.java.controller.Parsers.PurchaseParser;
 import uiass.gisiba.eia.java.controller.crm.AddressController;
 import uiass.gisiba.eia.java.controller.crm.ContactController;
 import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
 import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
+import uiass.gisiba.eia.java.dao.exceptions.InvalidOrderTypeException;
+import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.OrderNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.PurchaseNotFoundException;
 import uiass.gisiba.eia.java.dao.inventory.ProductDao;
 import uiass.gisiba.eia.java.dao.inventory.iProductDao;
 import uiass.gisiba.eia.java.entity.crm.Address;
@@ -26,8 +40,8 @@ import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
 import uiass.gisiba.eia.java.entity.inventory.Category;
 import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
 import uiass.gisiba.eia.java.entity.inventory.Product;
-import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
-import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
+import uiass.gisiba.eia.java.entity.purchases.Purchase;
+import uiass.gisiba.eia.java.entity.purchases.PurchaseOrder;
 import uiass.gisiba.eia.java.service.Service;
 import uiass.gisiba.eia.java.service.iService;
 
@@ -38,8 +52,8 @@ public class Main {
 
     public Main() {}
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) {    //drop table purchase_order, sale_order, purchase, sale, inventory, catalog, category
+        
         EntityManager em = HibernateUtility.getEntityManger();
 
         EntityTransaction tr = em.getTransaction();
@@ -97,11 +111,25 @@ public class Main {
         em.persist(new InventoryItem(product, 5, Date.valueOf(LocalDate.now())));
         tr.commit();*/
 
-        Category cat = new Category(ProductCategory.CAMERA, ProductBrand.Canon);
+       
+        /*try {
+            Purchase purchase = service.getPurchaseById(56);
+            System.out.println(purchase);
+        } catch (PurchaseNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }*/
 
-        service.addProduct(cat, "GX-ALPHA", "Good Camera", 200);
+        try {
+            Purchase purchase = service.getPurchaseById(26);
+            System.out.println(PurchaseParser.purchaseAdapter(purchase));
+        } catch (PurchaseNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
         
-
     
 }
 }

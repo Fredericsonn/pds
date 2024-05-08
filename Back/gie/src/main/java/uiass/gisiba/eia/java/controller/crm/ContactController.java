@@ -1,5 +1,7 @@
 package uiass.gisiba.eia.java.controller.crm;
 
+import java.net.NetworkInterface;
+import java.net.UnknownHostException;
 import java.util.*;
 
 import javax.mail.MessagingException;
@@ -13,7 +15,8 @@ import spark.Response;
 import spark.Route;
 import static spark.Spark.*;
 import uiass.gisiba.eia.java.controller.GetGson;
-import uiass.gisiba.eia.java.controller.Parser;
+import uiass.gisiba.eia.java.controller.Parsers.ContactParser;
+import uiass.gisiba.eia.java.controller.Parsers.Parser;
 import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
@@ -251,7 +254,7 @@ public static void postContactController() {
                     service.notifyContact(email, subject, emailBody);  
                     
 
-                } catch(MessagingException e) {
+                } catch(MessagingException | UnknownHostException e) {
 
                     return "Email not sent.";
                 }
@@ -317,10 +320,10 @@ public static void postContactController() {
                 String body = request.body(); // We get the json containing update information as string
                     
                 // The corresponding list of attribute (used to parse the json)
-                List<String> columns = Parser.contact_columns_by_type_map.get(contactType);
+                List<String> columns = ContactParser.contact_columns_by_type_map.get(contactType);
     
                 // We collect all the values to update from the request body in one list :
-                List contactValues = Parser.contactValuesCollector(gson, body, contactType);
+                List contactValues = ContactParser.contactValuesCollector(gson, body, contactType);
     
                 // We select only the non null values with their corresponding columns and form the update map :
                 Map<String, Object> contact_columns_new_values = Parser.mapFormater(columns, contactValues);

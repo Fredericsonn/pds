@@ -1,6 +1,6 @@
 package uiass.gisiba.eia.java.entity.purchases;
 
-import java.time.LocalTime;
+import java.sql.Time;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -13,16 +13,15 @@ import uiass.gisiba.eia.java.entity.inventory.Product;
 public class PurchaseOrder extends Order {
 
     @ManyToOne
-    @JoinColumn(name="purchase_ref")
+    @JoinColumn(name="purchase_id")
     private Purchase purchase;
 
     // Constructors
 
-    public PurchaseOrder(Product product, int quantity, LocalTime orderTime, Purchase purchase) {
+    public PurchaseOrder(Product product, int quantity, Time orderTime) {
 
         super(product, quantity, orderTime);
-
-        this.purchase = purchase;
+        
     }
 
     public PurchaseOrder() {
@@ -37,6 +36,14 @@ public class PurchaseOrder extends Order {
 
     public void setPurchase(Purchase purchase) {
         this.purchase = purchase;
+    }
+
+    @Override
+    public String toString() {
+
+        return "order id : " + this.getOrderId() + ", product : " + this.getProduct() +
+
+        ", quantity : " + this.getQuantity() + ", order time : " + this.getOrderTime();
     }
 
     

@@ -1,5 +1,6 @@
 package uiass.gisiba.eia.java.dao.inventory;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -7,18 +8,21 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
-import uiass.gisiba.eia.java.dao.crm.HQLQueryManager;
+import uiass.gisiba.eia.java.dao.HQLQueryManager;
 import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
+import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.Category;
+import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
 import uiass.gisiba.eia.java.entity.inventory.Product;
-import uiass.gisiba.eia.java.entity.inventory.ProductBrand;
-import uiass.gisiba.eia.java.entity.inventory.ProductCategory;
 
 public class ProductDao implements iProductDao {
 
     private EntityManager em;
 	private EntityTransaction tr;
+    private static iCategoryDao cdao = new CategoryDao();
+    private iInventoryItemDao idao = new InventoryItemDao();
     
     public ProductDao() {
         this.em= HibernateUtility.getEntityManger();
@@ -26,9 +30,9 @@ public class ProductDao implements iProductDao {
     }
 
     @Override
-    public void addProduct(Category categoryBrand, String model, String description, double unitPrice) {
+    public void addProduct(Category categoryBrand, String model, String description) {
 
-        Product product = new Product(categoryBrand,model,description, unitPrice);
+        Product product = new Product(categoryBrand,model,description);
 
         tr.begin();
         em.persist(product);
@@ -51,25 +55,31 @@ public class ProductDao implements iProductDao {
     }
 
     @Override
-    public void deleteProduct(String ref) throws ProductNotFoundException {
+    public List<Product> productSearchFilter(Map<String, Object> columnsToSelect)
 
-        tr.begin();
+        throws ProductNotFoundException, CategoryNotFoundException {
 
-        Product product = em.find(Product.class, ref);
+            String hql = HQLQueryManager.productSelectHQLQueryGenerator("Catalog", columnsToSelect);
 
-        if (product != null) { 
-            
-            em.remove(product);
+            Query query = em.createQuery(hql);
 
-            tr.commit();
-        }
+            columnsToSelect.keySet().forEach(column -> {
+                
+                String value = (String) columnsToSelect.get(column);
 
-        else {
-            
-            tr.commit();
+                query.setParameter(column, value);
 
-            throw new ProductNotFoundException(ref);
-        }
+            });
+
+            return query.getResultList();
+    }
+
+    @Override
+    public void deleteProduct(String ref) throws ProductNotFoundException, InventoryItemNotFoundException {
+
+        InventoryItem item = idao.getInventoryItemByProduct(ref);
+
+        idao.deleteInventoryItem(item.getId());
     }
 
     @Override
@@ -81,62 +91,88 @@ public class ProductDao implements iProductDao {
     }
 
     @Override
-    public List<ProductCategory> getAllCategories() {
-
-        String hql = "select DISTINCT categoryName from Category";
-
-        Query query = em.createQuery(hql);
-
-        return query.getResultList();
-    }
-
-    @Override
-    public List<ProductBrand> getAllBrandsByCategory(ProductCategory category) {
-
-        String hql = "select DISTINCT brandName from Category where categoryName = :categoryName";
-
-        Query query = em.createQuery(hql);
-
-        query.setParameter("categoryName", category);
-
-        return query.getResultList();
-    }
-
-    @Override
-    public void updateProduct(String ref, Map<String, Object> columnsNewValues) throws ProductNotFoundException {
+    public void updateProduct(String ref, Map<String, Object> columnsNewValues) throws ProductNotFoundException, CategoryNotFoundException {
 
 		// get the product to update :
 		Product product = this.getProductById(ref);
 
+        productCategoryHandler(columnsNewValues,product);
+        
 		//dynamically generate the corresponding hql string :
-		String hql = HQLQueryManager.UpdateHQLQueryGenerator("Catalog", columnsNewValues, "product_ref");
+		String hql = HQLQueryManager.UpdateWithExclusionsHQLQueryGenerator("Catalog", columnsNewValues,
 
-		// create the query using the generated hql :
-		Query query = em.createQuery(hql);
+         "product_ref", Arrays.asList("category"));
 
-		// set the query parameters :
-        for (String column : columnsNewValues.keySet()) {
+        if (hql != null) {  // if there are other columns to update other than the category
 
-			Object newValue = columnsNewValues.get(column);
+            // create the query using the generated hql :
+		    Query productQuery = em.createQuery(hql);
+
+		    // set the query parameters :
+            for (String column : columnsNewValues.keySet()) {
             
-			if (column.equals("category")) query.setParameter(column, ProductCategory.valueOf((String) newValue));
+                if (!column.equals("category")) {
 
-			else if (column.equals("brand")) query.setParameter(column, ProductBrand.valueOf((String) newValue));
+                    Object newValue = columnsNewValues.get(column);
             
-            else query.setParameter(column, newValue);
+                    productQuery.setParameter(column, newValue);  
+                }
             
+            }
+
+		    productQuery.setParameter("product_ref", ref);
+
+            tr.begin();
+
+            productQuery.executeUpdate();
+
+            em.refresh(product);
+
+		    tr.commit();
         }
 
-		query.setParameter("product_ref", ref);
-
-        tr.begin();
-
-        query.executeUpdate();
-
-        em.refresh(product);
-
-		tr.commit();
+        
     }
+
+    @SuppressWarnings("unchecked")
+    public void productCategoryHandler(Map<String, Object> columnsNewValues, Product product) throws CategoryNotFoundException {
+
+        Map<String, Object> categoryParams = (Map<String, Object>) columnsNewValues.get("category");
+
+        if (categoryParams != null) {
+
+            if (!categoryParams.isEmpty()) {
+
+                String categoryName = categoryParams.keySet().contains("categoryName") ? (String) categoryParams.get("categoryName") : null;
+    
+                String brandName = categoryParams.keySet().contains("brandName") ? (String) categoryParams.get("brandName") : null;
+
+                String modelName = categoryParams.keySet().contains("modelName") ? (String) categoryParams.get("modelName") : null;
+
+                if (categoryName != null && brandName != null && modelName != null) {
+
+                    Category category = cdao.getCategoryByNames(categoryName, brandName, modelName);
+        
+                    if (!product.getCategory().equals(category)) product.setCategory(category);
+            
+                    tr.begin();
+            
+                    em.persist(product);
+            
+                    tr.commit();
+                }
+            }
+
+        }
+
+
+    }
+
+
+
+
+
+
 
 
 
