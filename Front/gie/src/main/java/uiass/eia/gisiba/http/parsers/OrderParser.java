@@ -34,8 +34,20 @@ public class OrderParser extends Parser {
             return Arrays.asList(id,category,brand,model,name,quantity,time);
 
 }
+///////////////////////////////////////////PARESEORDERS//////////////////////////////////////////////
               public static List<List<String>> parseOrders(String json) {
         
-                         return null;
-               }
-}
+                List<List<String>> ordersList = new ArrayList<>();
+
+                JsonArray ordersArray = new JsonParser().parse(json).getAsJsonArray();
+        
+                for (JsonElement element : ordersArray) {
+                    JsonObject orderObject = element.getAsJsonObject();
+                    List<String> order = parseOrder(orderObject.toString(), orderType); // You might need to pass order type here if needed
+                    ordersList.add(order);
+                }
+        
+                return ordersList;
+            }
+        }
+               
