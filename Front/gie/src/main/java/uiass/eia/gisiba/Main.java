@@ -25,7 +25,6 @@ public class Main extends Application {   //uiass.eia.gisiba.Main
         InputStream inputStream = getClass().getResourceAsStream(iconPath);
         Image icon = new Image(inputStream);
 
-        
         stage.setScene(scene);
         stage.getIcons().add(icon);
         stage.setResizable(false);

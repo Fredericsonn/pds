@@ -1,31 +1,35 @@
 package uiass.eia.gisiba.controller;
 
 
-import java.io.InputStream;
+import java.io.IOException;
 import java.util.*;
 
 
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.control.Alert;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import uiass.eia.gisiba.Main;
 import uiass.eia.gisiba.crud.ContactCrud;
 import uiass.eia.gisiba.crud.InventoryItemCrud;
+import uiass.eia.gisiba.crud.OrderCrud;
 import uiass.eia.gisiba.crud.ProductCrud;
 import uiass.eia.gisiba.http.dto.ContactDto;
 import uiass.eia.gisiba.http.dto.InventoryDto;
+import uiass.eia.gisiba.http.dto.OrderDto;
 import uiass.eia.gisiba.http.dto.ProductDto;
+import uiass.eia.gisiba.http.dto.PurchaseDto;
 
 public class MainController {
 
@@ -39,24 +43,14 @@ public class MainController {
     private AnchorPane rightAnchorPane;
 
     @FXML
-    private MenuItem personsMenuItem;
-
-    /*@FXML
-    private void switchToScene() throws IOException {
-        // Call the method to switch to the "Person_Search_Page" scene
-        Main.setRoot("Person_Search_Page");
-    }*/
-
-    
+    private AnchorPane mainAnchorPane;
 
     @FXML
     // A generic fx method that controls the crm interface depending on the contact type
     private void loadContactPane(String contactType) {
 
         String type = contactType.toLowerCase();
-
-        System.out.println("/uiass/eia/gisiba/contact/" + type + "/" + type + "_right_pane.fxml");
-        
+                
         FXManager.loadFXML("/uiass/eia/gisiba/crm/contact/contact_center_pane.fxml", centerAnchorPane, getClass());
         FXManager.loadFXML("/uiass/eia/gisiba/crm/contact/" + type + "/" + type + "_right_pane.fxml", rightAnchorPane, getClass());
         
@@ -90,7 +84,7 @@ public class MainController {
 
         // We populate the table using those collected contacts
         List<String> columns = FXManager.columns_names_per_contact_type.get(contactType);
-        FXManager.populateTableView(contactsTable, columns, data);
+        FXManager.populateTableView(contactsTable, columns, Arrays.asList("id", "address id"), data);
 
         ContactCrud.contactSearchButtonHandler(search, txtField, labels, contactType, rightAnchorPane, update, delete);
 
@@ -279,9 +273,66 @@ public class MainController {
             else FXManager.showAlert(AlertType.ERROR, "ERROR", "No Selected Parameter", "Please provide some parameters for the search.");
         });
 
+    }
 
+    public void loadPurchaseOrdersPane() {
 
+        FXManager.loadFXML("/uiass/eia/gisiba/purchase/orders/orders_center_pane.fxml", centerAnchorPane, getClass());
+
+        FXManager.loadFXML("/uiass/eia/gisiba/purchase/orders/order_right_pane.fxml", rightAnchorPane, getClass());
+
+        rightAnchorPane.setVisible(false);
+
+        List<String> labelIds = FXManager.order_labels_ids;
         
+        // Buttons
+        Button search = FXManager.getButton(centerAnchorPane, "searchBtn");
+        Button createNew = FXManager.getButton(centerAnchorPane, "createNewProductBtn");
+        Button view = FXManager.getButton(rightAnchorPane, "viewBtn");
+        Button stats = FXManager.getButton(rightAnchorPane, "statsBtn");
+
+        // Search text fields
+        // a method that collects the text fields and sets input rules :
+        List<ComboBox> comboBoxes = ProductCrud.productSearchComboBoxesHandler(centerAnchorPane);
+
+        ComboBox categoryComboBox = comboBoxes.get(0);     // We get
+        ComboBox brandComboBox = comboBoxes.get(1);        // the text fields
+        ComboBox modelComboBox = comboBoxes.get(2);        // from the list
+
+        // Labels
+        List<Label> labels = FXManager.labelsCollector(rightAnchorPane, labelIds);
+
+        // Refresh Image
+        AnchorPane refresh = FXManager.getAnchorPane(centerAnchorPane, "refreshPane");  
+
+        // Tables
+        TableView<List<String>> ordersTable = FXManager.getTableView(centerAnchorPane, "ordersTableView");
+
+        // A method that handles the table rows event listners
+        OrderCrud.orderTableEventHandler(ordersTable, labels, rightAnchorPane, refresh, view, stats);
+
+        // We the table with all the products
+        OrderCrud.fillWithPurchaseOrders(ordersTable);
+
+        // We set the refresh button to refresh the table when clicked
+        refresh.setOnMouseClicked(imageClicked -> {
+
+            //FXManager.textFieldsEmptier(textFields);
+            OrderCrud.fillWithPurchaseOrders(ordersTable);
+        });
+    }
+
+    public void loadPurchasePane() throws IOException {
+
+        String fxml = "/uiass/eia/gisiba/purchase/purchase/purchases_control_pane.fxml";
+
+        AnchorPane pane = FXManager.switchScene(centerAnchorPane, getClass(), fxml);
+
+        TableView purchasesTable = FXManager.getTableView(pane, "purchasesTableView");
+
+        List<List<String>> data = PurchaseDto.getAllPurchases();
+
+        FXManager.populateTableView(purchasesTable, FXManager.purchase_columns, Arrays.asList("purchase id", "supplier id", "supplierType"), data);
 
     }
 

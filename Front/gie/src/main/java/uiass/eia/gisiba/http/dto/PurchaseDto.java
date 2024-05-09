@@ -21,7 +21,7 @@ public class PurchaseDto {
     }
 
     // Find all the purchases by supplier type :
-    public static List<List> getAllPurchasesByType(String contactType) {
+    public static List<List<String>> getAllPurchasesByType(String contactType) {
 
         String responseBody = DataSender.getDataSender("purchases/" + contactType);;
 
@@ -30,7 +30,7 @@ public class PurchaseDto {
     }
 
     // Find all the purchases :
-    public static List<List> getAllPurchasesByStatus(String status) {
+    public static List<List<String>> getAllPurchasesByStatus(String status) {
 
         String responseBody = DataSender.getDataSender("purchases/" + status);;
 
@@ -39,7 +39,7 @@ public class PurchaseDto {
     }
 
     // Find all the purchases by supplier type :
-    public static List<List> getAllPurchasesBySupplier(String contactType, int id) {
+    public static List<List<String>> getAllPurchasesBySupplier(String contactType, int id) {
 
         String responseBody = DataSender.getDataSender("purchases/bySupplier/" + contactType + "/" + id);;
 
@@ -49,9 +49,9 @@ public class PurchaseDto {
 
 
     // Find all the purchases :
-    public static List<List> getAllPurchases() {
+    public static List<List<String>> getAllPurchases() {
 
-        String responseBody = DataSender.getDataSender("purchases/");;
+        String responseBody = DataSender.getDataSender("purchases");;
 
         return PurchaseParser.parsePurchases(responseBody);
 

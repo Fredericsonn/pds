@@ -84,7 +84,7 @@ public interface iService {
 
     Product getProductById(String ref) throws ProductNotFoundException;
 
-    List<Product> productSearchFilter(Map<String,Object> columnsNewValues) throws ProductNotFoundException, CategoryNotFoundException;
+    List<Product> productSearchFilter(Map<String,String> columnsNewValues) throws ProductNotFoundException, CategoryNotFoundException;
 
     void deleteProduct(String ref) throws ProductNotFoundException, InventoryItemNotFoundException;
 
@@ -116,7 +116,7 @@ public interface iService {
 
     List<InventoryItem> getAllInventoryItems();
 
-    List<InventoryItem> getFilteredItems(Map<String,Object> columnsNewValues) throws InventoryItemNotFoundException, ProductNotFoundException;
+    List<InventoryItem> getFilteredItems(Map<String,String> columnsNewValues) throws InventoryItemNotFoundException, ProductNotFoundException;
 
     int getItemQuantity(int itemId) throws InventoryItemNotFoundException;
 
@@ -134,13 +134,13 @@ public interface iService {
 
     List<Order> getAllOrdersByType(String orderType);
 
-    List<Order> getAllOrdersByStatus(String orderType, Status status) throws InvalidOrderTypeException;
+    List<PurchaseOrder> getAllOrdersByPurchase(int purchaseId);
 
-    List<Order> getAllOrdersBetweenDates(String orderType, Date startDate, Date endDate) throws InvalidOrderTypeException;
+    List<Order> orderSearchFilter(String orderType, Map<String,String> criteria) throws InvalidOrderTypeException;
 
-    void addPurchaseOrder(Product product, int quantity, Time orderTime, Purchase purchase);
+    void addPurchaseOrder(InventoryItem product, int quantity, Time orderTime, Purchase purchase);
 
-    void addSaleOrder(Product product, int quantity, Time orderTime, Sale sale);
+    void addSaleOrder(InventoryItem product, int quantity, Time orderTime, Sale sale);
 
     void deleteOrder(int orderId, String orderType) throws InvalidOrderTypeException, OrderNotFoundException;
 
@@ -158,13 +158,15 @@ public interface iService {
 
     List<Purchase> getAllPurchasesBySupplier(Enterprise supplier);
 
+    List<Contact> getAllSuppliers(String supplierType) throws InvalidContactTypeException;
+
     List<Purchase> getAllPurchasesByStatus(Status status);
 
     List<Purchase> getAllPurchasesBetweenDates(Date startDate, Date endDate);
 
-    void addPurchase(List<PurchaseOrder> orders, Date purchaseDate, double total, Person supplier, Status status);
+    List<PurchaseOrder> getPurchaseOrders(int id) throws PurchaseNotFoundException;
 
-    void addPurchase(List<PurchaseOrder> orders, Date purchaseDate, double total, Enterprise supplier, Status status);
+    void addPurchase(Purchase purchase);
 
     void deletePurchase(int id) throws PurchaseNotFoundException;
 

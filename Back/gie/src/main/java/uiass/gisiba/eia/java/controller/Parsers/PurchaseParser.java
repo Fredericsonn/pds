@@ -4,11 +4,14 @@ import java.sql.Date;
 import java.util.*;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
+import uiass.gisiba.eia.java.dao.exceptions.PurchaseNotFoundException;
 import uiass.gisiba.eia.java.entity.crm.Enterprise;
 import uiass.gisiba.eia.java.entity.crm.Person;
 import uiass.gisiba.eia.java.entity.inventory.Status;
@@ -20,11 +23,9 @@ import uiass.gisiba.eia.java.entity.purchases.PurchaseOrder;
 public class PurchaseParser extends Parser {
 
 
-    public static Purchase parsePurchase(String json, String contactType) throws InvalidContactTypeException {
+    public static Purchase parsePersonPurchase(String json)  {
 
         JsonObject purchaseObject = new JsonParser().parse(json).getAsJsonObject();
-
-        Purchase purchase;
 
         int purchaseId = collectInt(purchaseObject, "purchaseId");
 
@@ -36,35 +37,58 @@ public class PurchaseParser extends Parser {
 
         Status status = Status.valueOf(purchaseObject.get("status").getAsString());  
 
-        if (contactType.equals("Person")) {
-
-            Person supplier = parsePersonSupplier(json);
+        Person supplier = parsePersonSupplier(json);
             
-            purchase = new PersonPurchase(orders, purchaseDate, total, status, supplier);
+        Purchase purchase = new PersonPurchase(orders,purchaseDate, total, status, supplier);
 
-            purchase.setPurchaseId(purchaseId);
+        purchase.setPurchaseId(purchaseId);
 
-            return purchase;
+        purchase.setOrders(orders);
 
-        }
+        return purchase;  
 
-        else if (contactType.equals("Enterprise")) {
+    }
 
-            Enterprise supplier = parseEnterpriseSupplier(json);
+    public static Purchase parseEnterprisePurchase(String json)  {
 
-            purchase = new EnterprisePurchase(orders, purchaseDate, total, status, supplier);
+        JsonObject purchaseObject = new JsonParser().parse(json).getAsJsonObject();
 
-            purchase.setPurchaseId(purchaseId);
+        int purchaseId = collectInt(purchaseObject, "purchaseId");
 
-            return purchase;
+        List<PurchaseOrder> orders = parsePurchaseOrders(json);
 
+        Date purchaseDate = Date.valueOf(purchaseObject.get("purchaseDate").getAsString());
 
-        }
+        double total = collectDouble(purchaseObject, "total");
 
-        throw new InvalidContactTypeException(contactType);
+        Status status = Status.valueOf(purchaseObject.get("status").getAsString());  
+
+        Enterprise supplier = parseEnterpriseSupplier(json);
+            
+        Purchase purchase = new EnterprisePurchase(orders,purchaseDate, total, status, supplier);
+
+        purchase.setPurchaseId(purchaseId);
+
+        purchase.setOrders(orders);
+
+        return purchase;  //parseEnterprisePurchase
+
+    }
+
+    public static Purchase parsePurchase(String json, String purchaseType) throws InvalidContactTypeException {
+
+        if (purchaseType.equals("Person")) return parsePersonPurchase(json);
+
+        else if (purchaseType.equals("Enterprise")) return parseEnterprisePurchase(json);
+
+        throw new InvalidContactTypeException(purchaseType);
     }
 
     public static List<Purchase> parsePurchases(String json) {
+
+        JsonArray purchaseArray = new JsonParser().parse(json).getAsJsonArray();
+
+        List<Purchase> purchases = new ArrayList<Purchase>();
 
         return null;
     }
@@ -108,53 +132,23 @@ public class PurchaseParser extends Parser {
 
         List<PurchaseOrder> orders = new ArrayList<PurchaseOrder>();
 
-        ordersObject.forEach(order -> orders.add(OrderParser.parsePurchaseOrder(String.valueOf(order.getAsJsonObject()))));
+        ordersObject.forEach(order -> {
+
+            try {
+
+                orders.add(OrderParser.parsePurchaseOrder(String.valueOf(order.getAsJsonObject())));
+
+            } catch (CategoryNotFoundException | PurchaseNotFoundException e) {
+
+                e.printStackTrace();
+            }
+        });
 
         return orders;
     }
 
-    public static String purchaseAdapter(Purchase purchase) {
-
-        Gson gson = new Gson();
-
-        int purchaseId = purchase.getPurchaseId();
-
-        List<PurchaseOrder> orders = purchase.getOrders();
-
-        purchase.setOrders(null);
-
-        orders.forEach(order -> order.setPurchase(null));
-
-        String ordersJson = gson.toJson(orders);
-
-        JsonArray ordersArray = new JsonParser().parse(ordersJson).getAsJsonArray();
-
-        ordersArray.forEach(order -> order.getAsJsonObject().addProperty("purchase", purchaseId));
-
-        System.out.println(ordersArray.get(0));
-
-        String purchaseJson = gson.toJson(purchase);
-
-        /*JsonObject purchaseObject = new JsonParser().parse(purchaseJson).getAsJsonObject();
-
-        purchaseObject.addProperty("orders", ordersArray.getAsString());
-
-        String purchaseAdaptedJson = purchaseObject.getAsString();*/
-
-        return null;
 
 
-    }
-
-    public static String purchasesAdapter(List<Purchase> purchases) {
-
-        JsonArray purchaseArray = new JsonArray();
-
-        purchases.forEach(purchase -> purchaseArray.add(purchaseAdapter(purchase)));
-
-        return purchaseArray.getAsString();
-
-    }
 
     
 

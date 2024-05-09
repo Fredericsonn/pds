@@ -95,7 +95,7 @@ public class HQLQueryManager {
         return hql;
     }
 
-    public static String productSelectHQLQueryGenerator(String table, Map<String,Object> columnsToSelect) {
+    public static String productSelectHQLQueryGenerator(String table, Map<String,String> columnsToSelect) {
 
         List<String> columns = new ArrayList<>(columnsToSelect.keySet());
 
@@ -112,6 +112,33 @@ public class HQLQueryManager {
             if (table.equals("Inventory")) hql += "product.";
 
             hql += "category." + column + " = :" + column + " and ";
+            
+        }
+
+        hql = hql.substring(0, hql.length()-5);
+        
+        return hql;
+    }
+
+    public static String orderSelectHQLQueryGenerator(String table, Map<String,String> columnsToSelect) {
+
+        List<String> columns = new ArrayList<>(columnsToSelect.keySet());
+
+        return orderSelectColumnsCollector(columns, table + "_Order");
+    }
+
+    // this method is used to generate the hql from a columns update state map
+    public static String orderSelectColumnsCollector(List<String> columns, String table) {
+        
+        String hql = "select o from " + table  + " o where ";
+
+        for (String column : columns) {
+
+            if (column.equals("name")) hql += "o.item.product.";
+
+            else hql += "o.item.product.category.";
+
+            hql += column + " = :" + column + " and ";
             
         }
 
@@ -167,6 +194,13 @@ public class HQLQueryManager {
     public static boolean operationContactTypeValidator(String type) {
 
         return type.equals("Person") || type.equals("Enterprise");
+    }
+
+    public static String selectAllSuppliersHQLQueryGenerator(String supplierType) {
+
+        String hql = "select DISTINCT p.supplier from " + supplierType + "Purchase p";
+
+        return hql;
     }
 
 

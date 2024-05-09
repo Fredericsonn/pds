@@ -111,7 +111,7 @@ public class InventoryItemCrud {
         // We populate the table using those collected contacts
         List<String> columns = FXManager.inventory_columns;
         
-        FXManager.populateTableView(itemsTable, columns, data);
+        FXManager.populateTableView(itemsTable, columns, Arrays.asList("id"), data);
     }
 
     public static void fillWithFilteredItems(TableView inventoryTable, List<List<String>> data) {
@@ -119,6 +119,6 @@ public class InventoryItemCrud {
         // The columns we'll use for the table
         List<String> columns = FXManager.inventory_columns;
         
-        FXManager.populateTableView(inventoryTable, columns, data);
+        FXManager.populateTableView(inventoryTable, columns, Arrays.asList("id"), data);
     }
 }

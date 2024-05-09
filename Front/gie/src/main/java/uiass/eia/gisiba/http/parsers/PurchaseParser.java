@@ -8,34 +8,85 @@ import com.google.gson.JsonParser;
 
 public class PurchaseParser extends Parser {
 
-    public static List parsePurchase(String json) {
+    public static List<String> parsePurchase(String json) {
 
         JsonObject purchaseObject = new JsonParser().parse(json).getAsJsonObject();
 
-        String purchaseId = collectString(purchaseObject, "id");
+        String purchaseId = collectString(purchaseObject, "purchaseId");
         String purchaseDate = collectString(purchaseObject, "purchaseDate");
         String total = collectString(purchaseObject, "total");
         String status = collectString(purchaseObject, "status");
-        String supplierType = collectString(purchaseObject, "supplierType");
 
         JsonObject supplierObject = purchaseObject.get("supplier").getAsJsonObject();
 
+        String supplierType = supplierObject.has("type") ? "Enterprise" : "Person";
+
         List<String> supplier = ContactParser.parseContact(String.valueOf(supplierObject), supplierType);
 
-        JsonArray ordersArray = purchaseObject.get("orders").getAsJsonArray();
+        String supplierName = supplier.get(1);
 
-        List<List<String>> orders = OrderParser.parseOrders(ordersArray.getAsString());
+        if (supplierType.equals("Person"))  supplierName += " " + supplier.get(2);
 
-        return Arrays.asList(purchaseId, supplier, supplierType, orders, purchaseDate, total, status);
+        String supplierId = supplier.get(0);
+
+        return Arrays.asList(purchaseId, supplierId, supplierName, supplierType, purchaseDate, total, status);
     }
 
-    public static List<List> parsePurchases(String json) {
+    public static List<String> parsePurchaseOrder(String json) {
 
-        List<List> purchases = new ArrayList<List>();
+        JsonObject orderObject = new JsonParser().parse(json).getAsJsonObject();
+
+        String orderId = collectString(orderObject, "orderId");
+
+        String quantity = collectString(orderObject, "quantity");
+
+        String orderTime = collectString(orderObject, "orderTime");
+
+        String purchaseDate = collectString(orderObject, "purchaseDate");
+
+        JsonObject itemOject = orderObject.get("item").getAsJsonObject();
+
+        List<String> item = InventoryItemParser.parseItem(String.valueOf(itemOject));
+
+        String itemId = item.get(0);
+
+        String category = item.get(1);
+
+        String brand = item.get(2);
+
+        String model = item.get(3);
+
+        String name = item.get(4);
+
+        String unitPrice = item.get(5);
+
+        return Arrays.asList(orderId, itemId, category, brand, model, name, unitPrice, quantity, purchaseDate + ", " + orderTime);
+    }
+    public static List<List<String>> parsePurchaseOrders(String json) {
+
+        JsonArray ordersArray = new JsonParser().parse(json).getAsJsonArray();
+
+        List<List<String>> orders = new ArrayList<>();
+    
+        ordersArray.forEach(order -> {
+
+            JsonObject orderObject = order.getAsJsonObject();
+
+            orders.add(parsePurchaseOrder(orderObject.toString()));
+
+        });
+    
+        return orders;
+    }
+    
+
+    public static List<List<String>> parsePurchases(String json) {
+
+        List<List<String>> purchases = new ArrayList<List<String>>();
 
         JsonArray purchasesArray = new JsonParser().parse(json).getAsJsonArray();
 
-        purchasesArray.forEach(purchase -> purchases.add(PurchaseParser.parsePurchase(purchase.getAsString())));
+        purchasesArray.forEach(purchase -> purchases.add(PurchaseParser.parsePurchase(String.valueOf(purchase.getAsJsonObject()))));
 
         return purchases;
     }

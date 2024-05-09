@@ -6,8 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
 import uiass.gisiba.eia.java.entity.inventory.Order;
-import uiass.gisiba.eia.java.entity.inventory.Product;
 
 @Entity(name="Sale_Order")
 public class SaleOrder extends Order {
@@ -18,7 +18,7 @@ public class SaleOrder extends Order {
 
     // Constructors
     
-    public SaleOrder(Product product, int quantity, Time orderTime) {
+    public SaleOrder(InventoryItem product, int quantity, Time orderTime) {
 
         super(product, quantity, orderTime);
 
@@ -41,7 +41,7 @@ public class SaleOrder extends Order {
     @Override
     public String toString() {
 
-        return "sale id : " + this.getOrderId() + ", sale : " + this.sale + ", product : " + this.getProduct() +
+        return "sale id : " + this.getOrderId() + ", sale : " + this.sale + ", product : " + this.getItem() +
 
         ", quantity : " + this.getQuantity() + ", order time : " + this.getOrderTime();
     }

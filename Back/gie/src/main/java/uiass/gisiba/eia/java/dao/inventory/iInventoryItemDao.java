@@ -16,7 +16,7 @@ public interface iInventoryItemDao {
 
     List<InventoryItem> getAllInventoryItems();
 
-    List<InventoryItem> getFilteredItems(Map<String,Object> columnsNewValues) throws InventoryItemNotFoundException, ProductNotFoundException;
+    List<InventoryItem> getFilteredItems(Map<String,String> columnsNewValues) throws InventoryItemNotFoundException, ProductNotFoundException;
     
     void addInventoryItem(Product product, double unitPrice, int quantity, Date dateAdded);
 

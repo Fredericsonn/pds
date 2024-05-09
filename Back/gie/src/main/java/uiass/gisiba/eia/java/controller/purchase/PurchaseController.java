@@ -5,6 +5,9 @@ import static spark.Spark.*;
 import java.util.*;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializer;
 
 import spark.Request;
 import spark.Response;
@@ -21,7 +24,6 @@ import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.PurchaseNotFoundException;
 import uiass.gisiba.eia.java.entity.crm.Contact;
 import uiass.gisiba.eia.java.entity.crm.Person;
-import uiass.gisiba.eia.java.entity.inventory.Category;
 import uiass.gisiba.eia.java.entity.inventory.Status;
 import uiass.gisiba.eia.java.entity.purchases.Purchase;
 import uiass.gisiba.eia.java.entity.purchases.PurchaseOrder;
@@ -33,11 +35,18 @@ public class PurchaseController {
 
     private static Service service = new Service();
 
+	private static Gson gsonWithSerializer = new GsonBuilder()
+                .registerTypeAdapter(Purchase.class, (JsonSerializer<Purchase>) (purchase, typeOfSrc, context) -> {
+                    JsonObject jsonObject = new JsonObject();
+                    jsonObject.addProperty("purchaseId", purchase.getPurchaseId());
+                    jsonObject.add("purchaseDate", context.serialize(purchase.getPurchaseDate().toString()));
+                    return jsonObject;
+                })
+                .create();
+
 /////////////////////////////////////////////////// GET METHODS //////////////////////////////////////////////////////////////////
 
 	public static void getPurchaseById() {
-
-		Gson gson = new Gson();
   
 		System.out.println("Server started.");
 
@@ -52,12 +61,10 @@ public class PurchaseController {
 		return purchase;
 
 	   
-		}, gson::toJson);
+		}, gsonWithSerializer::toJson);
 	}	
 
 	public static void getAllPurchases() {
-
-		Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -70,12 +77,10 @@ public class PurchaseController {
 		return purchases;
 	
 		   
-		}, gson::toJson);
+		}, gsonWithSerializer::toJson);
 	}
 
     public static void getAllPurchasesBySupplierType() {
-
-		Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -90,16 +95,14 @@ public class PurchaseController {
 		return purchases;
 	
 		   
-		}, gson::toJson);
+		}, gsonWithSerializer::toJson);
 	}
 
-	public static void getAllPurchasesBySupplier() {
-
-		Gson gson = new Gson();
+	public static void getAllPurchasesByPersonSupplier() {
 	  
 	    System.out.println("Server started.");
 	
-	    get("/purchases/:contactType/bySupplier/:supplierId", (req,res)-> {
+	    get("/purchases/bySupplier/:contactType/:supplierId", (req,res)-> {
 
 		String contactType = req.params("contactType");
 
@@ -116,12 +119,28 @@ public class PurchaseController {
 		return p;
 	
 		   
-		}, gson::toJson);
+		}, gsonWithSerializer::toJson);
+	}
+
+	public static void getAllSuppliers() {
+	  
+	    System.out.println("Server started.");
+	
+	    get("/purchases/suppliers/:supplierType", (req,res)-> {
+
+        String supplierType = req.params("supplierType");
+
+		List<Contact> purchases = service.getAllSuppliers(supplierType);
+		
+		res.type("application/json");
+
+		return purchases;
+	
+		   
+		}, gsonWithSerializer::toJson);
 	}
 
 	public static void getAllPurchasesByStatus() {
-
-		Gson gson = new Gson();
 	  
 	    System.out.println("Server started.");
 	
@@ -136,7 +155,7 @@ public class PurchaseController {
 		return purchases;
 	
 		   
-		}, gson::toJson);
+		}, gsonWithSerializer::toJson);
 	}
 
 /////////////////////////////////////////////////// POST METHOD //////////////////////////////////////////////////////////////////
@@ -150,21 +169,18 @@ public class PurchaseController {
 
 				String body = request.body();
 
-				String contactType = request.params("supplierType");
+				String supplierType = request.params("supplierType");
 
-				Purchase purchase = PurchaseParser.parsePurchase(body, contactType);
+				Purchase purchase = PurchaseParser.parsePurchase(body, supplierType);
 				
-				Person supplier = PurchaseParser.parsePersonSupplier(body);
-
-				service.addPurchase(purchase.getOrders(), purchase.getPurchaseDate(), purchase.getTotal()
-				
-				, supplier, purchase.getStatus());
+				service.addPurchase(purchase);
 
 				return "Purchase created successfully";
 			}
 			
 		});
 	}
+
 
 /////////////////////////////////////////////////// DELETE METHOD //////////////////////////////////////////////////////////////////
 

@@ -96,9 +96,13 @@ public class InventoryItem {
     @Override
     public String toString() {
 
-        return "id : " + this.id + ", ref : " + this.product.getProductRef() + ", unit price : " + this.unitPrice + ", quantity : " + this.quantity
+        String details = this.product.getCategory().getCategoryName() + " " + this.product.getCategory().getBrandName() +
+
+        " " + this.product.getCategory().getModelName() + " " + this.product.getName();
+
+        return "id : " + this.id + ", ref : " + this.product.getProductRef() + ", details : " +  details + 
         
-        + ", added on : " + this.dateAdded;
+         ", unit price : " + this.unitPrice + ", quantity : " + this.quantity + ", added on : " + this.dateAdded;
     }
 
 

@@ -5,12 +5,16 @@ import java.util.*;
 
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import uiass.eia.gisiba.Main;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -21,6 +25,7 @@ import javafx.scene.control.TableView;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -37,6 +42,8 @@ public class FXManager {
 
     public static List<String> inventory_labels_ids = Arrays.asList("categoryLabel","brandModelNameLabel","unitPriceLabel","quantityLabel", "dateAddedLabel");
 
+    public static List<String> order_labels_ids = Arrays.asList("categoryLabel","brandModelNameLabel","quantityLabel","unitPriceLabel" ,"timeDateLabel");
+
     public static Map<String, List<String>> columns_names_per_contact_type = new HashMap<String, List<String>>() {{
         put("Person", Arrays.asList("id","first name","last name","phone number", "email", "address id","house number","neighborhood","city","zip code","country"));
         put("Enterprise", Arrays.asList("id","enterprise name","type","phone number", "email", "address id","house number","neighborhood","city","zip code","country"));
@@ -45,6 +52,10 @@ public class FXManager {
     public static List<String> catalog_columns = Arrays.asList("ref","category id","category","brand","model","name","description");
 
     public static List<String> inventory_columns = Arrays.asList("id","category","brand","model","name","unit price","quantity", "date added");
+
+    public static List<String> order_columns = Arrays.asList("order id","item id","category","brand","model","name","unit price","quantity", "order date");
+
+    public static List<String> purchase_columns = Arrays.asList("purchase id","supplier id","supplier","supplierType","purchase date","total","status");
 
 
 
@@ -59,6 +70,40 @@ public class FXManager {
             e.printStackTrace();
         }
     }
+
+    public static void loadFXMLStack(String fxmlFile, StackPane pane, Class c) {
+        
+        try {
+            FXMLLoader loader = new FXMLLoader(c.getResource(fxmlFile));
+            Parent content = loader.load();
+            pane.getChildren().setAll(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public static void switchToScene(String fxml) throws IOException {
+        // Call the method to switch to the "Person_Search_Page" scene
+        Main.setRoot(fxml);
+    }
+
+    @FXML 
+    public static AnchorPane switchScene(Node node, Class c, String fxml) {
+
+        Stage currentStage = (Stage) node.getScene().getWindow();
+
+        AnchorPane pane = new AnchorPane();
+
+        FXManager.loadFXML(fxml, pane, c);
+
+        Scene scene = new Scene(pane); 
+
+        currentStage.setScene(scene);
+
+        return pane;
+    }
+
     // Used to collect labels in a pane given a list of ids
     public static List<Label> labelsCollector(Parent pane, List<String> labelsIds) {
 
@@ -83,7 +128,7 @@ public class FXManager {
     }
 
     // Used to dynamically populate tables given the data and the contact type  
-    public static void populateTableView(TableView<List<String>> tableView, List<String> columns, List<List<String>> data) {
+    public static void populateTableView(TableView<List<String>> tableView, List<String> columns, List<String> exclusions, List<List<String>> data) {
 
         // Clear existing columns and items
         tableView.getColumns().clear();
@@ -110,9 +155,7 @@ public class FXManager {
                 }
             });
 
-            if (columns.get(i).equals("id") || columns.get(i).equals("ref") ||
-            
-            columns.get(i).equals("address id") || columns.get(i).equals("category id") ) column.setVisible(false);
+            if (exclusions.contains(columns.get(i))) column.setVisible(false);
 
             tableView.getColumns().add(column);
         }

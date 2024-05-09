@@ -221,7 +221,7 @@ public static void postItemController() {
 		
 				String body = request.body();
 		
-				Map<String,Object> criteria = ProductParser.parseFilterCriteria(body);
+				Map<String,String> criteria = ProductParser.parseFilterCriteria(body, ProductParser.filter_columns);
 
 				List<InventoryItem> items;
 

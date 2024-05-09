@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="409.0" prefWidth="756.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox prefHeight="390.0" prefWidth="756.0">
+         <children>
+            <VBox prefHeight="168.0" prefWidth="756.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
+                     <children>
+                        <ComboBox fx:id="categoryComboBox" prefHeight="40.0" prefWidth="130.0" promptText="category" />
+                        <ComboBox fx:id="brandComboBox" prefHeight="40.0" prefWidth="130.0" promptText="brand" />
+                        <ComboBox fx:id="modelComboBox" prefHeight="40.0" prefWidth="130.0" promptText="model" />
+                        <ComboBox fx:id="nameComboBox" prefHeight="40.0" prefWidth="130.0" promptText="product name" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets left="10.0" right="10.0" />
+                     </opaqueInsets>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="93.0" prefWidth="756.0" spacing="190.0">
+                     <children>
+                        <VBox fillWidth="false" prefHeight="70.0" prefWidth="191.0">
+                           <opaqueInsets>
+                              <Insets top="10.0" />
+                           </opaqueInsets>
+                           <children>
+                              <Label prefHeight="18.0" prefWidth="87.0" text="Quantity :" />
+                              <TextField fx:id="quantityTextField" prefHeight="40.0" prefWidth="127.0" promptText="quantity" />
+                           </children>
+                           <padding>
+                              <Insets top="5.0" />
+                           </padding>
+                        </VBox>
+                        <HBox prefHeight="99.0" prefWidth="254.0" spacing="20.0">
+                           <children>
+                              <Button fx:id="orderConfirmBtn" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" text="CONFIRM" />
+                              <Button fx:id="addMoreBtn" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" text="ADD MORE" />
+                           </children>
+                           <HBox.margin>
+                              <Insets top="25.0" />
+                           </HBox.margin>
+                        </HBox>
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox prefHeight="135.0" prefWidth="756.0">
+               <children>
+                  <AnchorPane fx:id="supplierSelectionAnchorPane" prefHeight="202.0" prefWidth="756.0">
+                     <children>
+                        <ComboBox fx:id="supplierComboBox" layoutX="57.0" layoutY="50.0" prefHeight="40.0" prefWidth="130.0" promptText="supplier" />
+                        <TextField fx:id="supplierTextField" layoutX="296.0" layoutY="50.0" prefHeight="40.0" prefWidth="148.0" promptText="press enter to confirm" />
+                        <Label layoutX="226.0" layoutY="50.0" text="or">
+                           <font>
+                              <Font size="28.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="selectSupplierBtn" layoutX="564.0" layoutY="50.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="118.0" text="SELECT SUPPLIER" />
+                        <Button layoutX="230.0" layoutY="140.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" text="confirme" visible="false" />
+                        <Label layoutX="298.0" layoutY="27.0" prefHeight="19.0" prefWidth="140.0" text="Add a new supplier : " />
+                        <Label layoutX="57.0" layoutY="27.0" prefHeight="19.0" prefWidth="140.0" text="Choose a supplier : " />
+                        <AnchorPane layoutX="455.0" layoutY="59.0" prefHeight="26.0" prefWidth="32.0" visible="false">
+                           <children>
+                              <ImageView fx:id="loadingImg" fitHeight="30.0" fitWidth="30.0" layoutX="1.0" layoutY="-3.0">
+                                 <image>
+                                    <Image url="@../../imgs/mark.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </AnchorPane>
+                        <Button fx:id="nextBtn" layoutX="309.0" layoutY="126.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="118.0" text="NEXT" />
+                        <RadioButton fx:id="pesonTableView" layoutX="58.0" layoutY="100.0" mnemonicParsing="false" prefHeight="10.0" prefWidth="75.0" text="Person">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="supplierType" />
+                           </toggleGroup>
+                        </RadioButton>
+                        <RadioButton fx:id="enterpriseTableView" layoutX="58.0" layoutY="126.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="75.0" text="Enterprise" toggleGroup="$supplierType" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
+</StackPane>

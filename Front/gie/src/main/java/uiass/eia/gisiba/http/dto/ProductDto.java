@@ -37,7 +37,7 @@ public class ProductDto {
 
     }
 
-    // Find all the products :
+    // Find all the filtered products :
     public static List<List<String>> getFilteredProducts(String json) {
 
         String responseBody = DataSender.postDataSender(json,"products/filter");

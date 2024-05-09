@@ -55,7 +55,7 @@ public class ProductDao implements iProductDao {
     }
 
     @Override
-    public List<Product> productSearchFilter(Map<String, Object> columnsToSelect)
+    public List<Product> productSearchFilter(Map<String, String> columnsToSelect)
 
         throws ProductNotFoundException, CategoryNotFoundException {
 

@@ -314,7 +314,7 @@ public class ProductCrud {
         // We populate the table using those collected contacts
         List<String> columns = FXManager.catalog_columns;
         
-        FXManager.populateTableView(productsTable, columns, data);
+        FXManager.populateTableView(productsTable, columns, Arrays.asList("ref"), data);
     }
 
     public static void fillWithFilteredProducts(TableView productsTable, List<List<String>> data) {
@@ -322,7 +322,7 @@ public class ProductCrud {
         // The columns we'll use for the table
         List<String> columns = FXManager.catalog_columns;
         
-        FXManager.populateTableView(productsTable, columns, data);
+        FXManager.populateTableView(productsTable, columns, Arrays.asList("ref"), data);
     }
 
     public static void whatToCreate() {

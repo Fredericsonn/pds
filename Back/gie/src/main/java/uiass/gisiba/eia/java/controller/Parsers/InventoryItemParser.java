@@ -15,7 +15,7 @@ import uiass.gisiba.eia.java.entity.inventory.Product;
 public class InventoryItemParser extends Parser {
 
 
-    public static InventoryItem parseInventoryItem(String responseBody) throws CategoryNotFoundException {
+    public static InventoryItem parseInventoryItem(String responseBody) throws CategoryNotFoundException  {
     	
         JsonObject itemObject = new JsonParser().parse(responseBody).getAsJsonObject();
 

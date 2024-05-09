@@ -37,8 +37,8 @@
             </SplitMenuButton>
             <SplitMenuButton fx:id="clientsSplitMenu1" layoutX="14.0" layoutY="223.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="130.0" text="Purchase">
                <items>
-                  <MenuItem fx:id="orderSplitMenuItem" mnemonicParsing="false" text="Orders" />
-                  <MenuItem fx:id="purchaseSplitMenuItem" mnemonicParsing="false" text="Purchases" />
+                  <MenuItem fx:id="orderSplitMenuItem" mnemonicParsing="false" onAction="#loadPurchaseOrdersPane" text="Orders" />
+                  <MenuItem fx:id="purchaseSplitMenuItem" mnemonicParsing="false" onAction="#loadPurchasePane" text="Purchases" />
                </items>
                <font>
                   <Font name="Georgia" size="16.0" />

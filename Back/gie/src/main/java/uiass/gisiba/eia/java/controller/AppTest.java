@@ -6,6 +6,7 @@ import uiass.gisiba.eia.java.controller.crm.ContactController;
 import uiass.gisiba.eia.java.controller.inventory.CategoryController;
 import uiass.gisiba.eia.java.controller.inventory.InventoryItemController;
 import uiass.gisiba.eia.java.controller.inventory.ProductController;
+import uiass.gisiba.eia.java.controller.inventory.PurchaseOrderController;
 import uiass.gisiba.eia.java.controller.purchase.PurchaseController;
 import uiass.gisiba.eia.java.dao.inventory.iInventoryItemDao;
 
@@ -48,10 +49,17 @@ public class AppTest {
         InventoryItemController.postItemController();
         InventoryItemController.deleteItemController();
 
+        PurchaseOrderController.getOrderById();
+        PurchaseOrderController.getAllPurchaseOrders();
+        PurchaseOrderController.getAllOrdersByPurchase();
+        PurchaseOrderController.orderSearchFilter();
+
         PurchaseController.getAllPurchases();
         PurchaseController.getAllPurchasesBySupplierType();
         PurchaseController.getAllPurchasesByStatus();
-        PurchaseController.getAllPurchasesBySupplier();
+        PurchaseController.getAllPurchasesByPersonSupplier();
+        PurchaseController.getAllSuppliers();
+        PurchaseController.getPurchaseById();
         PurchaseController.deletePurchaseController();
         PurchaseController.postPurchase();
         PurchaseController.updatePurchaseOrdersController();

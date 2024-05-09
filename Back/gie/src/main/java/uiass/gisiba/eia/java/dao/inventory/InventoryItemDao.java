@@ -63,7 +63,7 @@ public class InventoryItemDao implements iInventoryItemDao {
     }
 
     @Override
-    public List<InventoryItem> getFilteredItems(Map<String, Object> columnsToSelect)
+    public List<InventoryItem> getFilteredItems(Map<String, String> columnsToSelect)
 
             throws InventoryItemNotFoundException, ProductNotFoundException {
 

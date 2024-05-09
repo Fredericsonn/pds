@@ -112,8 +112,6 @@ public class ProductController {
 
 		    	String body = request.body(); 	
 
-				System.out.println(body);
-
 		    	// We collect all the values to update from the request body in one list :
 		    	List productValues = ProductParser.productValuesCollector(gson, body);
 
@@ -187,7 +185,7 @@ public static void postProductController() {
 		
 				String body = request.body();
 		
-				Map<String,Object> criteria = ProductParser.parseFilterCriteria(body);
+				Map<String,String> criteria = ProductParser.parseFilterCriteria(body, ProductParser.filter_columns);
 		
 				List<Product> products = service.productSearchFilter(criteria);
 						

@@ -74,7 +74,7 @@ public class PurchaseDao implements iPurchaseDao {
     @Override
     public List<Purchase> getAllPurchasesBySupplier(Person supplier) {
 
-        String hql = "from Purchase where supplier = :supplier";
+        String hql = "from PersonPurchase p where p.supplier = :supplier";
 
         Query query = em.createQuery(hql);
 
@@ -86,13 +86,28 @@ public class PurchaseDao implements iPurchaseDao {
     @Override
     public List<Purchase> getAllPurchasesBySupplier(Enterprise supplier) {
 
-        String hql = "from Purchase where supplier = :supplier";
+        String hql = "from EnterprisePurchase p where p.supplier = :supplier";
 
         Query query = em.createQuery(hql);
 
         query.setParameter("supplier", supplier);
 
         return query.getResultList();
+    }
+
+    @Override
+    public List<Contact> getAllSuppliers(String supplierType) throws InvalidContactTypeException {
+
+        if (HQLQueryManager.contactTypeChecker(supplierType)) {
+
+            String hql = HQLQueryManager.selectAllSuppliersHQLQueryGenerator(supplierType);
+
+            Query query = em.createQuery(hql);
+
+            return query.getResultList();
+        }
+
+        throw new InvalidContactTypeException(supplierType);
     }
 
     @Override
@@ -121,23 +136,18 @@ public class PurchaseDao implements iPurchaseDao {
         return query.getResultList();
     }
 
-
+    
     @Override
-    public void addPurchase(List<PurchaseOrder> orders, Date purchaseDate, double total, Person supplier, Status status) {
+    public List<PurchaseOrder> getPurchaseOrders(int id) throws PurchaseNotFoundException {
 
-        PersonPurchase purchase = new PersonPurchase(orders, purchaseDate, total,  status, supplier);
+        Purchase purchase = getPurchaseById(id);
 
-        tr.begin();
-
-        em.persist(purchase);
-
-        tr.commit();
+        return purchase.getOrders();
     }
 
-    @Override
-    public void addPurchase(List<PurchaseOrder> orders, Date purchaseDate, double total, Enterprise supplier, Status status) {
 
-        EnterprisePurchase purchase = new EnterprisePurchase(orders, purchaseDate, total,  status, supplier);
+    @Override
+    public void addPurchase(Purchase purchase) {
 
         tr.begin();
 
@@ -194,6 +204,10 @@ public class PurchaseDao implements iPurchaseDao {
 
         tr.commit();
     }
+
+
+
+
 
 
 }

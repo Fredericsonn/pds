@@ -18,6 +18,8 @@ import javax.persistence.Query;
 import javax.transaction.Transaction;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import uiass.gisiba.eia.java.controller.Parsers.PurchaseParser;
 import uiass.gisiba.eia.java.controller.crm.AddressController;
@@ -120,13 +122,18 @@ public class Main {
             e.printStackTrace();
         }*/
 
-        try {
-            Purchase purchase = service.getPurchaseById(26);
-            System.out.println(PurchaseParser.purchaseAdapter(purchase));
-        } catch (PurchaseNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        /*Map<String,String> map = new HashMap<String,String>();
+
+        map.put("categoryName", "LAPTOP");*/
+
+
+            System.out.println(service.getAllOrdersByPurchase(9));
+       
+
+      
+
+           
+ 
 
 
         

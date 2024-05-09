@@ -16,7 +16,7 @@ public interface iProductDao {
 
     Product getProductById(String ref) throws ProductNotFoundException;
 
-    List<Product> productSearchFilter(Map<String,Object> columnsNewValues) throws ProductNotFoundException, CategoryNotFoundException;
+    List<Product> productSearchFilter(Map<String,String> columnsNewValues) throws ProductNotFoundException, CategoryNotFoundException;
 
     void deleteProduct(String ref) throws ProductNotFoundException, InventoryItemNotFoundException;
 

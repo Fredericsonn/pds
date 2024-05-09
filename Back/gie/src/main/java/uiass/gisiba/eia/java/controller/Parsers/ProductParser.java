@@ -96,13 +96,13 @@ public class ProductParser extends Parser {
 
 /////////////////////////////// this method is used to parse the filter criteria map ///////////////////////////////////////////////
 
-    public static Map<String, Object> parseFilterCriteria(String json) {
+    public static Map<String, String> parseFilterCriteria(String json, List<String> filterColumns) {
 
-        Map<String, Object> criteria = new HashMap<String, Object>();
+        Map<String, String> criteria = new HashMap<String, String>();
 
         JsonObject criteriaObject = new JsonParser().parse(json).getAsJsonObject();
 
-        for (String column : filter_columns) {
+        for (String column : filterColumns) {
 
             String filter_column_value = collectString(criteriaObject, column);
 

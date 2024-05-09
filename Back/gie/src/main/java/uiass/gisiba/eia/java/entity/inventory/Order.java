@@ -20,8 +20,8 @@ public class Order implements Serializable {
     private int orderId;
 
     @OneToOne
-    @JoinColumn(name = "product_ref")
-    private Product product;
+    @JoinColumn(name = "item_id")
+    private InventoryItem item;
 
     @Column(name="quantity")
     private int quantity;
@@ -31,9 +31,9 @@ public class Order implements Serializable {
 
     // Constructors
 
-    public Order(Product product, int quantity, Time orderTime) {
+    public Order(InventoryItem item, int quantity, Time orderTime) {
 
-        this.product = product;
+        this.item = item;
         this.quantity = quantity;
         this.orderTime = orderTime;
     }
@@ -52,12 +52,12 @@ public class Order implements Serializable {
         this.orderId = orderId;
     }
 
-    public Product getProduct() {
-        return product;
+    public InventoryItem getItem() {
+        return item;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setItem(InventoryItem item) {
+        this.item = item;
     }
 
     public int getQuantity() {

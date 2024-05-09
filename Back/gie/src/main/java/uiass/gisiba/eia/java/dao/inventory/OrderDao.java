@@ -3,6 +3,7 @@ package uiass.gisiba.eia.java.dao.inventory;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -12,6 +13,7 @@ import uiass.gisiba.eia.java.dao.HQLQueryManager;
 import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidOrderTypeException;
 import uiass.gisiba.eia.java.dao.exceptions.OrderNotFoundException;
+import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
 import uiass.gisiba.eia.java.entity.inventory.Order;
 import uiass.gisiba.eia.java.entity.inventory.Product;
 import uiass.gisiba.eia.java.entity.inventory.Status;
@@ -62,38 +64,36 @@ public class OrderDao implements iOrderDao {
     }
 
     @Override
-    public List<Order> getAllOrdersByStatus(String orderType, Status status) throws InvalidOrderTypeException {
+    public List<PurchaseOrder> getAllOrdersByPurchase(int purchaseId) {
 
-        if (HQLQueryManager.validOrderType(orderType)) {
-
-            String table = HQLQueryManager.orderTableNameHandler(orderType);
-
-            Query query = em.createQuery("from " + table + " where status = :status");
-
-            query.setParameter("status", status);
-
-            return query.getResultList();
-        }
-
-        throw new InvalidOrderTypeException(orderType);
+        Purchase purchase = em.find(Purchase.class, purchaseId);
         
+        String hql = "from Purchase_Order p where p.purchase = :purchase";
+
+        Query query = em.createQuery(hql);
+
+        query.setParameter("purchase", purchase);
+
+        return query.getResultList();
     }
 
     @Override
-    public List<Order> getAllOrdersBetweenDates(String orderType, Date startDate, Date endDate)
-    
-            throws InvalidOrderTypeException {
+    public List<Order> orderSearchFilter(String orderType, Map<String, String> criteria) throws InvalidOrderTypeException {
 
         if (HQLQueryManager.validOrderType(orderType)) {
 
-            String hql = HQLQueryManager.selectOrdersBetweenDatesHQLQueryGenerator(orderType);
+            String hql = HQLQueryManager.orderSelectHQLQueryGenerator(orderType , criteria);
+
+            System.out.println(hql);
 
             Query query = em.createQuery(hql);
 
-            query.setParameter("startDate", startDate);
+            for (String column : criteria.keySet()) {
 
-            query.setParameter("endDate", endDate);
-    
+                query.setParameter(column, criteria.get(column));
+
+            }
+
             return query.getResultList();
         }
 
@@ -101,7 +101,7 @@ public class OrderDao implements iOrderDao {
     }
 
     @Override
-    public void addPurchaseOrder(Product product, int quantity, Time orderTime, Purchase purchase) {
+    public void addPurchaseOrder(InventoryItem product, int quantity, Time orderTime, Purchase purchase) {
 
         PurchaseOrder order = new PurchaseOrder(product, quantity, orderTime);
 
@@ -115,7 +115,7 @@ public class OrderDao implements iOrderDao {
     }
 
     @Override
-    public void addSaleOrder(Product product, int quantity, Time orderTime, Sale sale) {
+    public void addSaleOrder(InventoryItem product, int quantity, Time orderTime, Sale sale) {
 
         SaleOrder order = new SaleOrder(product, quantity, orderTime);
 
@@ -154,6 +154,14 @@ public class OrderDao implements iOrderDao {
 
         tr.commit();
     }
+
+
+
+
+
+
+
+
 
 
 

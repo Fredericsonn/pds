@@ -191,7 +191,7 @@ public class Service implements iService {
     }
 
     @Override
-    public List<Product> productSearchFilter(Map<String, Object> columnsNewValues)
+    public List<Product> productSearchFilter(Map<String, String> columnsNewValues)
             throws ProductNotFoundException, CategoryNotFoundException {
 
             return pdao.productSearchFilter(columnsNewValues);
@@ -278,7 +278,7 @@ public class Service implements iService {
     }
 
     @Override
-    public List<InventoryItem> getFilteredItems(Map<String, Object> columnsNewValues)
+    public List<InventoryItem> getFilteredItems(Map<String, String> columnsNewValues)
     
             throws InventoryItemNotFoundException, ProductNotFoundException {
 
@@ -330,28 +330,26 @@ public class Service implements iService {
         return odao.getAllOrdersByType(orderType);
     }
 
-    public List<Order> getAllOrdersByStatus(String orderType, Status status) throws InvalidOrderTypeException {
+    @Override
+    public List<PurchaseOrder> getAllOrdersByPurchase(int purchaseId) {
 
-        return odao.getAllOrdersByStatus(orderType, status);
+        return odao.getAllOrdersByPurchase(purchaseId);
     }
 
     @Override
-    public List<Order> getAllOrdersBetweenDates(String orderType, Date startDate, Date endDate)
-    
-            throws InvalidOrderTypeException {
+    public List<Order> orderSearchFilter(String orderType, Map<String, String> criteria) throws InvalidOrderTypeException {
 
-        return odao.getAllOrdersBetweenDates(orderType, startDate, endDate);
+        return odao.orderSearchFilter(orderType, criteria);
     }
 
-
     @Override
-    public void addPurchaseOrder(Product product, int quantity, Time orderTime, Purchase purchase) {
+    public void addPurchaseOrder(InventoryItem product, int quantity, Time orderTime, Purchase purchase) {
 
         odao.addPurchaseOrder(product, quantity, orderTime, purchase);
     }
 
     @Override
-    public void addSaleOrder(Product product, int quantity, Time orderTime, Sale sale) {
+    public void addSaleOrder(InventoryItem product, int quantity, Time orderTime, Sale sale) {
 
         odao.addSaleOrder(product, quantity, orderTime, sale);
     }
@@ -404,6 +402,12 @@ public class Service implements iService {
     }
 
     @Override
+    public List<Contact> getAllSuppliers(String supplierType) throws InvalidContactTypeException {
+
+        return psdao.getAllSuppliers(supplierType);
+    }
+
+    @Override
     public List<Purchase> getAllPurchasesByStatus(Status status) {
 
         return psdao.getAllPurchasesByStatus(status);
@@ -414,17 +418,17 @@ public class Service implements iService {
 
         return psdao.getAllPurchasesBetweenDates(startDate, endDate);
     }
- 
-    @Override
-    public void addPurchase(List<PurchaseOrder> orders, Date purchaseDate, double total, Person supplier, Status status) {
 
-        psdao.addPurchase(orders, purchaseDate, total, supplier, status);
+    @Override
+    public List<PurchaseOrder> getPurchaseOrders(int id) throws PurchaseNotFoundException {
+
+        return psdao.getPurchaseOrders(id);
     }
 
     @Override
-    public void addPurchase(List<PurchaseOrder> orders, Date purchaseDate, double total, Enterprise supplier, Status status) {
+    public void addPurchase(Purchase purchase) {
 
-        psdao.addPurchase(orders, purchaseDate, total, supplier, status);
+        psdao.addPurchase(purchase);
     }
 
     @Override
@@ -446,6 +450,16 @@ public class Service implements iService {
 
         psdao.updatePurchaseStatus(id, status);
     }
+
+
+
+
+
+
+
+
+
+
 
 
 
