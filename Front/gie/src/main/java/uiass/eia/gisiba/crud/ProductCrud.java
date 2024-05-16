@@ -55,10 +55,12 @@ public class ProductCrud {
             if (newCategory != null) {
                     
                 // We get all the corresponding brands for the newly selected category
-                List<String> brandsList = CategoryDto.getAllColumnByFilterColumn("brand", "category", String.valueOf(newCategory)); 
-            
-                // Populate the brandComboBox with the brandsList
-                FXManager.populateComboBox(brandComboBox, brandsList);
+                String json = Parser.jsonGenerator(ProductParser.categoryFilter(Arrays.asList((String) newCategory,null,null)));
+
+                List<String> brandsByCategory = CategoryDto.categoryFilter("brandName", json);
+
+                FXManager.populateComboBox(brandComboBox, brandsByCategory);
+
             }
         });
 
@@ -67,10 +69,12 @@ public class ProductCrud {
             if (newbrand != null) {
                     
                 // We get all the corresponding brands for the newly selected brand
-                List<String> modelsList = CategoryDto.getAllColumnByFilterColumn("model", "brand", String.valueOf(newbrand)); 
-            
-                // Populate the brandComboBox with the brandsList
-                FXManager.populateComboBox(modelComboBox, modelsList);
+                String json = Parser.jsonGenerator(ProductParser.categoryFilter(Arrays.asList(null,(String) newbrand,null)));
+
+                List<String> modelsByBrand = CategoryDto.categoryFilter("modelName", json);
+
+                FXManager.populateComboBox(modelComboBox, modelsByBrand);
+        
             }
         });
 
@@ -156,10 +160,11 @@ public class ProductCrud {
                 brandComboBox.setPromptText("brand");
 
                 // We get all the corresponding brands for the newly selected category
-                List<String> brandsList = CategoryDto.getAllColumnByFilterColumn("brand", "category", String.valueOf(newCategory)); 
+                String json = Parser.jsonGenerator(ProductParser.categoryFilter(Arrays.asList((String) newCategory,null,null)));
 
-                // Populate the brandComboBox with the brandsList
-                FXManager.populateComboBox(brandComboBox, brandsList);
+                List<String> brandsByCategory = CategoryDto.categoryFilter("brandName", json);
+
+                FXManager.populateComboBox(brandComboBox, brandsByCategory);
 
                 // We fill the models combo box once a category and a brand are selected
                 brandComboBox.valueProperty().addListener((brandObs, oldbrand, newbrand) -> {
@@ -167,10 +172,14 @@ public class ProductCrud {
                     if (newbrand != null) {
                     
                         // We get all the corresponding models for the newly selected brand and category
-                        List<String> modelsList = CategoryDto.getAllModelsByBrandAndCategory(String.valueOf(newbrand), String.valueOf(newCategory)); 
+                                        // We get all the corresponding brands for the newly selected category
+                        String modelJson = Parser.jsonGenerator(ProductParser.categoryFilter(Arrays.asList(null,(String) newbrand,null)));
+
+                        List<String> modelsByBrand = CategoryDto.categoryFilter("modelName", modelJson);
+
+                        FXManager.populateComboBox(modelComboBox, modelsByBrand); 
             
-                        // Populate the modelComboBox with the brandsList
-                        FXManager.populateComboBox(modelComboBox, modelsList);
+
             }
         });
 
@@ -300,6 +309,7 @@ public class ProductCrud {
                         ProductCrud.deleteProduct(ref);
                     }
                 });
+
            
         } 
             
@@ -314,7 +324,7 @@ public class ProductCrud {
         // We populate the table using those collected contacts
         List<String> columns = FXManager.catalog_columns;
         
-        FXManager.populateTableView(productsTable, columns, Arrays.asList("ref"), data);
+        FXManager.populateTableView(productsTable, columns, Arrays.asList("ref", "category id"), data);
     }
 
     public static void fillWithFilteredProducts(TableView productsTable, List<List<String>> data) {
@@ -322,7 +332,7 @@ public class ProductCrud {
         // The columns we'll use for the table
         List<String> columns = FXManager.catalog_columns;
         
-        FXManager.populateTableView(productsTable, columns, Arrays.asList("ref"), data);
+        FXManager.populateTableView(productsTable, columns, Arrays.asList("ref", "category id"), data);
     }
 
     public static void whatToCreate() {
@@ -466,13 +476,13 @@ public class ProductCrud {
             brand.setPromptText(originalValues.get(1));
             model.setPromptText(originalValues.get(2));
 
-            // We fill the brand combo box with the corresponding brands :
+            /*// We fill the brand combo box with the corresponding brands :
             List<String> brands = CategoryDto.getAllColumnByFilterColumn("brand", "category", originalValues.get(1));
             FXManager.populateComboBox(brand, brands);
 
             // We fill the model combo box with the corresponding models :
             List<String> models = CategoryDto.getAllColumnByFilterColumn("model", "brand", originalValues.get(2));
-            FXManager.populateComboBox(model, models);
+            FXManager.populateComboBox(model, models);*/
         }
 
         

@@ -6,6 +6,7 @@ module uiass.eia.gisiba {
     requires okio;
     requires javafx.base;
     requires javafx.graphics;
+    requires java.sql;
 
     opens uiass.eia.gisiba to javafx.fxml;
     opens uiass.eia.gisiba.controller to javafx.fxml; // Add this line to open the controller package

@@ -6,7 +6,9 @@ import java.util.*;
 import uiass.gisiba.eia.java.dao.exceptions.*;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
+import uiass.gisiba.eia.java.entity.crm.Enterprise;
 import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
+import uiass.gisiba.eia.java.entity.crm.Person;
 
 public interface iContactDao {
 
@@ -17,6 +19,10 @@ public interface iContactDao {
     void deleteContact(int id, String contactType) throws ContactNotFoundException, InvalidContactTypeException;
 
     Contact getContactById(int id, String contactType) throws ContactNotFoundException,InvalidContactTypeException;
+
+    Person getPersonById(int id) throws ContactNotFoundException;
+
+    Enterprise getEnterpriseById(int id) throws ContactNotFoundException;
 
     Contact getContactByName(String name, String contactType) throws ContactNotFoundException, InvalidContactTypeException;
 

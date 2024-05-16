@@ -21,11 +21,11 @@ public class EnterprisePurchase extends Purchase {
     @JoinColumn(name="supplier_id")
     private Enterprise supplier;
 
-    public EnterprisePurchase(List<PurchaseOrder> orders, Date purchaseDate, double total, Status status,
+    public EnterprisePurchase(List<PurchaseOrder> orders, double total, Status status,
     
     Enterprise supplier) {
 
-        super(orders, purchaseDate, total, status);
+        super(orders, total, status);
 
         this.supplier = supplier;
     }

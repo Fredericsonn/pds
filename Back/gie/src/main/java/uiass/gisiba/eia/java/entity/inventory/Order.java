@@ -1,7 +1,10 @@
 package uiass.gisiba.eia.java.entity.inventory;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -31,11 +34,12 @@ public class Order implements Serializable {
 
     // Constructors
 
-    public Order(InventoryItem item, int quantity, Time orderTime) {
+    public Order(InventoryItem item, Time orderTime,  int quantity) {
 
         this.item = item;
-        this.quantity = quantity;
         this.orderTime = orderTime;
+        this.quantity = quantity;
+        
     }
 
     public Order() {

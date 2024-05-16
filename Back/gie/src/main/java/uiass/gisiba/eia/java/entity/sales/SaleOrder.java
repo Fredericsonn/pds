@@ -18,9 +18,9 @@ public class SaleOrder extends Order {
 
     // Constructors
     
-    public SaleOrder(InventoryItem product, int quantity, Time orderTime) {
+    public SaleOrder(InventoryItem product, Time orderTime, int quantity) {
 
-        super(product, quantity, orderTime);
+        super(product, orderTime, quantity);
 
     }
 

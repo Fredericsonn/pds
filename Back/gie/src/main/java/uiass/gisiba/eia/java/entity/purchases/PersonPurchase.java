@@ -21,11 +21,11 @@ public class PersonPurchase extends Purchase {
     @JoinColumn(name="supplier_id")
     private Person supplier;
 
-    public PersonPurchase(List<PurchaseOrder> orders, Date purchaseDate, double total,Status status,
+    public PersonPurchase(List<PurchaseOrder> orders, double total,  Status status,
     
     Person supplier) {
 
-        super(orders, purchaseDate, total, status);
+        super(orders, total, status);
 
         this.supplier = supplier;
     }

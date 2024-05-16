@@ -42,34 +42,19 @@ public class CategoryDto {
     }
 
     // Find all the column names by a given column:
-    public static List<String> getAllColumnByFilterColumn(String column, String filerColumn, String value) {
+    public static List<String> categoryFilter(String column, String json) {
 
-        List<String> brands = new ArrayList<String>();
+        List<String> data = new ArrayList<String>();
 
-        String responseBody = DataSender.getDataSender("categories/" + column + "/" + filerColumn + "/" + value);
+        String responseBody = DataSender.postDataSender(json, "categories/filter/" + column);
 
-        JsonArray brandsArray = new JsonParser().parse(responseBody).getAsJsonArray();
+        JsonArray dataArray = new JsonParser().parse(responseBody).getAsJsonArray();
 
-        brandsArray.forEach(brand -> brands.add(brand.getAsString()));
+        dataArray.forEach(data_element -> data.add(data_element.getAsString()));
 
-        return brands;
+        return data;
     }
 
-    // Find all the brands by a given category:
-    public static List<String> getAllModelsByBrandAndCategory(String brand, String category) {
-
-        List<String> models;
-
-        List<String> modelsByBrand = getAllColumnByFilterColumn("model", "brand", brand);
-
-        List<String> modelsByCategory = getAllColumnByFilterColumn("model", "category", category);
-
-        modelsByCategory.retainAll(modelsByBrand);
-
-        models = new ArrayList<String>(modelsByCategory);
-
-        return models;
-    }
 
 //////////////////////////////////////////////////// POST METHOD ///////////////////////////////////////////////////////////////////
 

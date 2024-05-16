@@ -17,16 +17,28 @@ public class AppTest {
 
     public static void main(String[] args) {
 
-        /*Map<String,Object> map = new HashMap<String,Object>();
+        Map<String,Object> map = new HashMap<String,Object>();
 
-        map.put("categoryName", "CAMERA");
+        Map<String,Object> dateMap = new HashMap<String,Object>();
 
-        map.put("brandName", "Panasonic");
+        Map<String,Object> supplierMap = new HashMap<String,Object>();
 
-        String json = Parser.jsonGenerator(map);*/
+        //dateMap.put("startDate", "2017-05-12");
 
-        //System.out.println(ProductDto.getFilteredProducts(json));
+        //dateMap.put("endDate", "2020-05-12");
 
-        System.out.println(PurchaseDto.getAllPurchases());
+        supplierMap.put("supplierName", "Brett Robbins");
+
+        supplierMap.put("supplierType", "Person");
+
+        //map.put("date", dateMap);
+
+        map.put("status", "PENDING");
+
+        String json = Parser.jsonGenerator(map);
+
+        System.out.println(PurchaseDto.purchasesFilter(json));
     }
+
+    
 }

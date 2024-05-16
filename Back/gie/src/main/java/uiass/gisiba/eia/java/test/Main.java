@@ -9,12 +9,15 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
+import javax.transaction.Status;
 import javax.transaction.Transaction;
 
 import com.google.gson.Gson;
@@ -30,6 +33,7 @@ import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
+import uiass.gisiba.eia.java.dao.exceptions.InvalidFilterCriteriaMapFormatException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidOrderTypeException;
 import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.OrderNotFoundException;
@@ -39,9 +43,11 @@ import uiass.gisiba.eia.java.dao.inventory.ProductDao;
 import uiass.gisiba.eia.java.dao.inventory.iProductDao;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.EntrepriseType;
+import uiass.gisiba.eia.java.entity.crm.Person;
 import uiass.gisiba.eia.java.entity.inventory.Category;
 import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
 import uiass.gisiba.eia.java.entity.inventory.Product;
+import uiass.gisiba.eia.java.entity.purchases.PersonPurchase;
 import uiass.gisiba.eia.java.entity.purchases.Purchase;
 import uiass.gisiba.eia.java.entity.purchases.PurchaseOrder;
 import uiass.gisiba.eia.java.service.Service;
@@ -122,12 +128,51 @@ public class Main {
             e.printStackTrace();
         }*/
 
-        /*Map<String,String> map = new HashMap<String,String>();
+        /*Map<String,Object> map = new HashMap<String,Object>();
 
-        map.put("categoryName", "LAPTOP");*/
+        Map<String,Date> dateMap = new HashMap<String,Date>();
+
+        Map<String,String> supplierMap = new HashMap<String,String>();
+
+        supplierMap.put("supplierName", "Ayala-Franco");
+
+        supplierMap.put("supplierType", "Enterprise");
+
+        map.put("supplier", supplierMap);
+
+        dateMap.put("afterDate", Date.valueOf("2021-09-21"));
+
+        //dateMap.put("startDate", Date.valueOf("2015-05-12"));
+
+        //map.put("date", dateMap);
+
+        map.put("status", "CANCELED");*/
+
+        try {
+
+            Person person = em.find(Person.class, 5);
+
+            InventoryItem item = service.getInventoryItemById(7);
+
+            PurchaseOrder order = new PurchaseOrder(item,Time.valueOf(LocalTime.now()), 5);
+
+            List<PurchaseOrder> orders = Arrays.asList(order);
+
+            PersonPurchase purchase = new PersonPurchase(orders, 205, uiass.gisiba.eia.java.entity.inventory.Status.COMPLETED, person);
+
+            service.addPurchase(purchase);
+
+        } catch (InventoryItemNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
 
-            System.out.println(service.getAllOrdersByPurchase(9));
+
+
+        
+
+        
        
 
       

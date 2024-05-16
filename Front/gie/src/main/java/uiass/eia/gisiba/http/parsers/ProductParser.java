@@ -112,6 +112,26 @@ public class ProductParser extends Parser {
         return map;
     }
 
+    public static Map<String,Object> categoryFilter(List<String> values) {
+
+        Map<String,Object> map = new HashMap<String,Object>();
+
+        List<String> attributes = search_columns;
+
+        for (int i=0 ; i < attributes.size() ; i++) {
+
+            String attribute = attributes.get(i);
+
+            String value = values.get(i);
+
+            if (value != null) map.put(attribute, value);
+
+        }
+
+        return map;
+
+    }
+
     public static String updateProductJsonGenerator(Map<String,Object> productMap, Map<String,Object> categoryMap) {
 
         if (!categoryMap.isEmpty()) productMap.put("category", categoryMap);

@@ -18,9 +18,9 @@ public class PurchaseOrder extends Order {
 
     // Constructors
 
-    public PurchaseOrder(InventoryItem item, int quantity, Time orderTime) {
+    public PurchaseOrder(InventoryItem item, Time orderTime, int quantity) {
 
-        super(item, quantity, orderTime);
+        super(item, orderTime, quantity);
         
     }
 

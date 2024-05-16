@@ -101,9 +101,9 @@ public class OrderDao implements iOrderDao {
     }
 
     @Override
-    public void addPurchaseOrder(InventoryItem product, int quantity, Time orderTime, Purchase purchase) {
+    public void addPurchaseOrder(InventoryItem product, Time orderTime, int quantity, Purchase purchase) {
 
-        PurchaseOrder order = new PurchaseOrder(product, quantity, orderTime);
+        PurchaseOrder order = new PurchaseOrder(product, orderTime, quantity);
 
         order.setPurchase(purchase);
 
@@ -115,9 +115,9 @@ public class OrderDao implements iOrderDao {
     }
 
     @Override
-    public void addSaleOrder(InventoryItem product, int quantity, Time orderTime, Sale sale) {
+    public void addSaleOrder(InventoryItem product, Time orderTime, int quantity, Sale sale) {
 
-        SaleOrder order = new SaleOrder(product, quantity, orderTime);
+        SaleOrder order = new SaleOrder(product, orderTime, quantity);
 
         order.setSale(sale);
 

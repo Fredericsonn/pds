@@ -21,9 +21,9 @@ public interface iOrderDao {
 
     List<PurchaseOrder> getAllOrdersByPurchase(int purchaseId);
 
-    void addPurchaseOrder(InventoryItem product, int quantity, Time orderTime, Purchase purchase);
+    void addPurchaseOrder(InventoryItem product, Time orderTime, int quantity, Purchase purchase);
 
-    void addSaleOrder(InventoryItem product, int quantity, Time orderTime, Sale sale);
+    void addSaleOrder(InventoryItem product, Time orderTime, int quantity, Sale sale);
 
     void deleteOrder(int orderId, String orderType) throws InvalidOrderTypeException, OrderNotFoundException;
 

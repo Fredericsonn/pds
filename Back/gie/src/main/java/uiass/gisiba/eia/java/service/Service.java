@@ -17,6 +17,7 @@ import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
+import uiass.gisiba.eia.java.dao.exceptions.InvalidFilterCriteriaMapFormatException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidOrderTypeException;
 import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.NoContactsFoundInCountry;
@@ -228,10 +229,11 @@ public class Service implements iService {
     }
 
     @Override
-    public List<String> getAllColumnByFilterColumn(String column, String filterColumn, String value) {
+    public List<String> getAllColumnNamesByCriteria(String column, Map<String, String> criteria) {
 
-        return catdao.getAllColumnByFilterColumn(column, filterColumn, value);
+        return catdao.getAllColumnNamesByCriteria(column, criteria);
     }
+
 
     @Override
     public Category getCategoryByNames(String categoryName, String brandName, String modelName) throws CategoryNotFoundException {
@@ -343,15 +345,15 @@ public class Service implements iService {
     }
 
     @Override
-    public void addPurchaseOrder(InventoryItem product, int quantity, Time orderTime, Purchase purchase) {
+    public void addPurchaseOrder(InventoryItem product, Time orderTime, int quantity, Purchase purchase) {
 
-        odao.addPurchaseOrder(product, quantity, orderTime, purchase);
+        odao.addPurchaseOrder(product, orderTime, quantity, purchase);
     }
 
     @Override
-    public void addSaleOrder(InventoryItem product, int quantity, Time orderTime, Sale sale) {
+    public void addSaleOrder(InventoryItem product, Time orderTime, int quantity, Sale sale) {
 
-        odao.addSaleOrder(product, quantity, orderTime, sale);
+        odao.addSaleOrder(product, orderTime, quantity, sale);
     }
 
     @Override
@@ -390,15 +392,9 @@ public class Service implements iService {
     }
 
     @Override
-    public List<Purchase> getAllPurchasesBySupplier(Person supplier) {
+    public List<Purchase> getAllPurchasesBySupplier(String name, String supplierType) {
 
-        return psdao.getAllPurchasesBySupplier(supplier);
-    }
-
-    @Override
-    public List<Purchase> getAllPurchasesBySupplier(Enterprise supplier) {
-
-        return psdao.getAllPurchasesBySupplier(supplier);
+        return psdao.getAllPurchasesBySupplier(name, supplierType);
     }
 
     @Override
@@ -414,10 +410,17 @@ public class Service implements iService {
     }
 
     @Override
-    public List<Purchase> getAllPurchasesBetweenDates(Date startDate, Date endDate) {
+    public List<Purchase> purchasesDatesFilter(Map<String, Date> datesCriteria) throws InvalidFilterCriteriaMapFormatException {
 
-        return psdao.getAllPurchasesBetweenDates(startDate, endDate);
+        return psdao.purchasesDatesFilter(datesCriteria);
     }
+
+    @Override
+    public List<Purchase> purchasesFilter(Map<String, Object> criteria) throws InvalidFilterCriteriaMapFormatException {
+
+        return psdao.purchasesFilter(criteria);
+    }
+
 
     @Override
     public List<PurchaseOrder> getPurchaseOrders(int id) throws PurchaseNotFoundException {
@@ -450,6 +453,10 @@ public class Service implements iService {
 
         psdao.updatePurchaseStatus(id, status);
     }
+
+
+
+
 
 
 

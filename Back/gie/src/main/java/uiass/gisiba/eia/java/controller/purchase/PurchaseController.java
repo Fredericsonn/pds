@@ -2,6 +2,7 @@ package uiass.gisiba.eia.java.controller.purchase;
 
 import static spark.Spark.*;
 
+import java.sql.Date;
 import java.util.*;
 
 import com.google.gson.Gson;
@@ -19,6 +20,7 @@ import uiass.gisiba.eia.java.controller.Parsers.PurchaseParser;
 import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
+import uiass.gisiba.eia.java.dao.exceptions.InvalidFilterCriteriaMapFormatException;
 import uiass.gisiba.eia.java.dao.exceptions.OperationNotModifiableException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.PurchaseNotFoundException;
@@ -102,21 +104,17 @@ public class PurchaseController {
 	  
 	    System.out.println("Server started.");
 	
-	    get("/purchases/bySupplier/:contactType/:supplierId", (req,res)-> {
+	    get("/purchases/bySupplier/:supplierType/:supplierName", (req,res)-> {
 
-		String contactType = req.params("contactType");
+		String supplierType = req.params("supplierType");
 
-        int supplierId = Integer.parseInt(req.params("supplierId"));
+        String supplierName = req.params("supplierName");
 
-		Contact supplier = service.getContactById(supplierId, contactType);
-
-		Person p = null;
-
-		//List<Purchase> purchases = service.getAllPurchasesBySupplier(supplier);
+		List<Purchase> purchases = service.getAllPurchasesBySupplier(supplierName,supplierType);
 		
 		res.type("application/json");
 
-		return p;
+		return purchases;
 	
 		   
 		}, gsonWithSerializer::toJson);
@@ -144,7 +142,7 @@ public class PurchaseController {
 	  
 	    System.out.println("Server started.");
 	
-	    get("/purchases/:status", (req,res)-> {
+	    get("/purchases/byStatus/:status", (req,res)-> {
 
         String status = req.params("status");
 
@@ -169,6 +167,8 @@ public class PurchaseController {
 
 				String body = request.body();
 
+				System.out.println(body);
+
 				String supplierType = request.params("supplierType");
 
 				Purchase purchase = PurchaseParser.parsePurchase(body, supplierType);
@@ -176,6 +176,32 @@ public class PurchaseController {
 				service.addPurchase(purchase);
 
 				return "Purchase created successfully";
+			}
+			
+		});
+	}
+
+	public static void purchasesFilter() {
+
+		post("/purchases/filter", new Route() {
+
+			@Override
+			public Object handle(Request request, Response response)  {
+
+				String body = request.body();
+				
+				try {
+
+					Map<String, Object> criteria = PurchaseParser.parsePurchaseFilterCriteriaMap(body);
+
+					List<Purchase> purchases = service.purchasesFilter(criteria);
+
+					return gsonWithSerializer.toJson(purchases);
+
+				} catch (InvalidFilterCriteriaMapFormatException e) {
+					
+					return e.getMessage();
+				}
 			}
 			
 		});

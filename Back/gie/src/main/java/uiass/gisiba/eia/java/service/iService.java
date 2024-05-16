@@ -13,6 +13,7 @@ import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
+import uiass.gisiba.eia.java.dao.exceptions.InvalidFilterCriteriaMapFormatException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidOrderTypeException;
 import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.NoContactsFoundInCountry;
@@ -102,7 +103,7 @@ public interface iService {
 
     List<String> getAllColumnNames(String column);
 
-    List<String> getAllColumnByFilterColumn(String column, String filterColumn, String value);
+    List<String> getAllColumnNamesByCriteria(String column, Map<String,String> criteria);
 
     void addCategory(String categoryName, String brandName, String modelName);
 
@@ -138,9 +139,9 @@ public interface iService {
 
     List<Order> orderSearchFilter(String orderType, Map<String,String> criteria) throws InvalidOrderTypeException;
 
-    void addPurchaseOrder(InventoryItem product, int quantity, Time orderTime, Purchase purchase);
+    void addPurchaseOrder(InventoryItem product, Time orderTime, int quantity, Purchase purchase);
 
-    void addSaleOrder(InventoryItem product, int quantity, Time orderTime, Sale sale);
+    void addSaleOrder(InventoryItem product, Time orderTime, int quantity, Sale sale);
 
     void deleteOrder(int orderId, String orderType) throws InvalidOrderTypeException, OrderNotFoundException;
 
@@ -154,15 +155,15 @@ public interface iService {
 
     List<Purchase> getAllPurchasesByContactType(String type) throws InvalidContactTypeException;
 
-    List<Purchase> getAllPurchasesBySupplier(Person supplier);
-
-    List<Purchase> getAllPurchasesBySupplier(Enterprise supplier);
+    List<Purchase> getAllPurchasesBySupplier(String name, String supplierType);
 
     List<Contact> getAllSuppliers(String supplierType) throws InvalidContactTypeException;
 
     List<Purchase> getAllPurchasesByStatus(Status status);
 
-    List<Purchase> getAllPurchasesBetweenDates(Date startDate, Date endDate);
+    List<Purchase> purchasesDatesFilter(Map<String,Date> datesCriteria) throws InvalidFilterCriteriaMapFormatException;
+
+    List<Purchase> purchasesFilter(Map<String, Object> criteria) throws InvalidFilterCriteriaMapFormatException;
 
     List<PurchaseOrder> getPurchaseOrders(int id) throws PurchaseNotFoundException;
 

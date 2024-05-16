@@ -35,6 +35,15 @@ public class OrderDto {
 
     }
 
+    // Find all the purchases by supplier type :
+    public static List<List<String>> getAllOrdersByPurchase(int purchaseId) {
+
+        String responseBody = DataSender.getDataSender("orders/purchaseOrders/byPurchase/" + purchaseId);;
+
+        return PurchaseParser.parsePurchaseOrders(responseBody);
+
+    }
+
                               //////////////// POST METHODS //////////////// 
 
     // Find all the filtered products :

@@ -1,6 +1,9 @@
 package uiass.gisiba.eia.java.dao;
 
 import java.util.*;
+
+import javax.persistence.Query;
+
 import uiass.gisiba.eia.java.entity.crm.Contact;
 import uiass.gisiba.eia.java.entity.crm.Enterprise;
 import uiass.gisiba.eia.java.entity.crm.Person;
@@ -180,11 +183,9 @@ public class HQLQueryManager {
 
     public static String selectOperationsBetweenDatesHQLQueryGenerator(String type) {
 
-        String table = orderTableNameHandler(type);
-
         String attribute = orderAttributeNameHandler(type);
 
-        String hql = "from " + table + " where " + attribute + "Date" + 
+        String hql = "from " + type + " where " + attribute.toLowerCase() + "Date" + 
         
         " between :startDate and :endDate";
 
@@ -201,6 +202,34 @@ public class HQLQueryManager {
         String hql = "select DISTINCT p.supplier from " + supplierType + "Purchase p";
 
         return hql;
+    }
+
+    public static String selectColumnNamesByCriteria(String column, Map<String,String> criteria) {
+
+        String hql = "select DISTINCT " + column + " from Category where ";
+
+        for (String filterColumn : criteria.keySet()){
+
+            hql += filterColumn + "=:" + filterColumn + " and ";
+        }
+
+        hql = hql.substring(0, hql.length() - 5);
+
+        return hql;
+    }
+
+    public static String selectAllPurchasesBySupplierNameHQLQueryGenerator(String supplierType) {
+
+        String hql;
+
+        if (supplierType.equals("Person")) 
+
+            hql = "from " + supplierType + "Purchase p where DTYPE = :type and concat(p.supplier.firstName,' ',p.supplier.lastName) = :fullName";
+
+        else  hql = "from " + supplierType + "Purchase p where DTYPE = :type and p.supplier.enterpriseName = :fullName";
+
+        return hql;
+
     }
 
 

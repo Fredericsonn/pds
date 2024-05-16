@@ -15,7 +15,7 @@ public interface iCategoryDao {
 
     List<String> getAllColumnNames(String column);
 
-    List<String> getAllColumnByFilterColumn(String column, String filterColumn, String value);
+    List<String> getAllColumnNamesByCriteria(String column, Map<String,String> criteria);
 
     void addCategory(String categoryName, String brandName, String modelName);
 

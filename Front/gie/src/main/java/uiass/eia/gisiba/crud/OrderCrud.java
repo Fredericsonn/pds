@@ -46,8 +46,6 @@ public class OrderCrud {
                 
                 + "$", "Quantity Ordered : " + quantity, "Date : " + orderDateTime);
 
-                System.out.println(valuesToShow);
-
                 // We use the extracted values to fill the labels
                 FXManager.labelsFiller(labels, valuesToShow);
 
@@ -78,7 +76,7 @@ public class OrderCrud {
         // We populate the table using those collected orders
         List<String> columns = FXManager.order_columns;
         
-        FXManager.populateTableView(productsTable, columns, Arrays.asList("order id", "item id"), data);
+        FXManager.populateTableView(productsTable, columns, Arrays.asList("order id", "item id","category"), data);
     }
 
     public static void fillWithFilteredPurchasedOrders(TableView productsTable, List<List<String>> data) {
@@ -86,7 +84,7 @@ public class OrderCrud {
         // The columns we'll use for the table
         List<String> columns = FXManager.order_columns;
         
-        FXManager.populateTableView(productsTable, columns, Arrays.asList("ref"), data);
+        FXManager.populateTableView(productsTable, columns, Arrays.asList("order id", "item id","category"), data);
     }
 
     public static void goToViewOrderPane() {

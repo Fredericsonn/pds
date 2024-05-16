@@ -1,9 +1,13 @@
 package uiass.eia.gisiba.http.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 
 import uiass.eia.gisiba.http.DataSender;
+import uiass.eia.gisiba.http.parsers.ContactParser;
 import uiass.eia.gisiba.http.parsers.PurchaseParser;
 
 public class PurchaseDto {
@@ -30,9 +34,45 @@ public class PurchaseDto {
     }
 
     // Find all the purchases :
+    public static List<List<String>> getAllSuppliersByType(String type) {
+
+        String responseBody = DataSender.getDataSender("purchases/suppliers/" + type);;
+
+        List<List<String>> suppliers = new ArrayList<List<String>>();
+
+        JsonArray suppliersArray = new JsonParser().parse(responseBody).getAsJsonArray();
+
+        suppliersArray.forEach(supplier -> suppliers.add(ContactParser.parseContact(String.valueOf(supplier.getAsJsonObject()), type)));
+
+        return suppliers;
+
+    }
+
+    // Find all the purchases :
+    public static List<List<String>> getAllSuppliers() {
+
+        String personResponseBody = DataSender.getDataSender("purchases/suppliers/Person");
+
+        String enterpriseResponseBody = DataSender.getDataSender("purchases/suppliers/Enterprise");
+
+        List<List<String>> suppliers = new ArrayList<List<String>>();
+
+        JsonArray personSuppliersArray = new JsonParser().parse(personResponseBody).getAsJsonArray();
+
+        JsonArray enterpriseSuppliersArray = new JsonParser().parse(enterpriseResponseBody).getAsJsonArray();
+
+        personSuppliersArray.forEach(supplier -> suppliers.add(ContactParser.parseContact(String.valueOf(supplier.getAsJsonObject()), "Person")));
+
+        enterpriseSuppliersArray.forEach(supplier -> suppliers.add(ContactParser.parseContact(String.valueOf(supplier.getAsJsonObject()), "Enterprise")));
+
+        return suppliers;
+
+    }
+
+    // Find all the purchases :
     public static List<List<String>> getAllPurchasesByStatus(String status) {
 
-        String responseBody = DataSender.getDataSender("purchases/" + status);;
+        String responseBody = DataSender.getDataSender("purchases/byStatus/" + status);;
 
         return PurchaseParser.parsePurchases(responseBody);
 
@@ -46,7 +86,6 @@ public class PurchaseDto {
         return PurchaseParser.parsePurchases(responseBody);
 
     }
-
 
     // Find all the purchases :
     public static List<List<String>> getAllPurchases() {
@@ -65,6 +104,17 @@ public class PurchaseDto {
         return DataSender.postDataSender(json, "purchases/" + supplierType + "/post");
     }
 
+    // Find all the purchases by supplier type :
+    public static List<List<String>> purchasesFilter(String json) {
+
+        String responseBody = DataSender.postDataSender(json, "purchases/filter");
+
+        if (!responseBody.equals("Server Error.")) return PurchaseParser.parsePurchases(responseBody);
+
+        return null;
+
+    }
+
 //////////////////////////////////////////////////// Delete METHOD /////////////////////////////////////////////////////////////
 
     public static String deletePurchase(int id) {
@@ -76,14 +126,14 @@ public class PurchaseDto {
 
     public static String updatePurchaseOrders(int id, String json) {
 
-        if (json != null) return DataSender.putDataSender(json, "products/put/orders/" + id );
+        if (json != null) return DataSender.putDataSender(json, "purchases/put/orders/" + id );
 
         return "Please provide some new values to update.";
     }
 
     public static String updatePurchaseStatus(int id, String json) {
 
-        if (json != null) return DataSender.putDataSender(json, "products/put/status/" + id );
+        if (json != null) return DataSender.putDataSender(json, "purchases/put/status/" + id );
 
         return "Please provide some new values to update.";
     }

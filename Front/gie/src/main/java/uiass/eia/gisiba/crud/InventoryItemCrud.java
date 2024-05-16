@@ -114,11 +114,30 @@ public class InventoryItemCrud {
         FXManager.populateTableView(itemsTable, columns, Arrays.asList("id"), data);
     }
 
+    public static void fillWithItemsForPurchase(TableView itemsTable) {
+
+        // We send an http get request to get all the contacts of the given type
+        List<List<String>> data = InventoryDto.getAllItems();  
+
+        // We populate the table using those collected contacts
+        List<String> columns = FXManager.inventory_columns;
+        
+        FXManager.populateTableView(itemsTable, columns, Arrays.asList("id","quantity", "date added"), data);
+    }
+
     public static void fillWithFilteredItems(TableView inventoryTable, List<List<String>> data) {
         
         // The columns we'll use for the table
         List<String> columns = FXManager.inventory_columns;
         
         FXManager.populateTableView(inventoryTable, columns, Arrays.asList("id"), data);
+    }
+
+    public static void fillWithFilteredItemsForPurchase(TableView inventoryTable, List<List<String>> data) {
+        
+        // The columns we'll use for the table
+        List<String> columns = FXManager.inventory_columns;
+        
+        FXManager.populateTableView(inventoryTable, columns, Arrays.asList("id","quantity", "date added"), data);
     }
 }

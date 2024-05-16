@@ -1,12 +1,14 @@
 package uiass.gisiba.eia.java.controller.Parsers;
 
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.*;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.PurchaseNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
 import uiass.gisiba.eia.java.entity.purchases.Purchase;
@@ -21,31 +23,24 @@ public class OrderParser extends Parser {
 
     public static iService service = new Service();
 
-    public static PurchaseOrder parsePurchaseOrder(String json) throws CategoryNotFoundException, PurchaseNotFoundException {
+    public static PurchaseOrder parsePurchaseOrder(String json) throws InventoryItemNotFoundException {
         
         JsonObject orderObject = new JsonParser().parse(json).getAsJsonObject();
 
-        int orderId = collectInt(orderObject, "orderId");
+        int itemId = collectInt(orderObject, "itemId");
 
-        JsonObject itemObject = orderObject.get("product").getAsJsonObject();
+        InventoryItem item = service.getInventoryItemById(itemId);
 
-        InventoryItem item = InventoryItemParser.parseInventoryItem(itemObject.getAsString());
+        int quantity = collectInt(orderObject, "quantity");
 
-        int quantity = collectInt(itemObject, "quantity");
+        Time orderTime = Time.valueOf(LocalTime.parse(collectString(orderObject, "orderTime")));
 
-        Time time = Time.valueOf(collectString(itemObject, "time"));
+        PurchaseOrder order = new PurchaseOrder(item, orderTime, quantity);
 
-        int purchaseId = collectInt(itemObject, "purchase");
-
-        Purchase purchase = service.getPurchaseById(purchaseId);
-
-        PurchaseOrder order = new PurchaseOrder(item, quantity, time);
-
-        order.setOrderId(orderId);
-
-        order.setPurchase(purchase);
+        System.out.println(order);
 
         return order;
+
     }
 
     public static List<PurchaseOrder> parsePurchaseOrders(String json) {

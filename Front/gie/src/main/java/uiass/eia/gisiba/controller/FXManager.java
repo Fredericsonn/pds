@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import uiass.eia.gisiba.Main;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
@@ -71,7 +72,18 @@ public class FXManager {
         }
     }
 
-    public static void loadFXMLStack(String fxmlFile, StackPane pane, Class c) {
+    public static void loadFXML(String fxmlFile, HBox pane, Class c) {
+        
+        try {
+            FXMLLoader loader = new FXMLLoader(c.getResource(fxmlFile));
+            Parent content = loader.load();
+            pane.getChildren().setAll(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadFXML(String fxmlFile, VBox pane, Class c) {
         
         try {
             FXMLLoader loader = new FXMLLoader(c.getResource(fxmlFile));
@@ -155,7 +167,7 @@ public class FXManager {
                 }
             });
 
-            if (exclusions.contains(columns.get(i))) column.setVisible(false);
+            if (exclusions != null) if (exclusions.contains(columns.get(i))) column.setVisible(false);
 
             tableView.getColumns().add(column);
         }
@@ -229,6 +241,38 @@ public class FXManager {
         }
     }
 
+    public static String convertDateFormat(String inputDate) {
+        if (!inputDate.equals("null")) {
+            // Split the input date string into year, month, and day components
+            String[] parts = inputDate.split("-");
+            int year = Integer.parseInt(parts[0]);
+            int month = Integer.parseInt(parts[1]);
+            int day = Integer.parseInt(parts[2]);
+    
+            // Create a StringBuilder to build the formatted date
+            StringBuilder sb = new StringBuilder();
+    
+            // Append year
+            sb.append(year);
+            sb.append("-");
+    
+            // Append month with padding if needed
+            if (month < 10) {
+                sb.append("0");
+            }
+            sb.append(month);
+            sb.append("-");
+    
+            // Append day with padding if needed
+            if (day < 10) {
+                sb.append("0");
+            }
+            sb.append(day);
+    
+            return sb.toString();
+        }
+        return null;
+    }
     // numeric only text field rule
     public static void setTextFieldNumericFormatRule(TextField numericTextField) {
 
@@ -379,5 +423,11 @@ public class FXManager {
     public static AnchorPane getAnchorPane(Parent pane, String id) {
 
         return (AnchorPane) pane.lookup("#" + id);
+    }
+    
+    public static DatePicker getDatePicker(Parent pane, String id) {
+
+        return (DatePicker) pane.lookup("#" + id);
     } 
+
 }

@@ -64,16 +64,18 @@ public class CategoryDao implements iCategoryDao{
     }
 
     @Override
-    public List<String> getAllColumnByFilterColumn(String column,String filterColumn, String value) {
+    public List<String> getAllColumnNamesByCriteria(String column, Map<String,String> criteria) {
 
-        String hql = "select DISTINCT " + column + "Name from Category where " + filterColumn + "Name =:" + filterColumn;
+        String hql = HQLQueryManager.selectColumnNamesByCriteria(column, criteria);
 
         Query query = em.createQuery(hql);
 
-        query.setParameter(filterColumn, value);
+        for (String filterColumn : criteria.keySet()) {
+
+            query.setParameter(filterColumn, criteria.get(filterColumn));
+        }
 
         return query.getResultList();
-
     }
 
     @Override
@@ -127,6 +129,8 @@ public class CategoryDao implements iCategoryDao{
 		tr.commit();
   
     }
+
+
 
 
 

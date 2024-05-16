@@ -64,6 +64,16 @@ public class ContactDto {
         return persons;
     }
 
+    public static String getContactType(String name) {
+
+        List<String> contact = getContactByName(name, "Person");
+
+        if (contact != null) return "Person";
+
+        return "Enterprise";
+ 
+    }
+
 //////////////////////////////////////////////////// POST METHODS /////////////////////////////////////////////////////////////
 
     // Create a new contact :

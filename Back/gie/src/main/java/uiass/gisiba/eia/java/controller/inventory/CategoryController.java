@@ -11,9 +11,11 @@ import spark.Response;
 import spark.Route;
 import uiass.gisiba.eia.java.controller.Parsers.CategoryParser;
 import uiass.gisiba.eia.java.controller.Parsers.Parser;
+import uiass.gisiba.eia.java.controller.Parsers.ProductParser;
 import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.Category;
+import uiass.gisiba.eia.java.entity.inventory.Product;
 import uiass.gisiba.eia.java.service.Service;
 
 public class CategoryController {
@@ -61,31 +63,6 @@ public class CategoryController {
 
     }
 
-	public static void getAllColumnByFilterColumn() {
-
-	    Gson gson = new Gson();
-	  
-	    System.out.println("Server started.");
-	
-	    get("/categories/:column/:filterColumn/:value", (req,res)-> {
-
-		String column = req.params("column");
-
-		String filterColumn = req.params("filterColumn");
-
-		String value = req.params("value");
-
-		List<String> brands = service.getAllColumnByFilterColumn(column, filterColumn, value);
-		
-		res.type("application/json");
-
-		return brands;
-	
-		   
-		}, gson::toJson);
-
-    }
-
 
 /////////////////////////////////////////////////// POST METHOD //////////////////////////////////////////////////////////////////
 
@@ -102,10 +79,37 @@ public class CategoryController {
 
 				service.addCategory(category.getCategoryName(), category.getBrandName(), category.getModelName());
 
-				return "Category created successfully";
+				return "Brand - Model created successfully";
 			}
 			
 		});
+	}
+
+	public static void categorySearchFilter() {
+	
+		post("/categories/filter/:column" , new Route() {
+	
+			@Override
+			public String handle(Request request, Response response) throws ProductNotFoundException, CategoryNotFoundException  {
+
+				Gson gson = new Gson();
+
+				System.out.println("Server started.");
+		
+				String body = request.body();
+
+				String column = request.params("column");
+		
+				Map<String,String> criteria = ProductParser.parseFilterCriteria(body, ProductParser.filter_columns);
+		
+				List<String> filteredData = service.getAllColumnNamesByCriteria(column, criteria);
+						
+				return gson.toJson(filteredData);
+	
+	
+	}});
+	
+	
 	}
 
 /////////////////////////////////////////////////// PUT METHOD /////////////////////////////////////////////////////////////////////

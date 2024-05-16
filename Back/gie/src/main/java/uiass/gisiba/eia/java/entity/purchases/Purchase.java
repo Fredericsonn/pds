@@ -1,6 +1,7 @@
 package uiass.gisiba.eia.java.entity.purchases;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -43,11 +44,12 @@ public class Purchase {
 
     // Constructors
 
-    public Purchase(List<PurchaseOrder> orders, Date purchaseDate, double total, Status status) {
+    public Purchase(List<PurchaseOrder> orders, double total, Status status) {
+
         this.orders = orders;
-        this.purchaseDate = purchaseDate;
         this.total = total;
         this.status = status;
+        this.purchaseDate = Date.valueOf(LocalDate.now());
 
     }
 

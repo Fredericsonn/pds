@@ -27,6 +27,15 @@ public class Parser {
 
         return null;
     }
+
+    public static String jsonGenerator(List<Map<String,Object>> attributes) {
+
+        Gson gson = GetGson.getGson();
+
+        if (!attributes.isEmpty()) return gson.toJson(attributes);
+
+        return null;
+    }
     
     public static String collectString(JsonObject jsObj, String attribute) {
         JsonElement element = jsObj.get(attribute);

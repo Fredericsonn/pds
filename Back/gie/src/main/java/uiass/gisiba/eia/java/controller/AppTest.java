@@ -37,7 +37,7 @@ public class AppTest {
 
         CategoryController.getAllCategories();
         CategoryController.getAllColumnNames();
-        CategoryController.getAllColumnByFilterColumn();
+        CategoryController.categorySearchFilter();
         CategoryController.updateCategoryController();
         CategoryController.postCategory();
 
@@ -58,6 +58,7 @@ public class AppTest {
         PurchaseController.getAllPurchasesBySupplierType();
         PurchaseController.getAllPurchasesByStatus();
         PurchaseController.getAllPurchasesByPersonSupplier();
+        PurchaseController.purchasesFilter();
         PurchaseController.getAllSuppliers();
         PurchaseController.getPurchaseById();
         PurchaseController.deletePurchaseController();
@@ -65,8 +66,5 @@ public class AppTest {
         PurchaseController.updatePurchaseOrdersController();
         PurchaseController.updatePurchaseStatusController();
 
-
-
-        
     }
 }

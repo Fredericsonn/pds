@@ -118,6 +118,26 @@ public class ContactDao implements iContactDao {
     }
 
 	@Override
+	public Person getPersonById(int id) throws ContactNotFoundException {
+
+		Person person = em.find(Person.class, id);
+
+		if (person != null) return person;
+
+		throw new ContactNotFoundException(id);
+	}
+
+	@Override
+	public Enterprise getEnterpriseById(int id) throws ContactNotFoundException {
+
+		Enterprise enterprise = em.find(Enterprise.class, id);
+
+		if (enterprise != null) return enterprise;
+
+		throw new ContactNotFoundException(id);
+	}
+
+	@Override
 	public Contact getContactByName(String name, String contactType) throws ContactNotFoundException, InvalidContactTypeException {
 
 		if (HQLQueryManager.contactTypeChecker(contactType)) {

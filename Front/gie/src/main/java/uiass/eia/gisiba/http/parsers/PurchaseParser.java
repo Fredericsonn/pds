@@ -79,9 +79,8 @@ public class PurchaseParser extends Parser {
         return orders;
     }
     
-
     public static List<List<String>> parsePurchases(String json) {
-
+        
         List<List<String>> purchases = new ArrayList<List<String>>();
 
         JsonArray purchasesArray = new JsonParser().parse(json).getAsJsonArray();
@@ -90,4 +89,49 @@ public class PurchaseParser extends Parser {
 
         return purchases;
     }
+
+    public static Map<String,Object> purchasesDatesFilterMapGenerator(String type, List<String> values) {
+
+        Map<String,Object> map = new HashMap<String,Object>();
+
+        if (type.equals("after")) {
+
+            String beforeDate = values.get(0);
+
+            map.put("afterDate", beforeDate);
+        }
+
+        else if (type.equals("before")) {
+
+            String afterDate = values.get(1);
+
+            map.put("beforeDate", afterDate);
+        }
+
+        else if (type.equals("between")) {
+
+            String startDate = values.get(0);
+
+            String endDate = values.get(1);
+
+            map.put("startDate", startDate);
+
+            map.put("endDate", endDate);
+        }
+
+        return map;
+    }
+
+    public static Map<String,Object> purchasesSupplierFilterMapGenerator(String supplierName, String supplierType) {
+
+        Map<String,Object> supplierMap = new HashMap<String,Object>();
+
+        supplierMap.put("supplierName", supplierName);
+
+        supplierMap.put("supplierType", supplierType);
+
+        return supplierMap;
+    }
+
+    
 }
