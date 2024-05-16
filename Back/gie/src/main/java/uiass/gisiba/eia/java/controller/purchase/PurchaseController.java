@@ -72,6 +72,8 @@ public class PurchaseController {
 	
 	    get("/purchases", (req,res)-> {
 
+			System.out.println("/purchases");
+
 		List<Purchase> purchases = service.getAllPurchases();
 		
 		res.type("application/json");

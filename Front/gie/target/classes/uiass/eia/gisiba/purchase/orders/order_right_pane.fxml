@@ -17,8 +17,8 @@
          </image>
       </ImageView>
       <Label fx:id="brandModelNameLabel" layoutX="107.0" layoutY="43.0" prefHeight="22.0" prefWidth="155.0" text="brand, model, name" wrapText="true" />
-      <Button fx:id="viewBtn" layoutX="22.0" layoutY="147.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="82.0" text="VIEW" />
-      <Button fx:id="statsBtn" layoutX="139.0" layoutY="147.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="81.0" text="STATS" />
+      <Button fx:id="viewBtn" layoutX="22.0" layoutY="147.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="82.0" text="VIEW" visible="false" />
+      <Button fx:id="statsBtn" layoutX="139.0" layoutY="147.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="81.0" text="STATS" visible="false" />
       <Label fx:id="unitPriceLabel" layoutX="107.0" layoutY="88.0" prefHeight="18.0" prefWidth="155.0" text="unit price" />
     </children>
 </AnchorPane>

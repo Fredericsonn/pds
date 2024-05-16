@@ -17,6 +17,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import uiass.eia.gisiba.FX.ProductFX;
 import uiass.eia.gisiba.controller.FXManager;
 import uiass.eia.gisiba.http.dto.CategoryDto;
 import uiass.eia.gisiba.http.dto.ProductDto;
@@ -26,7 +27,6 @@ import uiass.eia.gisiba.http.parsers.ProductParser;
 public class ProductCrud {
 
     @SuppressWarnings("unchecked")
-
     // A method that extracts the data entered by the user and sends a post http request to the server :
     public static void create_product(Parent pane, Button button) {
 
@@ -159,6 +159,8 @@ public class ProductCrud {
                 // We remove the original brand value once the user selects a category
                 brandComboBox.setPromptText("brand");
 
+                modelComboBox.setPromptText("model");
+
                 // We get all the corresponding brands for the newly selected category
                 String json = Parser.jsonGenerator(ProductParser.categoryFilter(Arrays.asList((String) newCategory,null,null)));
 
@@ -172,13 +174,11 @@ public class ProductCrud {
                     if (newbrand != null) {
                     
                         // We get all the corresponding models for the newly selected brand and category
-                                        // We get all the corresponding brands for the newly selected category
                         String modelJson = Parser.jsonGenerator(ProductParser.categoryFilter(Arrays.asList(null,(String) newbrand,null)));
 
                         List<String> modelsByBrand = CategoryDto.categoryFilter("modelName", modelJson);
 
                         FXManager.populateComboBox(modelComboBox, modelsByBrand); 
-            
 
             }
         });
@@ -191,45 +191,64 @@ public class ProductCrud {
 
             if (productUpdateValidator(comboBoxes, textFields)) {
 
-                String category = String.valueOf(categoryComboBox.getValue());
+                String category = (String) categoryComboBox.getValue();
                 
-                String brand = String.valueOf(brandComboBox.getValue());
+                String brand = (String) brandComboBox.getValue();
 
-                String model = String.valueOf(modelComboBox.getValue());
+                String model = (String) modelComboBox.getValue();
 
-                if (category == "null") category = originalValues.get(1);
+                if (category == null) { // if the user doesn't select a new category
 
-                if (brand == "null") brand = originalValues.get(2);
+                    category = originalValues.get(0);
 
-                if (model == "null") model = originalValues.get(3);
-                
+                    if (brand == null) brand = originalValues.get(1);
+
+                    if (model == null) model = originalValues.get(2);
+                }
+
+                else {  // if the user selects a new category
+
+                    if (brand == null) 
+
+                        FXManager.showAlert(AlertType.ERROR, "Error", "Category Changed", "the product's category was changed, so a new brand must be selected as well.");
+
+                    else if (model == null) {
+
+                        FXManager.showAlert(AlertType.ERROR, "Error", "Category - Brand Changed", "the product's category and brand were changed, so a new model must be selected as well.");
+
+                    }
+                }
+  
                 categoryValues.add(category); categoryValues.add(brand); categoryValues.add(model);
 
-                textFields.forEach(textField -> {
+                if (ProductFX.productCategoryUpdateValidator(categoryValues)) {
 
-                    productValues.add(String.valueOf(textField.getText()));
-                });
+                    textFields.forEach(textField -> {
 
-                // We generate the columns - values map using the values list :
-                Map<String,Object> productMap = ProductParser.productUpdateMapGenerator(productValues);
-                Map<String,Object> categoryMap = ProductParser.categoryUpdateMapGenerator(categoryValues);
-                System.out.println(categoryMap);
+                        productValues.add(String.valueOf(textField.getText()));
+                    });
     
-                // We dynamically generate the corresponding json :
-                String productJson = ProductParser.updateProductJsonGenerator(productMap, categoryMap);
-                System.out.println(productJson);
-                                
-                // We use the json to send an http post request to the server to create the new product with the entered values :
-                String productUpdateResult = ProductDto.updateProduct(ref,productJson);
+                    // We generate the columns - values map using the values list :
+                    Map<String,Object> productMap = ProductParser.productUpdateMapGenerator(productValues);
+                    Map<String,Object> categoryMap = ProductParser.categoryUpdateMapGenerator(categoryValues);
+        
+                    // We dynamically generate the corresponding json :
+                    String productJson = ProductParser.updateProductJsonGenerator(productMap, categoryMap);
+                                    
+                    // We use the json to send an http post request to the server to create the new product with the entered values :
+                    String productUpdateResult = ProductDto.updateProduct(ref,productJson);
+                        
+                    // We display the update result :
+                    if (productUpdateResult.equals("Product Updated successfully."))
                     
-                // We display the update result :
-                if (productUpdateResult.equals("Product Updated successfully."))
-                
-                FXManager.showAlert(AlertType.CONFIRMATION, "Confirmation", "Update Status  :", productUpdateResult);
-                    
-                else FXManager.showAlert(AlertType.ERROR, "ERROR", "Update Status  :", productUpdateResult);
-                    
-                ((Stage) button.getScene().getWindow()).close(); // We close the create page after confirming the creation
+                    FXManager.showAlert(AlertType.CONFIRMATION, "Confirmation", "Update Status  :", productUpdateResult);
+                        
+                    else FXManager.showAlert(AlertType.ERROR, "ERROR", "Update Status  :", productUpdateResult);
+                        
+                    ((Stage) button.getScene().getWindow()).close(); // We close the create page after confirming the creation
+                }
+
+                else categoryValues.clear();
             
             }
 

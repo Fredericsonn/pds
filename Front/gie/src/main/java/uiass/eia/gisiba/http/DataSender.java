@@ -13,6 +13,8 @@ import okhttp3.Response;
 
 public class DataSender {
 
+    private static String srcPath = "http://backend:4567/";
+
     public static String responseBodyGenerator(String url) {
 
         OkHttpClient client = new OkHttpClient();
@@ -45,7 +47,7 @@ public class DataSender {
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
 
         Request request = new Request.Builder()
-                .url("http://localhost:4567/" + path)  
+                .url(srcPath + path)  
                 .post(requestBody)
                 .build();
 
@@ -72,7 +74,7 @@ public class DataSender {
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
 
         Request request = new Request.Builder()
-                .url("http://localhost:4567/" + path)
+                .url(srcPath + path)
                 .put(requestBody)
                 .build();
     
@@ -99,7 +101,7 @@ public class DataSender {
 
         // Define the POST request
         Request request = new Request.Builder()
-                .url("http://localhost:4567/" + path)  // Change the URL to your endpoint
+                .url(srcPath + path)  // Change the URL to your endpoint
                 .get()
                 .build();
         try (Response response = client.newCall(request).execute()) {
@@ -122,7 +124,7 @@ public class DataSender {
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("http://localhost:4567/" + path)  
+                .url(srcPath + path)  
                 .delete()
                 .build();
 
