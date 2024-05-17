@@ -39,9 +39,8 @@ public class AppTest {
 
         System.out.println(PurchaseDto.purchasesFilter(json));*/
 
-        String json = Parser.jsonGenerator(Map.of("unitPrice", 201.23));
 
-        InventoryDto.updateItemPrice(1, json);
+        System.out.println(ProductDto.getAllProducts());
 
     }
 
