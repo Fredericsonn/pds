@@ -241,6 +241,8 @@ public static void postContactController() {
 
                 String body = request.body();
 
+                System.out.println(body);
+
                 JsonObject emailContent = gson.fromJson(body, JsonObject.class);
 
                 String email = Parser.collectString(emailContent, "receiver");
