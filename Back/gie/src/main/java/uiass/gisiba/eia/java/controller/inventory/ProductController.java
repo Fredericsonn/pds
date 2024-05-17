@@ -136,6 +136,7 @@ public class ProductController {
 
 		    	String body = request.body(); 	
 
+				System.out.println(body);
 		    	// We collect all the values to update from the request body in one list :
 		    	List productValues = ProductParser.productValuesCollector(gson, body);
 
