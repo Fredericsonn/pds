@@ -10,9 +10,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import uiass.eia.gisiba.Main;
 import javafx.scene.control.Button;
@@ -368,6 +370,30 @@ public class FXManager {
         alert.setTitle(title);
         alert.setHeaderText(header); 
         alert.setContentText(message);
+        alert.getDialogPane().setContentText(alert.getContentText());
+        alert.showAndWait();
+    }
+
+    public static void showWrappableAlert(AlertType type, String title, String header, String message) {
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+
+        // Create a Text node for the content
+        Text text = new Text(message);
+
+        // Set the wrapping width for text
+        text.setWrappingWidth(400);
+
+        // Create a GridPane to hold the content
+        GridPane contentGrid = new GridPane();
+        contentGrid.setMaxWidth(Double.MAX_VALUE);
+        contentGrid.add(text, 0, 0);
+
+        // Set the GridPane as the content of the dialog
+        alert.getDialogPane().setContent(contentGrid);
+
         alert.showAndWait();
     }
 

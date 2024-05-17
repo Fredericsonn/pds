@@ -149,23 +149,15 @@ public class Main {
         map.put("status", "CANCELED");*/
 
         try {
-
-            Person person = em.find(Person.class, 5);
-
-            InventoryItem item = service.getInventoryItemById(7);
-
-            PurchaseOrder order = new PurchaseOrder(item,Time.valueOf(LocalTime.now()), 5);
-
-            List<PurchaseOrder> orders = Arrays.asList(order);
-
-            PersonPurchase purchase = new PersonPurchase(orders, 205, uiass.gisiba.eia.java.entity.inventory.Status.COMPLETED, person);
-
-            service.addPurchase(purchase);
-
-        } catch (InventoryItemNotFoundException e) {
+            service.removePurchaseOrder(6, 7);
+        } catch (PurchaseNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (OrderNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
 
 
 

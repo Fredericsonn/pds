@@ -87,6 +87,8 @@ public interface iService {
 
     List<Product> productSearchFilter(Map<String,String> columnsNewValues) throws ProductNotFoundException, CategoryNotFoundException;
 
+    boolean checkForAssociatedPurchases(Product product);
+
     void deleteProduct(String ref) throws ProductNotFoundException, InventoryItemNotFoundException;
 
     List<Product> getAllProducts();
@@ -128,6 +130,8 @@ public interface iService {
     void deleteInventoryItem(int itemId) throws InventoryItemNotFoundException;
 
     void updateInventoryItem(int itemId, int quantity) throws InventoryItemNotFoundException;
+
+    void updateInventoryItemUnitPrice(int itemId, double unitPrice) throws InventoryItemNotFoundException;
 
 /////////////////////////////////////////////////////// Orders /////////////////////////////////////////////////////////////////////
 
@@ -174,6 +178,8 @@ public interface iService {
     void updatePurchaseOrders(int id, List<PurchaseOrder> newOrders) throws PurchaseNotFoundException,
     
             OperationNotModifiableException;
+
+    void removePurchaseOrder(int purchaseId, int orderId) throws PurchaseNotFoundException, OrderNotFoundException;
 
     void updatePurchaseStatus(int id, Status status) throws PurchaseNotFoundException;
 }

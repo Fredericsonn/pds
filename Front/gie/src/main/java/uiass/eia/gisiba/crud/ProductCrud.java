@@ -67,9 +67,11 @@ public class ProductCrud {
         brandComboBox.valueProperty().addListener((obs, oldbrand, newbrand) -> {
     
             if (newbrand != null) {
+
+                String category = (String) categoryComboBox.getValue();
                     
                 // We get all the corresponding brands for the newly selected brand
-                String json = Parser.jsonGenerator(ProductParser.categoryFilter(Arrays.asList(null,(String) newbrand,null)));
+                String json = Parser.jsonGenerator(ProductParser.categoryFilter(Arrays.asList(category,(String) newbrand,null)));
 
                 List<String> modelsByBrand = CategoryDto.categoryFilter("modelName", json);
 
@@ -106,6 +108,8 @@ public class ProductCrud {
     
                 // We dynamically generate the corresponding json :
                 String json = Parser.jsonGenerator(map);
+
+                System.out.println(json);
     
                 // We use the json to send an http post request to the server to create the new product with the entered values :
                 String productCreationResult = ProductDto.postProduct(json);
@@ -260,14 +264,21 @@ public class ProductCrud {
     // deleting a contact :
     public static void deleteProduct(String ref) {
 
-        String contactDeletionResult = ProductDto.deleteProduct(ref);
+        boolean associatedPurchasesChecker = ProductDto.checkForAssociatedPurchases(ref);
 
-        // We display the deletion result :
-        if (contactDeletionResult.equals("Product deleted successfully."))
-        
-        FXManager.showAlert(AlertType.CONFIRMATION, "Confirmation", "Deletion Status :", contactDeletionResult);
+        if (!associatedPurchasesChecker) {
 
-        else FXManager.showAlert(AlertType.ERROR, "ERROR", "Deletion Status :", contactDeletionResult);
+            String contactDeletionResult = ProductDto.deleteProduct(ref);
+
+            // We display the deletion result :
+            if (contactDeletionResult.equals("Product deleted successfully."))
+            
+            FXManager.showAlert(AlertType.CONFIRMATION, "Confirmation", "Deletion Status :", contactDeletionResult);
+    
+            else FXManager.showAlert(AlertType.ERROR, "ERROR", "Deletion Status :", contactDeletionResult);
+        }
+
+        else FXManager.showAlert(AlertType.ERROR, "ERROR", "Deletion Denied :", "There are purchases that depend on this product, deletion denied.");
 
     }
 

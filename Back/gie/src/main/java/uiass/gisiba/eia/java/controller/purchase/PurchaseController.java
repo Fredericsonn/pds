@@ -22,6 +22,7 @@ import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidFilterCriteriaMapFormatException;
 import uiass.gisiba.eia.java.dao.exceptions.OperationNotModifiableException;
+import uiass.gisiba.eia.java.dao.exceptions.OrderNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.PurchaseNotFoundException;
 import uiass.gisiba.eia.java.entity.crm.Contact;
@@ -239,7 +240,7 @@ public class PurchaseController {
         );  
     }
 
-/////////////////////////////////////////////////// PUT METHOD /////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////// PUT METHODS /////////////////////////////////////////////////////////////////////
 
     public static void updatePurchaseOrdersController() {
 
@@ -301,6 +302,39 @@ public class PurchaseController {
 				}
 
 				return "Purchase status updated successfully";
+
+
+		}});
+
+	}
+
+/////////////////////////////////////////////////// DELETE METHODS /////////////////////////////////////////////////////////////////////
+
+	public static void removePurchaseOrderController() {
+
+        delete("/purchases/delete/:purchaseId/removeOrder/:orderId" , new Route() {
+
+            @Override
+            public String handle(Request request, Response response) throws ProductNotFoundException  {
+
+	            System.out.println("Server started.");
+
+				int purchaseId = Integer.parseInt(request.params("purchaseId"));
+
+				int orderId = Integer.parseInt(request.params("orderId"));
+
+				try {
+					service.removePurchaseOrder(purchaseId, orderId);
+				} catch (PurchaseNotFoundException e) {
+
+					return e.getMessage();
+
+				} catch (OrderNotFoundException e) {
+
+					return e.getMessage();
+				}
+
+				return "Purchase order removed successfully";
 
 
 		}});

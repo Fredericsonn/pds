@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -47,8 +49,26 @@
       </ImageView>
       <HBox alignment="CENTER" focusTraversable="true" layoutX="35.0" layoutY="119.0" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
          <children>
-            <Button fx:id="addBtn" mnemonicParsing="false" prefHeight="38.0" prefWidth="78.0" text="ADD MORE" />
+            <Button fx:id="setPriceBtn" mnemonicParsing="false" prefHeight="38.0" prefWidth="78.0" text="SET PRICE" />
             <Button fx:id="viewBtn" mnemonicParsing="false" prefHeight="38.0" prefWidth="78.0" text="VIEW " />
+         </children>
+      </HBox>
+      <HBox fx:id="setPriceHbox" alignment="CENTER" layoutX="4.0" layoutY="219.0" prefHeight="100.0" prefWidth="263.0" spacing="20.0" visible="false">
+         <children>
+            <VBox prefHeight="100.0" prefWidth="146.0" spacing="3.0">
+               <children>
+                  <Label prefHeight="18.0" prefWidth="89.0" text="unit price :">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="priceTextField" prefHeight="34.0" prefWidth="146.0" promptText="unit price" />
+               </children>
+               <padding>
+                  <Insets top="10.0" />
+               </padding>
+            </VBox>
+            <Button fx:id="setBtn" mnemonicParsing="false" prefHeight="38.0" prefWidth="78.0" text="SET" />
          </children>
       </HBox>
     </children>

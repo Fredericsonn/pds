@@ -122,6 +122,11 @@ public class PurchaseDto {
         return DataSender.deleteDataSender("purchases/delete/" + id);
     }
 
+    public static String removePurchaseOrder(int purchaseId, int orderId) {
+
+        return DataSender.deleteDataSender("purchases/delete/" + purchaseId + "/removeOrder/" + orderId);
+    }
+
 //////////////////////////////////////////////////// Put METHOD /////////////////////////////////////////////////////////////
 
     public static String updatePurchaseOrders(int id, String json) {

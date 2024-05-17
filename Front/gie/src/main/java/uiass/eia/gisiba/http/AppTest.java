@@ -27,7 +27,7 @@ public class AppTest {
 
         //dateMap.put("endDate", "2020-05-12");
 
-        supplierMap.put("supplierName", "Brett Robbins");
+        /*supplierMap.put("supplierName", "Brett Robbins");
 
         supplierMap.put("supplierType", "Person");
 
@@ -37,7 +37,12 @@ public class AppTest {
 
         String json = Parser.jsonGenerator(map);
 
-        System.out.println(PurchaseDto.purchasesFilter(json));
+        System.out.println(PurchaseDto.purchasesFilter(json));*/
+
+        String json = Parser.jsonGenerator(Map.of("unitPrice", 201.23));
+
+        InventoryDto.updateItemPrice(1, json);
+
     }
 
     

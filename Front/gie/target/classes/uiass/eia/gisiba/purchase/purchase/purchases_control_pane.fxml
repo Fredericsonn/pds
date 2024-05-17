@@ -101,19 +101,19 @@
                   </HBox>
                   <HBox fx:id="dataDisplayHbox" prefHeight="414.0" prefWidth="1101.0">
                      <children>
-                        <HBox fx:id="purchasesHbox" prefHeight="416.0" prefWidth="380.0">
+                        <HBox fx:id="purchasesHbox" prefHeight="414.0" prefWidth="346.0">
                            <children>
-                              <TableView fx:id="purchasesTableView" prefHeight="415.0" prefWidth="390.0" />
+                              <TableView fx:id="purchasesTableView" prefHeight="414.0" prefWidth="345.0" />
                            </children>
                         </HBox>
-                        <HBox fx:id="supplierHbox" prefHeight="414.0" prefWidth="311.0">
+                        <HBox fx:id="supplierHbox" prefHeight="414.0" prefWidth="367.0">
                            <padding>
                               <Insets top="30.0" />
                            </padding>
                         </HBox>
-                        <HBox fx:id="ordersHbox" prefHeight="415.0" prefWidth="345.0">
+                        <HBox fx:id="ordersHbox" prefHeight="414.0" prefWidth="384.0">
                            <children>
-                              <TableView fx:id="ordersTable" prefHeight="414.0" prefWidth="355.0" />
+                              <TableView fx:id="ordersTable" prefHeight="414.0" prefWidth="384.0" />
                            </children>
                         </HBox>
                      </children>

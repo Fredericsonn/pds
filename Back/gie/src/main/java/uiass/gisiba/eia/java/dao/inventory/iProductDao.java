@@ -18,6 +18,8 @@ public interface iProductDao {
 
     List<Product> productSearchFilter(Map<String,String> columnsNewValues) throws ProductNotFoundException, CategoryNotFoundException;
 
+    boolean checkForAssociatedPurchases(Product product);
+
     void deleteProduct(String ref) throws ProductNotFoundException, InventoryItemNotFoundException;
 
     List<Product> getAllProducts();

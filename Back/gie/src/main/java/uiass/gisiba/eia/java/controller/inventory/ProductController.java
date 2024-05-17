@@ -47,6 +47,30 @@ public class ProductController {
 
     }
 
+	public static void checkForAssociatedPurchases() {
+
+	    Gson gson = new Gson();
+	  
+	    System.out.println("Server started.");
+	
+	    get("/products/checker/byRef/:ref", (req,res)-> {
+
+		String ref = String.valueOf(req.params(":ref"));
+
+		Product product = service.getProductById(ref);
+
+		boolean bool = service.checkForAssociatedPurchases(product);
+		
+		res.type("application/json");
+
+		return bool;
+	
+		   
+		}, gson::toJson);
+
+
+    }
+
 	public static void getAllProducts() {
 
 	    Gson gson = new Gson();

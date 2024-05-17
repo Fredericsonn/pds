@@ -27,5 +27,7 @@ public interface iInventoryItemDao {
     void deleteInventoryItem(int itemId) throws InventoryItemNotFoundException;
 
     void updateInventoryItem(int itemId, int quantity) throws InventoryItemNotFoundException;
+
+    void updateInventoryItemUnitPrice(int itemId, double unitPrice) throws InventoryItemNotFoundException;
     
 }

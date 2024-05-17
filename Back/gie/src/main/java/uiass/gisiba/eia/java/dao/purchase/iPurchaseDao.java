@@ -6,6 +6,7 @@ import java.util.*;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidFilterCriteriaMapFormatException;
 import uiass.gisiba.eia.java.dao.exceptions.OperationNotModifiableException;
+import uiass.gisiba.eia.java.dao.exceptions.OrderNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.PurchaseNotFoundException;
 import uiass.gisiba.eia.java.entity.crm.Contact;
 import uiass.gisiba.eia.java.entity.crm.Enterprise;
@@ -41,6 +42,8 @@ public interface iPurchaseDao {
     void updatePurchaseOrders(int id, List<PurchaseOrder> newOrders) throws PurchaseNotFoundException,
     
             OperationNotModifiableException;
+
+    void removePurchaseOrder(int purchaseId, int orderId) throws PurchaseNotFoundException, OrderNotFoundException;
 
     void updatePurchaseStatus(int id, Status status) throws PurchaseNotFoundException;
 }

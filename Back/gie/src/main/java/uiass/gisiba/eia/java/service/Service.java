@@ -197,6 +197,13 @@ public class Service implements iService {
 
             return pdao.productSearchFilter(columnsNewValues);
     }
+
+    @Override
+    public boolean checkForAssociatedPurchases(Product product) {
+
+        return pdao.checkForAssociatedPurchases(product);
+    }
+
     @Override
     public void deleteProduct(String ref) throws ProductNotFoundException, InventoryItemNotFoundException {
 
@@ -316,6 +323,12 @@ public class Service implements iService {
     public void updateInventoryItem(int itemId, int quantity) throws InventoryItemNotFoundException {
 
         idao.updateInventoryItem(itemId, quantity);
+    }
+
+    @Override
+    public void updateInventoryItemUnitPrice(int itemId, double unitPrice) throws InventoryItemNotFoundException {
+
+        idao.updateInventoryItemUnitPrice(itemId, unitPrice);
     }
 
 /////////////////////////////////////////////////////// Orders ////////////////////////////////////////////////////////////////
@@ -449,10 +462,22 @@ public class Service implements iService {
     }
 
     @Override
+    public void removePurchaseOrder(int purchaseId, int orderId) throws PurchaseNotFoundException, OrderNotFoundException {
+  
+                psdao.removePurchaseOrder(purchaseId, orderId);
+    }
+    
+    @Override
     public void updatePurchaseStatus(int id, Status status) throws PurchaseNotFoundException {
 
         psdao.updatePurchaseStatus(id, status);
     }
+
+
+
+
+
+
 
 
 

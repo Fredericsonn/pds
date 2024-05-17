@@ -58,4 +58,14 @@ public class OrderParser extends Parser {
 
         return quantity;
     }
+
+    @SuppressWarnings("rawtypes")
+    public static int updateOrderQuantityParser(String json) {
+
+        JsonObject updateObject = new JsonParser().parse(json).getAsJsonObject();
+
+        int quantity = collectInt(updateObject, "quantity");
+
+        return quantity;
+    }
 }

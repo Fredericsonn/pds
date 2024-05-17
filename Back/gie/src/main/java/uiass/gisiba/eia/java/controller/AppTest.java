@@ -34,6 +34,7 @@ public class AppTest {
         ProductController.updateProductController();
         ProductController.postProductController();
         ProductController.productSearchFilter();
+        ProductController.checkForAssociatedPurchases();
 
         CategoryController.getAllCategories();
         CategoryController.getAllColumnNames();
@@ -48,11 +49,14 @@ public class AppTest {
         InventoryItemController.getItemQuantity();
         InventoryItemController.postItemController();
         InventoryItemController.deleteItemController();
+        InventoryItemController.updateItemUnitPriceController();
 
         PurchaseOrderController.getOrderById();
         PurchaseOrderController.getAllPurchaseOrders();
         PurchaseOrderController.getAllOrdersByPurchase();
         PurchaseOrderController.orderSearchFilter();
+        PurchaseOrderController.updateOrder();
+        PurchaseOrderController.deleteOrderController();
 
         PurchaseController.getAllPurchases();
         PurchaseController.getAllPurchasesBySupplierType();
@@ -65,6 +69,7 @@ public class AppTest {
         PurchaseController.postPurchase();
         PurchaseController.updatePurchaseOrdersController();
         PurchaseController.updatePurchaseStatusController();
+        PurchaseController.removePurchaseOrderController();
 
     }
 }

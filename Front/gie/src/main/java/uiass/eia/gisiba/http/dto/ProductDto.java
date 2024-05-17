@@ -22,6 +22,15 @@ public class ProductDto {
         return null;
     }
 
+    public static boolean checkForAssociatedPurchases(String ref) {
+
+        String responseBody = DataSender.getDataSender("products/checker/byRef/" + ref);
+
+        if (!responseBody.equals("Server Error.")) return Boolean.valueOf(responseBody);
+
+        return false;
+    }
+
     // Find all the products :
     public static List<List<String>> getAllProducts() {
 

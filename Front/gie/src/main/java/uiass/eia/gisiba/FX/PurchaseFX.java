@@ -1,5 +1,6 @@
 package uiass.eia.gisiba.FX;
 
+import java.io.InputStream;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -243,8 +245,92 @@ public class PurchaseFX {
         return menu;
     }
 
-    public static void editPurchaseOperationSetter(ContextMenu menu, TableView purchasesTable) {
+    public static void editOrdersTableFiller(TableView ordersTable, String purchaseId) {
+
+        List<List<String>> orders = OrderDto.getAllOrdersByPurchase(Integer.parseInt(purchaseId));
+
+        FXManager.populateTableView(ordersTable, FXManager.order_columns, Arrays.asList("order id", "itemid"), orders);
+    }
+
+    public static void purchaseOrdersTableHandler(TableView ordersTable, Parent pane, String purchaseId) {
+
+        HBox editHbox = FXManager.getHBox(pane, "editHbox");
+
+        // Button
+        Button update = FXManager.getButton(pane, "updateQuantityBtn");
+
+        // Text Field
+        TextField quantityTextField = FXManager.getTextField(pane, "quantityTextField");
+        FXManager.setTextFieldNumericFormatRule(quantityTextField);
+
+        ordersTable.setOnMouseClicked(event -> {
+
+            if (!ordersTable.getSelectionModel().isEmpty()) {
+
+                List<String> order = (List<String>) ordersTable.getSelectionModel().getSelectedItem();
+
+                int orderId = Integer.parseInt(order.get(0));
+
+                editHbox.setDisable(false);
+
+                update.setOnAction(update_event -> {
+
+                    String quantity = quantityTextField.getText();
+
+                    if (!quantity.equals("")) {
+
+                        Map<String, Object> map = Map.of("quantity", quantity);
+
+                        String json = Parser.jsonGenerator(map);
+
+                        OrderDto.updateOrder(json, orderId);
+
+                        editOrdersTableFiller(ordersTable, purchaseId);
+
+                        editHbox.setDisable(true);
+                    }
+
+                    else FXManager.showAlert(AlertType.WARNING, "Error", "No quantity provided", "Please provide a quantity.");
+
+                });
+
+            }
+        });
+    }
+    public static void editPurchaseOrders(TableView purchasesTable, String purchaseId) {
+
+        // We create the stage that will contain the creation page
+        Stage stage = new Stage();
+        AnchorPane pane = new AnchorPane();
+        Scene scene = new Scene(pane);
+
+        // here we load the creation page fxml file
+
+        String path = "/uiass/eia/gisiba/purchase/purchase/update_purchase_orders_pane.fxml";
+        FXManager.loadFXML(path, pane, PurchaseCrud.class); 
+
+        // We call the method that handles the creation
+        PurchaseCrud.editPurchaseOrdersPane(pane, purchaseId);
         
+        // We add the stage info and show it
+        String iconPath = "/uiass/eia/gisiba/imgs/carts.png";
+        InputStream inputStream = PurchaseCrud.class.getResourceAsStream(iconPath);
+        Image icon = new Image(inputStream);
+
+        stage.setScene(scene);
+        stage.setTitle("Update Orders");
+        stage.setResizable(false);
+        stage.getIcons().add(icon);
+        stage.show();
+    }
+
+    public static void editPurchaseOperationSetter(ContextMenu menu, TableView purchaseTable, String purchaseId) {
+
+        MenuItem edit = new MenuItem("edit");
+
+        edit.setOnAction(event -> editPurchaseOrders(purchaseTable, purchaseId));
+
+        menu.getItems().add(edit);
     }
 
     public static void purchaseTableContextMenuHandler(ContextMenu menu, TableView purchasesTable, String status) {
@@ -255,7 +341,11 @@ public class PurchaseFX {
 
             if (status.equals("PENDING")) {
 
-                editPurchaseOperationSetter(menu, purchasesTable);
+                List<String> purchase = (List<String>) purchasesTable.getSelectionModel().getSelectedItem();
+
+                String purchaseId = purchase.get(0);
+
+                editPurchaseOperationSetter(menu, purchasesTable, purchaseId);
     
                 operationSetter(menu, purchasesTable, "validate");
     
@@ -338,6 +428,13 @@ public class PurchaseFX {
 
         List<List<String>> orders_by_purchase = OrderDto.getAllOrdersByPurchase(purchaseId);
 
+        orders_by_purchase.forEach(order -> {
+
+            String unitPrice = order.get(6);
+
+            order.set(6, unitPrice + "$");
+        });
+
         OrderCrud.fillWithFilteredPurchasedOrders(ordersTable, orders_by_purchase);
 
         pane.setVisible(true);
@@ -367,7 +464,7 @@ public class PurchaseFX {
             if (ProductCrud.productSearchValidator(comboBoxes)) {
 
                 // We get the products that match the filter criteria
-                List<List<String>> data = ProductDto.getFilteredProducts(json);
+                List<List<String>> data = InventoryDto.getFilteredItems(json);
 
                 if (!data.isEmpty()) {  // if there are matching products 
 
@@ -754,7 +851,7 @@ public class PurchaseFX {
 
             if (creationResult.equals("Purchase created successfully")) 
   
-            FXManager.showAlert(AlertType.CONFIRMATION, "Purchase Creation", "Creation Report", "A new " + 
+            FXManager.showAlert(AlertType.INFORMATION, "Purchase Creation", "Creation Report", "A new " + 
             
             " validated purchase was successfully created. You can manually validate it in the purchases monitor.");
 
@@ -793,7 +890,7 @@ public class PurchaseFX {
 
             if (creationResult.equals("Purchase created successfully")) 
   
-            FXManager.showAlert(AlertType.CONFIRMATION, "Purchase Creation", "Creation Report", "A new " + 
+            FXManager.showAlert(AlertType.INFORMATION, "Purchase Creation", "Creation Report", "A new " + 
             
             " validated purchase was successfully created. You can check all the purchases in the purchases monitor.");
 
@@ -815,7 +912,7 @@ public class PurchaseFX {
 
             if (creationResult.equals("Purchase created successfully")) 
   
-            FXManager.showAlert(AlertType.CONFIRMATION, "Purchase Creation", "Creation Report", "A new " + 
+            FXManager.showAlert(AlertType.INFORMATION, "Purchase Creation", "Creation Report", "A new " + 
             
             " validated purchase was successfully created. You can manually validate it in the purchases monitor.");
 

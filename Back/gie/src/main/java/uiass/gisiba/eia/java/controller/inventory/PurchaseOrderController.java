@@ -19,6 +19,7 @@ import uiass.gisiba.eia.java.controller.Parsers.ProductParser;
 import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidOrderTypeException;
 import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.OrderNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.Order;
 import uiass.gisiba.eia.java.entity.inventory.Product;
@@ -126,6 +127,78 @@ public class PurchaseOrderController {
 	
 	}
 
+/////////////////////////////////////////////////// PUT METHODs //////////////////////////////////////////////////////////////////
+
+public static void updateOrder() {
+	
+	put("/orders/purchaseOrders/put/:orderId" , new Route() {
+
+		@Override
+		public String handle(Request request, Response response) throws ProductNotFoundException, CategoryNotFoundException, InvalidOrderTypeException  {
+
+			System.out.println("Server started.");
+	
+			String body = request.body();
+
+			int orderId = Integer.parseInt(request.params("orderId"));
+
+			int quantity = OrderParser.updateOrderQuantityParser(body);
+
+			try {
+
+				service.updateOrder(orderId, quantity, "Purchase");
+
+			} catch (InvalidOrderTypeException e) {
+
+				return e.getMessage();
+
+			} catch (OrderNotFoundException e) {
+
+				return e.getMessage();
+			}
+
+			return "Order updated successfully";
+
+
+}});
+
+
+}
+
+/////////////////////////////////////////////////// DELETE METHOD //////////////////////////////////////////////////////////////////
+
+public static void deleteOrderController()  {
+
+	System.out.println("Server started.");
+
+	delete("/orders/purchaseOrders/delete/:orderId", new Route()  {
+
+		@Override
+		public String handle(Request request, Response response)   {
+
+			int orderId = Integer.parseInt(request.params("orderId"));
+
+				try {
+
+					service.deleteOrder(orderId, "Purchase");
+
+				} catch (InvalidOrderTypeException e) {
+
+					return e.getMessage();
+
+				} catch (OrderNotFoundException e) {
+
+					return e.getMessage();
+				}   
+
+			
+				
+			return "Purchase order deleted successfully.";
+		}
+	}
+
+	);  
+}
 
 
 

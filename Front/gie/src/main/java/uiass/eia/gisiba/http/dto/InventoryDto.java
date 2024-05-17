@@ -68,4 +68,13 @@ public class InventoryDto {
         return items;
 
     }
+
+//////////////////////////////////////////////////// Put METHOD /////////////////////////////////////////////////////////////
+
+public static String updateItemPrice(int id, String json) {
+
+    if (json != null) return DataSender.putDataSender(json, "inventoryItem/put/unitPrice/" + id );
+
+    return "Please provide a price.";
+}
 }

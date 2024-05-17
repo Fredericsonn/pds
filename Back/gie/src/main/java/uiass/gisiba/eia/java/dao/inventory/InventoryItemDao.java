@@ -137,6 +137,20 @@ public class InventoryItemDao implements iInventoryItemDao {
         tr.commit();
     }
 
+    @Override
+    public void updateInventoryItemUnitPrice(int itemId, double unitPrice) throws InventoryItemNotFoundException {
+
+        InventoryItem item = getInventoryItemById(itemId);
+
+        item.setUnitPrice(unitPrice);
+
+        tr.begin();
+
+        em.persist(item);
+
+        tr.commit();
+    }
+
 
 
 

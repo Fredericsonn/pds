@@ -181,6 +181,40 @@ public static void updateItemController() {
 
 }
 
+public static void updateItemUnitPriceController() {
+
+	Gson gson = new Gson();
+
+	put("/inventoryItem/put/unitPrice/:itemId" , new Route() {
+
+		@Override
+		public String handle(Request request, Response response) throws ProductNotFoundException  {
+
+			System.out.println("Server started.");
+
+			String body = request.body();
+
+			int itemId = Integer.parseInt(request.params(":itemId"));  // We take the id of the item to update from the url
+
+			double unitPrice = InventoryItemParser.parseUnitPrice(body);
+
+			try {
+				
+				service.updateInventoryItemUnitPrice(itemId, unitPrice);
+
+			} catch (InventoryItemNotFoundException e) {
+
+				return e.getMessage();
+			}
+	   
+			return "Item updated successfully.";
+
+
+	}});
+
+
+}
+
 /////////////////////////////////////////////////// POST METHOD //////////////////////////////////////////////////////////////////
 
 public static void postItemController() {

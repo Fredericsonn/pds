@@ -4,17 +4,22 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import uiass.eia.gisiba.controller.FXManager;
 import uiass.eia.gisiba.http.dto.InventoryDto;
+import uiass.eia.gisiba.http.parsers.Parser;
 
 public class InventoryItemCrud {
 
@@ -61,6 +66,38 @@ public class InventoryItemCrud {
                     String description = product.get(6);
 
                     showItemsDetails(Arrays.asList(category, brand + " " + model + " " + name, unitPrice + "$", description));
+
+                });
+
+                add.setOnAction(set_event -> {
+
+                    HBox setHbox = FXManager.getHBox(pane, "setPriceHbox");
+
+                    setHbox.setVisible(true);
+
+                    Button set = FXManager.getButton(pane, "setBtn");
+
+                    TextField setPriceTextField = FXManager.getTextField(pane, "priceTextField");
+                    FXManager.setTextFieldFloatFormatRule(setPriceTextField);
+
+                    set.setOnAction(setp_event -> {
+
+                        String price = setPriceTextField.getText();
+
+                        if (!price.equals("")) {
+
+                            String json = Parser.jsonGenerator(Map.of("unitPrice", price));
+
+                            InventoryDto.updateItemPrice(Integer.parseInt(id), json);
+
+                            FXManager.showAlert(AlertType.INFORMATION, "Information", "Price Set"," unit price set successfully.");
+
+                            setHbox.setVisible(false);
+                        }
+
+                        else FXManager.showAlert(AlertType.ERROR, "ERROR", "Price Not Set"," No unit price was provided.");
+                    });
+
 
                 });
            
@@ -119,6 +156,13 @@ public class InventoryItemCrud {
         // We send an http get request to get all the contacts of the given type
         List<List<String>> data = InventoryDto.getAllItems();  
 
+        data.forEach(items -> {
+
+            String unitPrice = items.get(5);
+
+            items.set(5, unitPrice + "$");
+        });
+
         // We populate the table using those collected contacts
         List<String> columns = FXManager.inventory_columns;
         
@@ -137,6 +181,13 @@ public class InventoryItemCrud {
         
         // The columns we'll use for the table
         List<String> columns = FXManager.inventory_columns;
+
+        data.forEach(item -> {
+
+            String unitPrice = item.get(5);
+
+            item.set(5, unitPrice + "$");
+        });
         
         FXManager.populateTableView(inventoryTable, columns, Arrays.asList("id","quantity", "date added"), data);
     }

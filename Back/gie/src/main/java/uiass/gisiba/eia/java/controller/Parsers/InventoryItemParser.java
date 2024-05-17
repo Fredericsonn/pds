@@ -75,4 +75,13 @@ public class InventoryItemParser extends Parser {
         return items;
 
     }
+
+    public static double parseUnitPrice(String json) {
+
+        JsonObject itemObject = new JsonParser().parse(json).getAsJsonObject();
+
+        if (itemObject.has("unitPrice")) return collectDouble(itemObject, "unitPrice");
+
+        return 0;
+    }
 }

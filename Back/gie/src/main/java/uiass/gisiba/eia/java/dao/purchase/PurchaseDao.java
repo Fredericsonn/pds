@@ -16,6 +16,7 @@ import uiass.gisiba.eia.java.dao.crm.HibernateUtility;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidFilterCriteriaMapFormatException;
 import uiass.gisiba.eia.java.dao.exceptions.OperationNotModifiableException;
+import uiass.gisiba.eia.java.dao.exceptions.OrderNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.PurchaseNotFoundException;
 import uiass.gisiba.eia.java.entity.crm.Contact;
 import uiass.gisiba.eia.java.entity.crm.Enterprise;
@@ -343,6 +344,42 @@ public class PurchaseDao implements iPurchaseDao {
     }
 
     @Override
+    public void removePurchaseOrder(int purchaseId, int orderId) throws PurchaseNotFoundException, OrderNotFoundException {
+
+        PurchaseOrder order = em.find(PurchaseOrder.class, orderId);
+
+        tr.begin();
+
+        em.remove(order);
+
+        em.flush();
+
+        tr.commit();
+
+        if (order != null) {
+
+            Purchase purchase = em.find(Purchase.class, purchaseId);
+
+            if (purchase != null) {
+
+                List<PurchaseOrder> orders = purchase.getOrders();
+
+                if (orders.contains(order)) {
+
+                    purchase.setOrders(orders);
+
+                    addPurchase(purchase);
+                }
+            }
+
+            else throw new PurchaseNotFoundException(purchaseId);
+
+        }
+
+        else throw new OrderNotFoundException(orderId);
+    }
+
+    @Override
     public void updatePurchaseStatus(int id, Status status) throws PurchaseNotFoundException {
 
         Purchase purchase = getPurchaseById(id);
@@ -355,6 +392,8 @@ public class PurchaseDao implements iPurchaseDao {
 
         tr.commit();
     }
+
+
 
 
 

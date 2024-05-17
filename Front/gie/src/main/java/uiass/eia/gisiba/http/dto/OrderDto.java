@@ -61,4 +61,28 @@ public class OrderDto {
 
     }
 
+                              //////////////// PUT METHODS //////////////// 
+
+    // Find all the filtered products :
+    public static String updateOrder(String json, int orderId) {
+
+        if (json != null) return DataSender.putDataSender(json,"orders/purchaseOrders/put/" + orderId);
+
+        return "Please provide a quantity to update";
+
+
+
+    }
+
+                                  //////////////// DELETE METHODS //////////////// 
+
+    // Find all the filtered products :
+    public static String deleteOrder(int orderId) {
+
+        System.out.println(DataSender.deleteDataSender("orders/purchaseOrders/delete/" + orderId));
+        return DataSender.deleteDataSender("orders/purchaseOrders/delete/" + orderId);
+        
+    }
+
+
 }

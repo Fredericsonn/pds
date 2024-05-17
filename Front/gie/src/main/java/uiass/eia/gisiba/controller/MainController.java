@@ -236,7 +236,7 @@ public class MainController {
 
         // Buttons
         Button search = FXManager.getButton(centerAnchorPane, "searchBtn");
-        Button add = FXManager.getButton(rightAnchorPane, "addBtn");
+        Button setPrice = FXManager.getButton(rightAnchorPane, "setPriceBtn");
         Button view = FXManager.getButton(rightAnchorPane, "viewBtn");
 
         // Refresh Image
@@ -245,7 +245,7 @@ public class MainController {
         // Table Views
         TableView<List<String>> inventoryTableView = FXManager.getTableView(centerAnchorPane, "itemsTableView");
 
-        InventoryItemCrud.itemsTableEventHandler(inventoryTableView, labels, rightAnchorPane, refresh, add, view);
+        InventoryItemCrud.itemsTableEventHandler(inventoryTableView, labels, rightAnchorPane, refresh, setPrice, view);
 
         InventoryItemCrud.fillWithItems(inventoryTableView);
 
@@ -396,6 +396,7 @@ public class MainController {
 
         // we fill the purchases table with the purchases
         PurchaseFX.fillWithPurchases(purchasesTable);
+        
         PurchaseFX.purchaseTableContextMenuAssociator(purchasesTable);
 
         // we fill the suppliers combo box with the suppliers

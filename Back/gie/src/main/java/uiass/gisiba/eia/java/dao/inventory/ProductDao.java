@@ -1,5 +1,7 @@
 package uiass.gisiba.eia.java.dao.inventory;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,7 @@ import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.Category;
 import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
 import uiass.gisiba.eia.java.entity.inventory.Product;
+import uiass.gisiba.eia.java.entity.purchases.PurchaseOrder;
 
 public class ProductDao implements iProductDao {
 
@@ -34,8 +37,11 @@ public class ProductDao implements iProductDao {
 
         Product product = new Product(categoryBrand,model,description);
 
+        InventoryItem item = new InventoryItem(product, 100, 0, Date.valueOf(LocalDate.now()));
+
         tr.begin();
         em.persist(product);
+        em.persist(item);
         tr.commit();
 
     }
@@ -72,6 +78,20 @@ public class ProductDao implements iProductDao {
             });
 
             return query.getResultList();
+    }
+
+    @Override
+    public boolean checkForAssociatedPurchases(Product product) {
+
+        String hql = "from Purchase_Order o where o.item.product = :product";
+
+        Query query = em.createQuery(hql);
+
+        query.setParameter("product", product);
+
+        List<PurchaseOrder> orders = query.getResultList();
+
+        return !orders.isEmpty();
     }
 
     @Override

@@ -25,6 +25,7 @@ import javafx.scene.control.Button;
 import uiass.eia.gisiba.FX.PurchaseFX;
 import uiass.eia.gisiba.controller.FXManager;
 import uiass.eia.gisiba.http.dto.ContactDto;
+import uiass.eia.gisiba.http.dto.OrderDto;
 import uiass.eia.gisiba.http.dto.PurchaseDto;
 import uiass.eia.gisiba.http.parsers.Parser;
 import uiass.eia.gisiba.http.parsers.PurchaseParser;
@@ -125,6 +126,8 @@ public class PurchaseCrud {
 
                 PurchaseFX.fillWithSuppliersByType(suppliersTable, type); // we fill the table with the corresponding suppliers
 
+                FXManager.showWrappableAlert(AlertType.INFORMATION, "Information", "Tip", "You can either select an already existing supplier from the table, or enter a contact's name in the text field and they will be selected as a supplier for the current purchase, make sure to select a supplier type first though.");
+
             }
         });
 
@@ -209,7 +212,7 @@ public class PurchaseCrud {
                 // We get the selected row and extract the values
                 List<String> selectedItem = (List<String>) purchaseTable.getSelectionModel().getSelectedItem();
 
-                int purchaseId = Integer.parseInt(selectedItem.get(1));
+                int purchaseId = Integer.parseInt(selectedItem.get(0));
 
                 int supplierId = Integer.parseInt(selectedItem.get(1));
                 
@@ -253,6 +256,26 @@ public class PurchaseCrud {
 
         return purchases;
         
+    }
+
+    public static void editPurchaseOrdersPane(Parent pane, String purchaseId) {
+
+        // Table View
+        TableView ordersTable = FXManager.getTableView(pane, "ordersTableView");
+
+        // Buttons
+        ImageView confirm = FXManager.getImageView(pane, "confirmBtn");
+
+        PurchaseFX.editOrdersTableFiller(ordersTable, purchaseId);
+
+        PurchaseFX.purchaseOrdersTableHandler(ordersTable, pane, purchaseId);
+
+        confirm.setOnMouseClicked(event -> {
+
+            ((Stage) pane.getScene().getWindow()).close(); // We close the orders update page after pressing the confirm button
+
+        });      
+    
     }
 
     public static void goToCreatePurchasePane() {
