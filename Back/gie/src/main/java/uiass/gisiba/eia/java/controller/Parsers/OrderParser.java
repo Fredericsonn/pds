@@ -13,7 +13,7 @@ import uiass.gisiba.eia.java.dao.exceptions.PurchaseNotFoundException;
 import uiass.gisiba.eia.java.entity.inventory.InventoryItem;
 import uiass.gisiba.eia.java.entity.purchases.Purchase;
 import uiass.gisiba.eia.java.entity.purchases.PurchaseOrder;
-
+import uiass.gisiba.eia.java.entity.sales.SaleOrder;
 import uiass.gisiba.eia.java.service.iService;
 import uiass.gisiba.eia.java.service.Service;
 
@@ -38,6 +38,26 @@ public class OrderParser extends Parser {
         PurchaseOrder order = new PurchaseOrder(item, orderTime, quantity);
 
         System.out.println(order);
+
+        return order;
+
+    }
+
+    public static SaleOrder parseSaleOrder(String json) throws InventoryItemNotFoundException {
+        
+        JsonObject orderObject = new JsonParser().parse(json).getAsJsonObject();
+
+        int itemId = collectInt(orderObject, "itemId");
+
+        InventoryItem item = service.getInventoryItemById(itemId);
+
+        int quantity = collectInt(orderObject, "quantity");
+
+        double margin = collectDouble(orderObject, "profitMargin");
+
+        Time orderTime = Time.valueOf(LocalTime.parse(collectString(orderObject, "orderTime")));
+
+        SaleOrder order = new SaleOrder(item, orderTime, quantity, margin);
 
         return order;
 

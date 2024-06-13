@@ -1,1 +1,0 @@
-drop table purchase_order, purchase

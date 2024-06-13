@@ -1,7 +1,5 @@
 package uiass.gisiba.eia.java.entity.sales;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -21,9 +19,9 @@ public class PersonSale extends Sale {
     @JoinColumn(name="customer_id")
     private Person customer;
 
-    public PersonSale(List<SaleOrder> orders, Date saleDate, double total, Status state, Person customer) {
+    public PersonSale(List<SaleOrder> orders, double total, Status state, Person customer) {
 
-        super(orders, saleDate, total, state);
+        super(orders, total, state);
 
         this.customer = customer;
     }
@@ -44,7 +42,7 @@ public class PersonSale extends Sale {
 
         return "id : " + this.getSaleId() + ", customer : " + this.customer + ", type : person" + ", sale date : " + this.getSaleDate()
 
-        + ", status : " + this.getStatus() + ", total : " + this.getTotal();
+        + ", status : " + this.getStatus() + ", total : " + this.getTotal() + ", orders : " + this.getOrders();
     }
 
     

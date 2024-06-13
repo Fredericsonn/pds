@@ -17,7 +17,7 @@
                   <Font name="Franklin Gothic Medium" size="22.0" />
                </font>
             </Label>
-            <SplitMenuButton fx:id="clientsSplitMenu" layoutX="14.0" layoutY="85.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="130.0" text="Contacts">
+            <SplitMenuButton fx:id="clientsSplitMenu" layoutX="14.0" layoutY="85.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="130.0" text="CRM">
               <items>
                   <MenuItem fx:id="personsSplitMenuItem" mnemonicParsing="false" onAction="#loadPersonPane" text="Persons" />
                   <MenuItem fx:id="enterprisesSplitMenuItem" mnemonicParsing="false" onAction="#loadEnterprisePane" text="Enterprises" />
@@ -35,10 +35,19 @@
                   <Font name="Georgia" size="16.0" />
                </font>
             </SplitMenuButton>
-            <SplitMenuButton fx:id="clientsSplitMenu1" layoutX="14.0" layoutY="223.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="130.0" text="Purchase">
+            <SplitMenuButton fx:id="purchasesSplitMenu" layoutX="14.0" layoutY="223.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="130.0" text="Purchases">
                <items>
                   <MenuItem fx:id="orderSplitMenuItem" mnemonicParsing="false" onAction="#loadPurchaseOrdersPane" text="Orders" />
                   <MenuItem fx:id="purchaseSplitMenuItem" mnemonicParsing="false" onAction="#loadPurchasePane" text="Purchases" />
+               </items>
+               <font>
+                  <Font name="Georgia" size="16.0" />
+               </font>
+            </SplitMenuButton>
+            <SplitMenuButton fx:id="salesSplitMenu" layoutX="14.0" layoutY="293.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="130.0" text="Sales">
+               <items>
+                  <MenuItem fx:id="saleOrdersSplitMenuItem" mnemonicParsing="false" onAction="#loadSaleOrdersPane" text="Orders" />
+                  <MenuItem fx:id="salesSplitMenuItem" mnemonicParsing="false" onAction="#loadSalePane" text="Sales" />
                </items>
                <font>
                   <Font name="Georgia" size="16.0" />

@@ -26,12 +26,14 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import uiass.eia.gisiba.Main;
 import uiass.eia.gisiba.FX.PurchaseFX;
+import uiass.eia.gisiba.FX.SaleFX;
 import uiass.eia.gisiba.crud.CategoryCrud;
 import uiass.eia.gisiba.crud.ContactCrud;
 import uiass.eia.gisiba.crud.InventoryItemCrud;
 import uiass.eia.gisiba.crud.OrderCrud;
 import uiass.eia.gisiba.crud.ProductCrud;
 import uiass.eia.gisiba.crud.PurchaseCrud;
+import uiass.eia.gisiba.crud.SaleCrud;
 import uiass.eia.gisiba.http.dto.ContactDto;
 import uiass.eia.gisiba.http.dto.InventoryDto;
 import uiass.eia.gisiba.http.dto.OrderDto;
@@ -74,6 +76,7 @@ public class MainController {
         Button update = FXManager.getButton(rightAnchorPane, "updateBtn");
         Button delete = FXManager.getButton(rightAnchorPane, "deleteBtn");
         Button notify = FXManager.getButton(rightAnchorPane, "notifyBtn");
+        AnchorPane refresh = FXManager.getAnchorPane(centerAnchorPane, "refreshBtn");
 
         // Search text field
         TextField txtField = FXManager.getTextField(centerAnchorPane, "enterNameTextField");
@@ -88,18 +91,23 @@ public class MainController {
         // We set the contacts table's columns event listeners
         ContactCrud.contactsTableEventHandler(contactsTable, labels, rightAnchorPane, contactType, update, delete);
 
-        // We send an http get request to get all the contacts of the given type
-        List<List<String>> data = ContactDto.getAllContactsByType(contactType);  
 
-        // We populate the table using those collected contacts
-        List<String> columns = FXManager.columns_names_per_contact_type.get(contactType);
-        FXManager.populateTableView(contactsTable, columns, Arrays.asList("id", "address id"), data);
+        // We populate the contacts table 
+        ContactCrud.fillWithContacts(contactsTable, contactType);
 
+        // We handle the search button event listener
         ContactCrud.contactSearchButtonHandler(search, txtField, labels, contactType, rightAnchorPane, update, delete);
 
         // When the create new button is clicked
         createNew.setOnAction(event -> {
             ContactCrud.goToCreateContactPage(contactType);
+            
+        });
+
+        // When the refresh button is clicked
+        refresh.setOnMouseClicked(event -> {
+
+            ContactCrud.fillWithContacts(contactsTable, contactType);
             
         });
 
@@ -111,6 +119,7 @@ public class MainController {
 
             ContactCrud.goToSendEmailPage(receiverEmail);
         });
+
 
  
     }
@@ -283,29 +292,24 @@ public class MainController {
 
     }
 
-    public void loadPurchaseOrdersPane() {
+    public void loadOrdersPane(String operation) {
 
-        FXManager.loadFXML("/uiass/eia/gisiba/purchase/orders/orders_center_pane.fxml", centerAnchorPane, getClass());
+        FXManager.loadFXML("/uiass/eia/gisiba/orders/orders_center_pane.fxml", centerAnchorPane, getClass());
 
-        FXManager.loadFXML("/uiass/eia/gisiba/purchase/orders/order_right_pane.fxml", rightAnchorPane, getClass());
+        FXManager.loadFXML("/uiass/eia/gisiba/orders/" + operation.toLowerCase() + "_order_right_pane.fxml", rightAnchorPane, getClass());
 
         rightAnchorPane.setVisible(false);
 
-        List<String> labelIds = FXManager.order_labels_ids;
+        List<String> labelIds = FXManager.order_labels_names_per_operation_type.get(operation);
         
         // Buttons
         Button search = FXManager.getButton(centerAnchorPane, "searchBtn");
-        Button createNew = FXManager.getButton(centerAnchorPane, "createNewProductBtn");
         Button view = FXManager.getButton(rightAnchorPane, "viewBtn");
         Button stats = FXManager.getButton(rightAnchorPane, "statsBtn");
 
         // Search text fields
         // a method that collects the text fields and sets input rules :
         List<ComboBox> comboBoxes = ProductCrud.productSearchComboBoxesHandler(centerAnchorPane);
-
-        ComboBox categoryComboBox = comboBoxes.get(0);     // We get
-        ComboBox brandComboBox = comboBoxes.get(1);        // the text fields
-        ComboBox modelComboBox = comboBoxes.get(2);        // from the list
 
         // Labels
         List<Label> labels = FXManager.labelsCollector(rightAnchorPane, labelIds);
@@ -317,57 +321,34 @@ public class MainController {
         TableView<List<String>> ordersTable = FXManager.getTableView(centerAnchorPane, "ordersTableView");
 
         // A method that handles the table rows event listners
-        OrderCrud.orderTableEventHandler(ordersTable, labels, rightAnchorPane, refresh, view, stats);
+        OrderCrud.orderTableEventHandler(ordersTable, labels, rightAnchorPane, refresh, view, stats, operation);
 
-        // We the table with all the products
-        OrderCrud.fillWithPurchaseOrders(ordersTable);
+        // We the table with all the orders
+        OrderCrud.fillWithOrders(ordersTable, operation);
 
         // We set the refresh button to refresh the table when clicked
         refresh.setOnMouseClicked(imageClicked -> {
 
             //FXManager.textFieldsEmptier(textFields);
-            OrderCrud.fillWithPurchaseOrders(ordersTable);
+            OrderCrud.fillWithOrders(ordersTable, operation);
         });
 
         // When we press the search button
-        search.setOnAction(event -> {
-            
-            // We collect the entered id (we suppose it's a number)
-            String categroyInput = (String) categoryComboBox.getValue();
-            String brandInput = (String) brandComboBox.getValue();
-            String modelInput = (String) modelComboBox.getValue();
-
-            List<String> values = Arrays.asList(categroyInput,brandInput,modelInput);
-
-            String json = ProductCrud.filteredProductSearchJsonGenerator(values);            
-
-            if (ProductCrud.productSearchValidator(comboBoxes)) {
-
-                // We get the products that match the filter criteria
-                List<List<String>> data = OrderDto.getFilteredPurchaseOrders(json);
-
-                if (!data.isEmpty()) {  // if there are matching products 
-
-                    // We fill the products table with the matching products
-                    OrderCrud.fillWithFilteredPurchasedOrders(ordersTable, data);
-
-                }
-                
-                // if no product corresponds to the provided ref we show an error alert
-                else FXManager.showAlert(AlertType.ERROR, "ERROR", "Orders Not Found"," No saved orders match the given criteria.");
-            }
-
-            // if the text field is empty and the search button is clicked
-            else FXManager.showAlert(AlertType.ERROR, "ERROR", "No Selected Parameter", "Please provide some parameters for the search.");
-        });
+        OrderCrud.ordersSearchButtonHandler(search, ordersTable, comboBoxes, operation);
  
     
 }
 
+    @FXML
+    public void loadPurchaseOrdersPane() {
+
+        loadOrdersPane("purchase");
+    }
+
     @SuppressWarnings("unchecked")
     public void loadPurchasePane() throws IOException {
 
-        String fxml = "/uiass/eia/gisiba/purchase/purchase/purchases_control_pane.fxml";
+        String fxml = "/uiass/eia/gisiba/purchase/purchases_control_pane.fxml";
 
         AnchorPane pane = FXManager.switchScene(centerAnchorPane, getClass(), fxml);
 
@@ -395,7 +376,7 @@ public class MainController {
         HBox ordersHBox = FXManager.getHBox(pane, "ordersHbox");
 
         // we fill the purchases table with the purchases
-        PurchaseFX.fillWithPurchases(purchasesTable);
+        PurchaseFX.fillWithOperations(purchasesTable, "purchase");
         
         PurchaseFX.purchaseTableContextMenuAssociator(purchasesTable);
 
@@ -416,11 +397,11 @@ public class MainController {
 
             if (PurchaseFX.validFilter(filterInput)) {
 
-                List<List<String>> purchases = PurchaseCrud.purchaseSearchFilter(supplierName, status, dates_values);
+                List<List<String>> purchases = PurchaseFX.operationSearchFilter(supplierName, status, dates_values, "Purchase");
 
                 if (!purchases.isEmpty()) {
 
-                    PurchaseFX.fillWithFilteredPurchases(purchasesTable, purchases);
+                    PurchaseFX.fillWithFilteredOperations(purchasesTable, purchases);
                 }
 
                 else FXManager.showAlert(AlertType.WARNING, "Error", "No match", "No data matches the given criteria");
@@ -446,7 +427,7 @@ public class MainController {
 
             ordersHBox.setVisible(false);
 
-            PurchaseFX.fillWithPurchases(purchasesTable);
+            PurchaseFX.fillWithOperations(purchasesTable, "purchase");
 
         });
 
@@ -462,7 +443,114 @@ public class MainController {
         });
 
         
+    }
 
+    @FXML
+    public void loadSaleOrdersPane() {
+
+        loadOrdersPane("sale");
+    }
+
+    @SuppressWarnings("unchecked")
+    @FXML
+    public void loadSalePane() {
+
+        String fxml = "/uiass/eia/gisiba/sale/sales_control_pane.fxml";
+
+        AnchorPane pane = FXManager.switchScene(centerAnchorPane, getClass(), fxml);
+
+        // Buttons 
+        Button search = FXManager.getButton(pane, "searchBtn");
+        Button create = FXManager.getButton(pane, "createNewBtn");
+
+        // ComboBoxes
+        ComboBox customerComboBox = FXManager.getComboBox(pane, "customerComboBox");
+        ComboBox statusComboBox = FXManager.getComboBox(pane, "statusComboBox");
+
+        // DatePickers
+        DatePicker startDatePicker = FXManager.getDatePicker(pane, "startDatePicker");
+        DatePicker endDatePicker = FXManager.getDatePicker(pane, "endDatePicker");
+
+        // Images
+        AnchorPane refreshBtn = FXManager.getAnchorPane(pane, "refreshImgContainer");
+        ImageView goBack = FXManager.getImageView(pane, "goBackImg");
+
+        // Table
+        TableView salesTable = FXManager.getTableView(pane, "salesTableView");
+
+        //HBox
+        HBox customerHBox = FXManager.getHBox(pane, "customerHbox");
+        HBox ordersHBox = FXManager.getHBox(pane, "ordersHbox");
+
+        // we fill the sales table with the sales
+        SaleFX.fillWithSales(salesTable);
+
+        // we handle and set the context menu to the sales table
+        SaleFX.saleTableContextMenuAssociator(salesTable);
+
+        // we fill the customers combo box with the customers
+        SaleFX.comboBoxesHandler(customerComboBox,statusComboBox);
+
+        // we set event listeners for the when the table is clicked
+        SaleFX.salesTableHandler(salesTable, pane, create);
+
+        // when the search button is clicked
+        search.setOnAction(event -> {
+
+            String customerName = (String) customerComboBox.getValue(); 
+
+            String status = (String) statusComboBox.getValue();
+
+            List<String> dates_values = SaleFX.datesPickerValuesCollector(startDatePicker, endDatePicker); 
+
+            List filterInput = Arrays.asList(customerName, status, dates_values);
+
+            if (SaleFX.validFilter(filterInput)) {
+
+                List<List<String>> sales = SaleFX.operationSearchFilter(customerName, status, dates_values, "Sale");
+
+                if (!sales.isEmpty()) {
+
+                    SaleFX.fillWithFilteredOperations(salesTable, sales);
+                }
+
+                else FXManager.showAlert(AlertType.WARNING, "Error", "No match", "No data matches the given criteria");
+
+            }
+
+            else FXManager.showAlert(AlertType.WARNING, "Error", "No criteria provided", "Please provide some parameters for the search.");
+
+
+        });
+
+        refreshBtn.setOnMouseClicked(event -> {
+
+            customerComboBox.setPromptText("customer"); customerComboBox.setValue(null);  
+
+            statusComboBox.setPromptText("status"); statusComboBox.setValue(null);  
+
+            startDatePicker.setValue(null); startDatePicker.setPromptText("start date");
+
+            endDatePicker.setValue(null); endDatePicker.setPromptText("end date");
+
+            customerHBox.setVisible(false);
+
+            ordersHBox.setVisible(false);
+
+            SaleFX.fillWithOperations(salesTable, "sale");
+
+        });
+
+        goBack.setOnMouseClicked(event -> {
+
+            FXManager.switchScene(ordersHBox, getClass(), "/uiass/eia/gisiba/main.fxml");
+
+        });
+
+        create.setOnAction(event -> {
+
+            SaleCrud.goToCreateSalePane();
+        });
     }
 
 

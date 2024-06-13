@@ -84,8 +84,6 @@ public class OrderDao implements iOrderDao {
 
             String hql = HQLQueryManager.orderSelectHQLQueryGenerator(orderType , criteria);
 
-            System.out.println(hql);
-
             Query query = em.createQuery(hql);
 
             for (String column : criteria.keySet()) {
@@ -115,9 +113,9 @@ public class OrderDao implements iOrderDao {
     }
 
     @Override
-    public void addSaleOrder(InventoryItem product, Time orderTime, int quantity, Sale sale) {
+    public void addSaleOrder(InventoryItem product, Time orderTime, int quantity, Sale sale, double margin) {
 
-        SaleOrder order = new SaleOrder(product, orderTime, quantity);
+        SaleOrder order = new SaleOrder(product, orderTime, quantity, margin);
 
         order.setSale(sale);
 

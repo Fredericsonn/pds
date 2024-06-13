@@ -144,7 +144,7 @@ public class PurchaseCrud {
         HBox supplierHbox = FXManager.getHBox(pane, "supplierHBox");
 
         // the fxml file's path
-        String path = "/uiass/eia/gisiba/purchase/purchase/" + supplierType.toLowerCase() + "_supplier_HBox.fxml";
+        String path = "/uiass/eia/gisiba/purchase/" + supplierType.toLowerCase() + "_supplier_HBox.fxml";
 
         // we load the fxml file
         FXManager.loadFXML(path, supplierHbox, PurchaseCrud.class);
@@ -162,7 +162,7 @@ public class PurchaseCrud {
         Map<String,Object> purchaseMap = new HashMap<String,Object>();
 
         // here we get the purchase's total amount
-        String total = PurchaseFX.getPurchaseTotalAmmount(orders);
+        String total = PurchaseFX.getOperationTotalAmmount(orders);
 
         // a method that takes care of populating the orders table using the orders list
         PurchaseFX.ordersTableFiller(ordersVbox, orders);
@@ -188,22 +188,20 @@ public class PurchaseCrud {
             purchaseMap.put("total", total);   
 
             // a method that handles asks the user for the purchase status and performs the creation accordingly  
-            PurchaseFX.purchaseConfirmingDialogBoxHandler(purchaseMap, supplierType);
+            PurchaseFX.operationConfirmingDialogBoxHandler(purchaseMap, supplierType, "Purchase");
 
             ((Stage) pane.getScene().getWindow()).close(); // We close the products selection page after pressing the confirm button
          
         });
-
-        
 
     }
 
     @SuppressWarnings("unchecked")
     public static void purchasesTableHandler(TableView purchaseTable, Parent pane, Button create) {
 
-            HBox supplierHbox = FXManager.getHBox(pane, "supplierHbox");
+        HBox supplierHbox = FXManager.getHBox(pane, "supplierHbox");
 
-            HBox ordersHbox = FXManager.getHBox(pane, "ordersHbox");
+        HBox ordersHbox = FXManager.getHBox(pane, "ordersHbox");
 
         purchaseTable.setOnMouseClicked(event -> {
 
@@ -225,36 +223,6 @@ public class PurchaseCrud {
             }
         });
 
-        
-    }
-    public static List<List<String>> purchaseSearchFilter(String supplierName, String status, List<String> dates_values) {
-
-        Map<String,Object> filter_map = new HashMap<String,Object>();
-
-        if (dates_values != null) {
-
-            String date_filter_type = PurchaseFX.datesFilterTypeGetter(dates_values);
-
-            Map<String,Object> dates_filter_map = PurchaseParser.purchasesDatesFilterMapGenerator(date_filter_type, dates_values);
-    
-            filter_map.put("date", dates_filter_map);
-
-        }
-
-        if (supplierName != null) {
-
-            String supplierType = ContactDto.getContactType(supplierName);
-
-            Map<String,Object> supplierMap = PurchaseParser.purchasesSupplierFilterMapGenerator(supplierName, supplierType);
-
-            filter_map.put("supplier", supplierMap);
-        }
-
-        if (status != null) filter_map.put("status", status);
-
-        List<List<String>> purchases = PurchaseDto.purchasesFilter(Parser.jsonGenerator(filter_map));
-
-        return purchases;
         
     }
 
@@ -293,7 +261,7 @@ public class PurchaseCrud {
 
         // here we load the creation page fxml file
 
-        String path = "/uiass/eia/gisiba/purchase/purchase/create_purchase_products_selection_pane.fxml";
+        String path = "/uiass/eia/gisiba/purchase/create_purchase_products_selection_pane.fxml";
         FXManager.loadFXML(path, pane, PurchaseCrud.class); 
 
         // We call the method that handles the creation
@@ -320,7 +288,7 @@ public class PurchaseCrud {
         Scene scene = new Scene(pane);
 
         // here we load the creation page fxml file
-        String path = "/uiass/eia/gisiba/purchase/purchase/create_purchase_products_selection_view_orders_pane.fxml";
+        String path = "/uiass/eia/gisiba/purchase/create_purchase_products_selection_view_orders_pane.fxml";
         FXManager.loadFXML(path, pane, PurchaseCrud.class); 
 
         VBox vbox = FXManager.getVBox(pane, "mainVbox");
@@ -349,7 +317,7 @@ public class PurchaseCrud {
 
         // here we load the creation page fxml file
 
-        String path = "/uiass/eia/gisiba/purchase/purchase/create_purchase_supplier_selection_pane.fxml";
+        String path = "/uiass/eia/gisiba/purchase/create_purchase_supplier_selection_pane.fxml";
         FXManager.loadFXML(path, pane, PurchaseCrud.class); 
 
         // We call the method that handles the creation
@@ -375,7 +343,7 @@ public class PurchaseCrud {
         Scene scene = new Scene(pane);
 
         // here we load the creation page fxml file
-        String path = "/uiass/eia/gisiba/purchase/purchase/purchase_summary_pane.fxml";
+        String path = "/uiass/eia/gisiba/purchase/purchase_summary_pane.fxml";
         FXManager.loadFXML(path, pane, PurchaseCrud.class); 
 
         // We call the method that handles the creation

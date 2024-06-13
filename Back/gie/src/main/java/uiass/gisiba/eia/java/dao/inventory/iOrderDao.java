@@ -23,7 +23,7 @@ public interface iOrderDao {
 
     void addPurchaseOrder(InventoryItem product, Time orderTime, int quantity, Purchase purchase);
 
-    void addSaleOrder(InventoryItem product, Time orderTime, int quantity, Sale sale);
+    void addSaleOrder(InventoryItem product, Time orderTime, int quantity, Sale sale, double margin);
 
     void deleteOrder(int orderId, String orderType) throws InvalidOrderTypeException, OrderNotFoundException;
 

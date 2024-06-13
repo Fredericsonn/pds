@@ -1,4 +1,4 @@
-package uiass.gisiba.eia.java.controller.inventory;
+package uiass.gisiba.eia.java.controller.operations;
 
 import static spark.Spark.*;
 
@@ -53,7 +53,7 @@ public class PurchaseOrderController {
 
 	    System.out.println("Server started.");
 	
-	    get("/orders/purchaseOrders/byId/:id", (req,res)-> {
+	    get("/orders/purchase/byId/:id", (req,res)-> {
 
 		int id = Integer.parseInt(req.params(":id"));      
 
@@ -68,11 +68,11 @@ public class PurchaseOrderController {
 
     }
 
-	public static void getAllPurchaseOrders() {
+	public static void getAllOrders() {
 		
 	    System.out.println("Server started.");
 	
-	    get("/orders/purchaseOrders", (req,res)-> {
+	    get("/orders/purchase", (req,res)-> {
 
 		List<Order> orders = service.getAllOrdersByType("Purchase_Order");
 		
@@ -88,7 +88,7 @@ public class PurchaseOrderController {
 		
 	    System.out.println("Server started.");
 	
-	    get("/orders/purchaseOrders/byPurchase/:purchaseId", (req,res)-> {
+	    get("/orders/purchase/byPurchase/:purchaseId", (req,res)-> {
 
 		int purchaseId = Integer.parseInt(req.params("purchaseId"));
 
@@ -106,7 +106,7 @@ public class PurchaseOrderController {
 
 	public static void orderSearchFilter() {
 	
-		post("/orders/purchaseOrders/filter" , new Route() {
+		post("/orders/purchase/filter" , new Route() {
 	
 			@Override
 			public String handle(Request request, Response response) throws ProductNotFoundException, CategoryNotFoundException, InvalidOrderTypeException  {
@@ -131,7 +131,7 @@ public class PurchaseOrderController {
 
 public static void updateOrder() {
 	
-	put("/orders/purchaseOrders/put/:orderId" , new Route() {
+	put("/orders/purchase/put/:orderId" , new Route() {
 
 		@Override
 		public String handle(Request request, Response response) throws ProductNotFoundException, CategoryNotFoundException, InvalidOrderTypeException  {
@@ -171,7 +171,7 @@ public static void deleteOrderController()  {
 
 	System.out.println("Server started.");
 
-	delete("/orders/purchaseOrders/delete/:orderId", new Route()  {
+	delete("/orders/purchase/delete/:orderId", new Route()  {
 
 		@Override
 		public String handle(Request request, Response response)   {

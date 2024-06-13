@@ -1,7 +1,5 @@
 package uiass.gisiba.eia.java.entity.purchases;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.CascadeType;

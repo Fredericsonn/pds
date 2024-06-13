@@ -186,7 +186,7 @@ public class ProductParser extends Parser {
         String description = productStringInfo.get(2);
     
         return Arrays.asList(ref, categoryId, category, brand, model, name, description);
-                     
+     
     }
 
 

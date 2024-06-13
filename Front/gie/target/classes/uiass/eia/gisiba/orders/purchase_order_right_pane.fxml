@@ -13,7 +13,7 @@
         <Label fx:id="timeDateLabel" layoutX="107.0" layoutY="102.0" prefHeight="42.0" prefWidth="155.0" text="time, date" wrapText="true" />
       <ImageView fx:id="orderImg" fitHeight="110.0" fitWidth="93.0" layoutX="11.0" layoutY="25.0">
          <image>
-            <Image url="@../../imgs/completed-task.png" />
+            <Image url="@../imgs/completed-task.png" />
          </image>
       </ImageView>
       <Label fx:id="brandModelNameLabel" layoutX="107.0" layoutY="43.0" prefHeight="22.0" prefWidth="155.0" text="brand, model, name" wrapText="true" />

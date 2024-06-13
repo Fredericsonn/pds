@@ -2,6 +2,7 @@ package uiass.gisiba.eia.java.entity.sales;
 
 import java.sql.Time;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -16,11 +17,16 @@ public class SaleOrder extends Order {
     @JoinColumn(name="sale_id")
     private Sale sale;
 
+    @Column(name="profit_margin")
+    private double profitMargin;
+
     // Constructors
     
-    public SaleOrder(InventoryItem product, Time orderTime, int quantity) {
+    public SaleOrder(InventoryItem product, Time orderTime, int quantity, double profitMargin) {
 
         super(product, orderTime, quantity);
+
+        this.profitMargin = profitMargin;
 
     }
 
@@ -38,12 +44,21 @@ public class SaleOrder extends Order {
         this.sale = sale;
     }
 
+    public double getProfitMargin() {
+        return profitMargin;
+    }
+
+    public void setProfitMargin(double profitMargin) {
+        this.profitMargin = profitMargin;
+    }
+
+    
     @Override
     public String toString() {
 
-        return "sale id : " + this.getOrderId() + ", sale : " + this.sale + ", product : " + this.getItem() +
+        return "sale id : " + this.getOrderId() + ", product : " + this.getItem() +
 
-        ", quantity : " + this.getQuantity() + ", order time : " + this.getOrderTime();
+        ", quantity : " + this.getQuantity() + ", profit margin : " + this.profitMargin +  ", order time : " + this.getOrderTime();
     }
 
     

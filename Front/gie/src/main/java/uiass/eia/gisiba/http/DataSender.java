@@ -13,7 +13,7 @@ import okhttp3.Response;
 
 public class DataSender {
 
-    private static String srcPath = "http://localhost:4567/";
+    private static String srcPath = "http://192.168.217.132:4567/";
 
     public static String responseBodyGenerator(String url) {
 

@@ -431,6 +431,15 @@ public class ContactCrud {
                 return contactTextFields;
     }
 
+    public static void fillWithContacts(TableView contactsTable, String contactType) {
+
+        List<List<String>> data = ContactDto.getAllContactsByType(contactType);  
+
+        List<String> columns = FXManager.columns_names_per_contact_type.get(contactType);
+
+        FXManager.populateTableView(contactsTable, columns, Arrays.asList("id", "address id"), data);
+    }
+
     public static void contactsTableEventHandler(TableView table, List<Label> labels, AnchorPane pane, String contactType,
     
     Button update, Button delete) {
@@ -501,6 +510,7 @@ public class ContactCrud {
         } 
             
         });
+
     }
 
     public static void contactSearchButtonHandler(Button search, TextField textField, List<Label> labels,

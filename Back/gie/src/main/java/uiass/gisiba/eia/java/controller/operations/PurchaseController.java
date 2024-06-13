@@ -1,8 +1,7 @@
-package uiass.gisiba.eia.java.controller.purchase;
+package uiass.gisiba.eia.java.controller.operations;
 
 import static spark.Spark.*;
 
-import java.sql.Date;
 import java.util.*;
 
 import com.google.gson.Gson;
@@ -13,20 +12,14 @@ import com.google.gson.JsonSerializer;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import uiass.gisiba.eia.java.controller.Parsers.CategoryParser;
 import uiass.gisiba.eia.java.controller.Parsers.OrderParser;
-import uiass.gisiba.eia.java.controller.Parsers.Parser;
 import uiass.gisiba.eia.java.controller.Parsers.PurchaseParser;
-import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
-import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
-import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidFilterCriteriaMapFormatException;
 import uiass.gisiba.eia.java.dao.exceptions.OperationNotModifiableException;
 import uiass.gisiba.eia.java.dao.exceptions.OrderNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.PurchaseNotFoundException;
 import uiass.gisiba.eia.java.entity.crm.Contact;
-import uiass.gisiba.eia.java.entity.crm.Person;
 import uiass.gisiba.eia.java.entity.inventory.Status;
 import uiass.gisiba.eia.java.entity.purchases.Purchase;
 import uiass.gisiba.eia.java.entity.purchases.PurchaseOrder;
@@ -103,7 +96,7 @@ public class PurchaseController {
 		}, gsonWithSerializer::toJson);
 	}
 
-	public static void getAllPurchasesByPersonSupplier() {
+	public static void getAllPurchasesBySupplier() {
 	  
 	    System.out.println("Server started.");
 	
@@ -195,7 +188,7 @@ public class PurchaseController {
 				
 				try {
 
-					Map<String, Object> criteria = PurchaseParser.parsePurchaseFilterCriteriaMap(body);
+					Map<String, Object> criteria = PurchaseParser.parseOperationFilterCriteriaMap(body, "purchase");
 
 					List<Purchase> purchases = service.purchasesFilter(criteria);
 

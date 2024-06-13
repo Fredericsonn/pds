@@ -62,6 +62,7 @@ public class PurchaseParser extends Parser {
 
         return Arrays.asList(orderId, itemId, category, brand, model, name, unitPrice, quantity, purchaseDate + ", " + orderTime);
     }
+    
     public static List<List<String>> parsePurchaseOrders(String json) {
 
         JsonArray ordersArray = new JsonParser().parse(json).getAsJsonArray();

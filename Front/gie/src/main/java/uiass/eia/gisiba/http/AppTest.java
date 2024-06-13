@@ -9,6 +9,7 @@ import uiass.eia.gisiba.http.dto.InventoryDto;
 import uiass.eia.gisiba.http.dto.OrderDto;
 import uiass.eia.gisiba.http.dto.ProductDto;
 import uiass.eia.gisiba.http.dto.PurchaseDto;
+import uiass.eia.gisiba.http.dto.SaleDto;
 import uiass.eia.gisiba.http.parsers.Parser;
 import uiass.eia.gisiba.http.parsers.ProductParser;
 import uiass.eia.gisiba.http.parsers.PurchaseParser;
@@ -40,7 +41,7 @@ public class AppTest {
         System.out.println(PurchaseDto.purchasesFilter(json));*/
 
 
-        System.out.println(ProductDto.getAllProducts());
+        System.out.println(SaleDto.getSaleById(499));
 
     }
 

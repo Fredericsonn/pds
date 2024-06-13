@@ -79,7 +79,7 @@ public class PurchaseDao implements iPurchaseDao {
     @Override
     public List<Purchase> getAllPurchasesBySupplier(String name, String supplierType) {
 
-        String hql = HQLQueryManager.selectAllPurchasesBySupplierNameHQLQueryGenerator(supplierType);
+        String hql = HQLQueryManager.selectAllOperationsByContactNameHQLQueryGenerator("Purchase",supplierType);
 
         Query query = em.createQuery(hql);
 
@@ -95,7 +95,7 @@ public class PurchaseDao implements iPurchaseDao {
 
         if (HQLQueryManager.contactTypeChecker(supplierType)) {
 
-            String hql = HQLQueryManager.selectAllSuppliersHQLQueryGenerator(supplierType);
+            String hql = HQLQueryManager.selectAllContactsHQLQueryGenerator(supplierType, "Purchase");
 
             Query query = em.createQuery(hql);
 
@@ -121,8 +121,6 @@ public class PurchaseDao implements iPurchaseDao {
 
         String hql = HQLQueryManager.selectOperationsBetweenDatesHQLQueryGenerator("Purchase");
 
-        System.out.println(hql);
-
         Query query = em.createQuery(hql);
 
         query.setParameter("startDate", startDate);
@@ -142,9 +140,6 @@ public class PurchaseDao implements iPurchaseDao {
 
         query.setParameter("date", date);
 
-        System.out.println(hql);
-
-
         return query.getResultList();
     }
 
@@ -155,9 +150,6 @@ public class PurchaseDao implements iPurchaseDao {
         Query query = em.createQuery(hql);
 
         query.setParameter("date", date);
-
-        System.out.println(hql);
-
 
         return query.getResultList();
     }

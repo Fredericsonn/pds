@@ -1,4 +1,4 @@
-package uiass.gisiba.eia.java.dao.crm;
+package uiass.gisiba.eia.java.dao;
 
 import java.util.Properties;
 import javax.mail.*;

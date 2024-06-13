@@ -23,6 +23,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.beans.property.SimpleStringProperty;
@@ -45,20 +46,28 @@ public class FXManager {
 
     public static List<String> inventory_labels_ids = Arrays.asList("categoryLabel","brandModelNameLabel","unitPriceLabel","quantityLabel", "dateAddedLabel");
 
-    public static List<String> order_labels_ids = Arrays.asList("categoryLabel","brandModelNameLabel","quantityLabel","unitPriceLabel" ,"timeDateLabel");
+    public static Map<String, List<String>> order_labels_names_per_operation_type = new HashMap<String, List<String>>() {{
+        put("purchase", Arrays.asList("categoryLabel","brandModelNameLabel","quantityLabel","unitPriceLabel" ,"timeDateLabel"));
+        put("sale", Arrays.asList("categoryLabel","brandModelNameLabel","quantityLabel","unitPriceLabel" , "profitMargin","timeDateLabel"));
+    }};
 
     public static Map<String, List<String>> columns_names_per_contact_type = new HashMap<String, List<String>>() {{
         put("Person", Arrays.asList("id","first name","last name","phone number", "email", "address id","house number","neighborhood","city","zip code","country"));
         put("Enterprise", Arrays.asList("id","enterprise name","type","phone number", "email", "address id","house number","neighborhood","city","zip code","country"));
     }};
 
+    public static Map<String, List<String>> order_columns_per_operation_type = new HashMap<String, List<String>>() {{
+        put("purchase", Arrays.asList("order id","item id","category","brand","model","name","unit price","quantity", "order date"));
+        put("sale", Arrays.asList("order id","item id","category","brand","model","name","unit price","quantity", "order date", "profit margin"));
+    }};
+
     public static List<String> catalog_columns = Arrays.asList("ref","category id","category","brand","model","name","description");
 
     public static List<String> inventory_columns = Arrays.asList("id","category","brand","model","name","unit price","quantity", "date added");
 
-    public static List<String> order_columns = Arrays.asList("order id","item id","category","brand","model","name","unit price","quantity", "order date");
-
     public static List<String> purchase_columns = Arrays.asList("purchase id","supplier id","supplier","supplierType","purchase date","total","status");
+
+    public static List<String> sale_columns = Arrays.asList("sale id","customer id","customer","customerType","sale date","total","status");
 
 
 
@@ -188,6 +197,8 @@ public class FXManager {
 
         comboBox.setItems(items);
     }
+
+    
 
     // validate a creation :
     public static boolean textFieldsCreationInputChecker(List<TextField> textFields) {
@@ -454,6 +465,11 @@ public class FXManager {
     public static DatePicker getDatePicker(Parent pane, String id) {
 
         return (DatePicker) pane.lookup("#" + id);
+    } 
+
+    public static Slider getSlider(Parent pane, String id) {
+
+        return (Slider) pane.lookup("#" + id);
     } 
 
 }

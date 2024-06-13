@@ -7,15 +7,17 @@ import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
+
+import uiass.gisiba.eia.java.dao.EmailSender;
 import uiass.gisiba.eia.java.dao.crm.AddressDao;
 import uiass.gisiba.eia.java.dao.crm.ContactDao;
 import uiass.gisiba.eia.java.dao.crm.iAddressDao;
 import uiass.gisiba.eia.java.dao.crm.iContactDao;
-import uiass.gisiba.eia.java.dao.crm.EmailSender;
 import uiass.gisiba.eia.java.dao.exceptions.AddressNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.CategoryNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ContactNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.DuplicatedAddressException;
+import uiass.gisiba.eia.java.dao.exceptions.InsufficientQuantityInStock;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidContactTypeException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidFilterCriteriaMapFormatException;
 import uiass.gisiba.eia.java.dao.exceptions.InvalidOrderTypeException;
@@ -25,6 +27,7 @@ import uiass.gisiba.eia.java.dao.exceptions.OperationNotModifiableException;
 import uiass.gisiba.eia.java.dao.exceptions.OrderNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.PurchaseNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.SaleNotFoundException;
 import uiass.gisiba.eia.java.dao.inventory.CategoryDao;
 import uiass.gisiba.eia.java.dao.inventory.InventoryItemDao;
 import uiass.gisiba.eia.java.dao.inventory.OrderDao;
@@ -35,6 +38,8 @@ import uiass.gisiba.eia.java.dao.inventory.iOrderDao;
 import uiass.gisiba.eia.java.dao.inventory.iProductDao;
 import uiass.gisiba.eia.java.dao.purchase.PurchaseDao;
 import uiass.gisiba.eia.java.dao.purchase.iPurchaseDao;
+import uiass.gisiba.eia.java.dao.sale.iSaleDao;
+import uiass.gisiba.eia.java.dao.sale.SaleDao;
 import uiass.gisiba.eia.java.entity.crm.Address;
 import uiass.gisiba.eia.java.entity.crm.Contact;
 import uiass.gisiba.eia.java.entity.crm.Enterprise;
@@ -48,18 +53,22 @@ import uiass.gisiba.eia.java.entity.inventory.Status;
 import uiass.gisiba.eia.java.entity.purchases.Purchase;
 import uiass.gisiba.eia.java.entity.purchases.PurchaseOrder;
 import uiass.gisiba.eia.java.entity.sales.Sale;
+import uiass.gisiba.eia.java.entity.sales.SaleOrder;
 
 
 public class Service implements iService {
 
-    private iContactDao cdao = new ContactDao();
+    private iContactDao cdao  = new ContactDao();
     private iAddressDao adao = new AddressDao();
     private iProductDao pdao = new ProductDao();
     private iCategoryDao catdao = new CategoryDao();
     private iInventoryItemDao idao = new InventoryItemDao();
     private iOrderDao odao = new OrderDao();
     private iPurchaseDao psdao = new PurchaseDao();
+    private iSaleDao sdao = new SaleDao();
     private EmailSender es = new EmailSender();
+
+
 
 /////////////////////////////////////////////////////// ADDRESS ////////////////////////////////////////////////////////////////
 
@@ -364,9 +373,9 @@ public class Service implements iService {
     }
 
     @Override
-    public void addSaleOrder(InventoryItem product, Time orderTime, int quantity, Sale sale) {
+    public void addSaleOrder(InventoryItem product, Time orderTime, int quantity, Sale sale, double margin) {
 
-        odao.addSaleOrder(product, orderTime, quantity, sale);
+        odao.addSaleOrder(product, orderTime, quantity, sale, margin);
     }
 
     @Override
@@ -471,6 +480,88 @@ public class Service implements iService {
     public void updatePurchaseStatus(int id, Status status) throws PurchaseNotFoundException {
 
         psdao.updatePurchaseStatus(id, status);
+    }
+
+/////////////////////////////////////////////////////// Sale /////////////////////////////////////////////////////////////////////
+
+    @Override
+    public Sale getSaleById(int id) throws SaleNotFoundException {
+
+        return sdao.getSaleById(id);
+    }
+
+    @Override
+    public void addSale(Sale sale) throws InsufficientQuantityInStock {
+
+        sdao.addSale(sale);
+    }
+
+    @Override
+    public void deleteSale(int id) throws SaleNotFoundException {
+
+        sdao.deleteSale(id);
+    }
+
+    @Override
+    public List<Sale> getAllSales() {
+
+        return sdao.getAllSales();
+    }
+
+    @Override
+    public List<Sale> getAllSalesByContactType(String type) throws InvalidContactTypeException {
+
+        return sdao.getAllSalesByContactType(type);
+    }
+
+    @Override
+    public List<Sale> getAllSalesByCustomer(String name, String customerType) {
+
+        return sdao.getAllSalesByCustomer(name, customerType);
+    }
+
+    @Override
+    public List<Contact> getAllCustomers(String customerType) throws InvalidContactTypeException {
+
+        return sdao.getAllCustomers(customerType);
+    }
+
+    @Override
+    public List<Sale> getAllSalesByStatus(Status status) {
+
+        return sdao.getAllSalesByStatus(status);
+    }
+
+    @Override
+    public List<Sale> salesDatesFilter(Map<String, Date> datesCriteria) throws InvalidFilterCriteriaMapFormatException {
+
+        return sdao.salesDatesFilter(datesCriteria);
+    }
+
+    @Override
+    public List<Sale> salesFilter(Map<String, Object> criteria) throws InvalidFilterCriteriaMapFormatException {
+
+        return sdao.salesFilter(criteria);
+    }
+
+    @Override
+    public List<SaleOrder> getSaleOrders(int id) throws SaleNotFoundException {
+
+        return sdao.getSaleOrders(id);
+    }
+
+    @Override
+    public void updateSaleOrders(int id, List<SaleOrder> newOrders) throws SaleNotFoundException,
+    
+            OperationNotModifiableException {
+
+        sdao.updateSaleOrders(id, newOrders);
+    }
+
+    @Override
+    public void updateSaleStatus(int id, Status status) throws SaleNotFoundException {
+
+        sdao.updateSaleStatus(id, status);
     }
 
 

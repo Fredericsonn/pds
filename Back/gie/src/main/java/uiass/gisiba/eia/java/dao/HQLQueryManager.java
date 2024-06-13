@@ -133,7 +133,7 @@ public class HQLQueryManager {
     // this method is used to generate the hql from a columns update state map
     public static String orderSelectColumnsCollector(List<String> columns, String table) {
         
-        String hql = "select o from " + table  + " o where ";
+        String hql = "from " + table  + " o where ";
 
         for (String column : columns) {
 
@@ -197,9 +197,13 @@ public class HQLQueryManager {
         return type.equals("Person") || type.equals("Enterprise");
     }
 
-    public static String selectAllSuppliersHQLQueryGenerator(String supplierType) {
+    public static String selectAllContactsHQLQueryGenerator(String contactType, String operation) {
 
-        String hql = "select DISTINCT p.supplier from " + supplierType + "Purchase p";
+        String hql = "";
+
+        hql = operation.equals("Purchase") ? "select DISTINCT p.supplier from " + contactType + "Purchase p" :
+
+        "select DISTINCT s.customer from " + contactType + "Sale s";
 
         return hql;
     }
@@ -218,15 +222,17 @@ public class HQLQueryManager {
         return hql;
     }
 
-    public static String selectAllPurchasesBySupplierNameHQLQueryGenerator(String supplierType) {
+    public static String selectAllOperationsByContactNameHQLQueryGenerator(String operation, String contactType) {
 
         String hql;
 
-        if (supplierType.equals("Person")) 
+        String role = operation.equals("Purchase") ? "supplier" : "customer";
 
-            hql = "from " + supplierType + "Purchase p where DTYPE = :type and concat(p.supplier.firstName,' ',p.supplier.lastName) = :fullName";
+        if (contactType.equals("Person")) 
 
-        else  hql = "from " + supplierType + "Purchase p where DTYPE = :type and p.supplier.enterpriseName = :fullName";
+            hql = "from " + contactType + operation + " p where DTYPE = :type and concat(p." + role + ".firstName,' ',p." + role + ".lastName) = :fullName";
+
+        else  hql = "from " + contactType + operation + " p where DTYPE = :type and p." + role + ".enterpriseName = :fullName";
 
         return hql;
 

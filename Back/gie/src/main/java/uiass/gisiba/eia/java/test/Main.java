@@ -39,6 +39,7 @@ import uiass.gisiba.eia.java.dao.exceptions.InventoryItemNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.OrderNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.ProductNotFoundException;
 import uiass.gisiba.eia.java.dao.exceptions.PurchaseNotFoundException;
+import uiass.gisiba.eia.java.dao.exceptions.SaleNotFoundException;
 import uiass.gisiba.eia.java.dao.inventory.ProductDao;
 import uiass.gisiba.eia.java.dao.inventory.iProductDao;
 import uiass.gisiba.eia.java.entity.crm.Address;
@@ -148,16 +149,23 @@ public class Main {
 
         map.put("status", "CANCELED");*/
 
+
+        Map<String,Object> map = new HashMap<String,Object>();
+
+        Map<String,String> customerMap = new HashMap<String,String>();
+
+        customerMap.put("customerName", "Joyce Peterson");
+
+        customerMap.put("customerType", "Person");
+
+        map.put("customer", customerMap);
+
         try {
-            service.removePurchaseOrder(6, 7);
-        } catch (PurchaseNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (OrderNotFoundException e) {
+            System.out.println(service.salesFilter(map));
+        } catch (InvalidFilterCriteriaMapFormatException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
 
 
 

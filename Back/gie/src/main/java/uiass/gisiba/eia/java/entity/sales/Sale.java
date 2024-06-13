@@ -2,6 +2,7 @@ package uiass.gisiba.eia.java.entity.sales;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -43,11 +44,12 @@ public class Sale implements Serializable {
 
     // Constructors
 
-    public Sale(List<SaleOrder> orders, Date saleDate, double total, Status status) {
+    public Sale(List<SaleOrder> orders, double total, Status status) {
+
         this.orders = orders;
-        this.saleDate = saleDate;
         this.total = total;
         this.status= status;
+        this.saleDate = Date.valueOf(LocalDate.now());
     }
 
     public Sale() {

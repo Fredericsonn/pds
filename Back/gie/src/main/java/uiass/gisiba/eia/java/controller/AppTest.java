@@ -6,9 +6,10 @@ import uiass.gisiba.eia.java.controller.crm.ContactController;
 import uiass.gisiba.eia.java.controller.inventory.CategoryController;
 import uiass.gisiba.eia.java.controller.inventory.InventoryItemController;
 import uiass.gisiba.eia.java.controller.inventory.ProductController;
-import uiass.gisiba.eia.java.controller.inventory.PurchaseOrderController;
-import uiass.gisiba.eia.java.controller.purchase.PurchaseController;
-import uiass.gisiba.eia.java.dao.inventory.iInventoryItemDao;
+import uiass.gisiba.eia.java.controller.operations.PurchaseController;
+import uiass.gisiba.eia.java.controller.operations.PurchaseOrderController;
+import uiass.gisiba.eia.java.controller.operations.SaleController;
+import uiass.gisiba.eia.java.controller.operations.SaleOrderController;
 
 
 public class AppTest {
@@ -52,7 +53,7 @@ public class AppTest {
         InventoryItemController.updateItemUnitPriceController();
 
         PurchaseOrderController.getOrderById();
-        PurchaseOrderController.getAllPurchaseOrders();
+        PurchaseOrderController.getAllOrders();
         PurchaseOrderController.getAllOrdersByPurchase();
         PurchaseOrderController.orderSearchFilter();
         PurchaseOrderController.updateOrder();
@@ -61,7 +62,7 @@ public class AppTest {
         PurchaseController.getAllPurchases();
         PurchaseController.getAllPurchasesBySupplierType();
         PurchaseController.getAllPurchasesByStatus();
-        PurchaseController.getAllPurchasesByPersonSupplier();
+        PurchaseController.getAllPurchasesBySupplier();
         PurchaseController.purchasesFilter();
         PurchaseController.getAllSuppliers();
         PurchaseController.getPurchaseById();
@@ -70,6 +71,25 @@ public class AppTest {
         PurchaseController.updatePurchaseOrdersController();
         PurchaseController.updatePurchaseStatusController();
         PurchaseController.removePurchaseOrderController();
+
+        SaleOrderController.getOrderById();
+        SaleOrderController.getAllOrders();
+        SaleOrderController.getAllOrdersBySale();
+        SaleOrderController.orderSearchFilter();
+        SaleOrderController.updateOrder();
+        SaleOrderController.deleteOrderController();
+
+        SaleController.getAllSales();
+        SaleController.getAllSalesByCustomerType();
+        SaleController.getAllSalesByStatus();
+        SaleController.getAllSalesByCustomer();
+        SaleController.getAllCustomers();
+        SaleController.salesFilter();
+        SaleController.getSaleById();
+        SaleController.deleteSaleController();
+        SaleController.postSale();
+        SaleController.updateSaleOrdersController();
+        SaleController.updateSaleStatusController();
 
     }
 }

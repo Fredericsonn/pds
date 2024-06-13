@@ -9,7 +9,6 @@ import javax.mail.MessagingException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -30,204 +29,211 @@ public class ContactController {
 
     static Service service = new Service();
 
-	public ContactController() {
+    public ContactController() {
 
-	}
+    }
 
-/////////////////////////////////////////////////// GET METHODS //////////////////////////////////////////////////////////////////
-	public static void getContactByIdController() {
+    /////////////////////////////////////////////////// GET METHODS
+    /////////////////////////////////////////////////// //////////////////////////////////////////////////////////////////
+    public static void getContactByIdController() {
 
-	    Gson gson = new Gson();
-	  
-	    System.out.println("Server started.");
-	
-	    get("/contacts/:contactType/byId/:id", (req,res)-> {
+        Gson gson = new Gson();
 
-		String contactType = String.valueOf(req.params(":contactType"));
+        System.out.println("Server started.");
 
-		int id = Integer.parseInt(req.params(":id"));
+        get("/contacts/:contactType/byId/:id", (req, res) -> {
 
-		Contact contact = service.getContactById(id, contactType);
-		
-		res.type("application/json");
+            String contactType = String.valueOf(req.params(":contactType"));
 
-		return contact;
-	
-		   
-		}, gson::toJson );
-	   
-	}
+            int id = Integer.parseInt(req.params(":id"));
 
-	public static void getContactByNameController() {
+            Contact contact = service.getContactById(id, contactType);
 
-	    Gson gson = new Gson();
-	  
-	    System.out.println("Server started.");
-	
-	    get("/contacts/:contactType/byName/:name", (req,res)-> {
+            res.type("application/json");
 
-		String contactType = String.valueOf(req.params(":contactType"));
+            return contact;
 
-		String name = String.valueOf(req.params(":name"));
+        }, gson::toJson);
 
-		Contact contact = service.getContactByName(name, contactType);
-		
-		res.type("application/json");
-		   		   
-		return contact;
-		   
-	   } , gson::toJson );
-	}
+    }
 
-	public static void getContactByAddressIdController() {
-		
-	    Gson gson = new Gson();
-	  
-	    System.out.println("Server started.");
-	
-	    get("/contacts/:contactType/byAddressId/:id", (req,res)-> {
+    public static void getContactByNameController() {
 
-		String contactType = String.valueOf(req.params(":contactType"));
+        Gson gson = new Gson();
 
-		int id = Integer.parseInt(req.params(":id"));
+        System.out.println("Server started.");
 
-		Contact contact = service.getContactByAddressId(contactType, id);
-		
-		res.type("application/json");
-						  
-		return contact;
+        get("/contacts/:contactType/byName/:name", (req, res) -> {
 
-		   
-	} , gson::toJson );		
-	}
+            String contactType = String.valueOf(req.params(":contactType"));
 
-	public static void getAllContactsByCountryController() {
+            String name = String.valueOf(req.params(":name"));
 
-	    Gson gson = new Gson();
-	  
-	    System.out.println("Server started.");
-	
-	    get("/contacts/:contactType/byAddressCountry/:country", (req,res)-> {
+            Contact contact = service.getContactByName(name, contactType);
 
-		String contactType = String.valueOf(req.params(":contactType"));
+            res.type("application/json");
 
-		String country = String.valueOf(req.params(":country"));
+            return contact;
 
-		List<Contact> contactsList = service.getAllContactsByCountry(contactType, country);
-		
-		res.type("application/json");
-		   		   
-		return contactsList;
-		   
-	   } , gson::toJson );
-	}
+        }, gson::toJson);
+    }
 
-	public static void getAllContactsByTypeController() {
+    public static void getContactByAddressIdController() {
 
-	    Gson gson = new Gson();
-	  
-	    System.out.println("Server started.");
-	
-	    get("/contacts/:contactType", (req,res)-> {
+        Gson gson = new Gson();
 
-		String contactType = String.valueOf(req.params(":contactType"));
+        System.out.println("Server started.");
 
-		List<Contact> contactsList = service.getAllContactsByType(contactType);
-		
-		res.type("application/json");
-		   		   
-		return contactsList;
-		   
-	   } , gson::toJson );
-	}
+        get("/contacts/:contactType/byAddressId/:id", (req, res) -> {
 
-	public static void getAllContactsController() {
+            String contactType = String.valueOf(req.params(":contactType"));
 
-	    Gson gson = new Gson();
-	  
-	    System.out.println("Server started.");
-	
-	    get("/contacts", (req,res)-> {
+            int id = Integer.parseInt(req.params(":id"));
 
-		List<Contact> contactsList = service.getAllContacts();
-		
-		res.type("application/json");
-		   		   
-		return contactsList;
-		   
-	   } , gson::toJson );
-	}
+            Contact contact = service.getContactByAddressId(contactType, id);
 
+            res.type("application/json");
 
-/////////////////////////////////////////////////// POST METHOD //////////////////////////////////////////////////////////////////
-public static void postContactController() {
+            return contact;
 
-    Gson gson = new Gson();
+        }, gson::toJson);
+    }
 
-    System.out.println("Server started.");
+    public static void getAllContactsByCountryController() {
 
-    post("/contacts/:contactType/post", new Route() {
+        Gson gson = new Gson();
 
-    @Override
-    public String handle(Request request, Response response)  {
+        System.out.println("Server started.");
 
-        String contactType = String.valueOf(request.params(":contactType"));
+        get("/contacts/:contactType/byAddressCountry/:country", (req, res) -> {
 
-        String body = request.body();
+            String contactType = String.valueOf(req.params(":contactType"));
 
-        JsonObject contact = gson.fromJson(body, JsonObject.class);
+            String country = String.valueOf(req.params(":country"));
 
-        String first_or_enterprise_name = contactType.equals("Person") ? Parser.collectString(contact, "firstName") 
-        
-        : Parser.collectString(contact, "enterpriseName") ; 
+            List<Contact> contactsList = service.getAllContactsByCountry(contactType, country);
 
-        String last_name_or_enterprise_type = contactType.equals("Person") ? Parser.collectString(contact, "lastName") 
-        
-        : Parser.collectString(contact, "type");
+            res.type("application/json");
 
-        String phoneNumber = Parser.collectString(contact, "phoneNumber");
+            return contactsList;
 
-        String email = Parser.collectString(contact, "email");
+        }, gson::toJson);
+    }
 
-        int houseNumber = Parser.collectInt(contact, "houseNumber");
+    public static void getAllContactsByTypeController() {
 
-        String neighborhood = Parser.collectString(contact, "neighborhood");
+        Gson gson = new Gson();
 
-        String city = Parser.collectString(contact, "city");
+        System.out.println("Server started.");
 
-        String zipCode = Parser.collectString(contact, "zipCode");
+        get("/contacts/:contactType", (req, res) -> {
 
-        String country = Parser.collectString(contact, "country");
+            String contactType = String.valueOf(req.params(":contactType"));
 
-        Address address = new Address(country, city, zipCode, neighborhood, houseNumber);
+            System.out.println(contactType);
 
-        try {
+            List<Contact> contactsList = service.getAllContactsByType(contactType);
 
-            if (contactType.equals("Person")) {
+            res.type("application/json");
 
-                service.addContact(first_or_enterprise_name, last_name_or_enterprise_type, phoneNumber, email, address);
+            return contactsList;
+
+        }, gson::toJson);
+    }
+
+    public static void getAllContactsController() {
+
+        Gson gson = new Gson();
+
+        System.out.println("Server started.");
+
+        get("/contacts", (req, res) -> {
+
+            List<Contact> contactsList = service.getAllContacts();
+
+            res.type("application/json");
+
+            return contactsList;
+
+        }, gson::toJson);
+    }
+
+    /////////////////////////////////////////////////// POST METHOD
+    /////////////////////////////////////////////////// //////////////////////////////////////////////////////////////////
+    public static void postContactController() {
+
+        Gson gson = new Gson();
+
+        System.out.println("Server started.");
+
+        post("/contacts/:contactType/post", new Route() {
+
+            @Override
+            public String handle(Request request, Response response) {
+
+                String contactType = String.valueOf(request.params(":contactType"));
+
+                String body = request.body();
+
+                JsonObject contact = gson.fromJson(body, JsonObject.class);
+
+                String first_or_enterprise_name = contactType.equals("Person")
+                        ? Parser.collectString(contact, "firstName")
+
+                        : Parser.collectString(contact, "enterpriseName");
+
+                String last_name_or_enterprise_type = contactType.equals("Person")
+                        ? Parser.collectString(contact, "lastName")
+
+                        : Parser.collectString(contact, "type");
+
+                String phoneNumber = Parser.collectString(contact, "phoneNumber");
+
+                String email = Parser.collectString(contact, "email");
+
+                int houseNumber = Parser.collectInt(contact, "houseNumber");
+
+                String neighborhood = Parser.collectString(contact, "neighborhood");
+
+                String city = Parser.collectString(contact, "city");
+
+                String zipCode = Parser.collectString(contact, "zipCode");
+
+                String country = Parser.collectString(contact, "country");
+
+                Address address = new Address(country, city, zipCode, neighborhood, houseNumber);
+
+                try {
+
+                    if (contactType.equals("Person")) {
+
+                        service.addContact(first_or_enterprise_name, last_name_or_enterprise_type, phoneNumber, email,
+                                address);
+                    }
+
+                    else {
+
+                        // We adapt the second value type wether it's the String last_name for Person or
+                        // the Enumeration type for Enterprise
+                        service.addContact(first_or_enterprise_name,
+                                EntrepriseType.valueOf(last_name_or_enterprise_type),
+
+                                phoneNumber, email, address);
+                    }
+
+                } catch (AddressNotFoundException | DuplicatedAddressException e) {
+
+                    return "The provided address is already linked to a contact.";
+                }
+
+                return "Contact created successfully.";
             }
+        });
 
-            else {
-                
-            // We adapt the second value type wether it's the String last_name for Person or the Enumeration type for Enterprise
-                service.addContact(first_or_enterprise_name, EntrepriseType.valueOf(last_name_or_enterprise_type),
-                
-                phoneNumber, email, address);
-            }
+    }
 
-        } catch (AddressNotFoundException | DuplicatedAddressException e) {
-
-            return "The provided address is already linked to a contact.";
-        }
-         
-        return "Contact created successfully.";
-}});
-
-
-}
-
-//////////////////////////////////////////  Email Sending Controller ////////////////////////////////////////////////////////////  
+    ////////////////////////////////////////// Email Sending Controller
+    ////////////////////////////////////////// ////////////////////////////////////////////////////////////
     public static void postEmailController() {
 
         Gson gson = new Gson();
@@ -251,97 +257,99 @@ public static void postContactController() {
 
                 try {
 
-                    service.notifyContact(email, subject, emailBody);  
-                    
+                    service.notifyContact(email, subject, emailBody);
 
-                } catch(MessagingException | UnknownHostException e) {
+                } catch (MessagingException | UnknownHostException e) {
 
                     return "Email not sent.";
                 }
 
                 return "Email Sent Successfully.";
 
-                
             }
-            
+
         });
     }
 
-/////////////////////////////////////////////////// DELETE METHOD //////////////////////////////////////////////////////////////////
-    public static void deleteContactController()  {
+    /////////////////////////////////////////////////// DELETE METHOD
+    /////////////////////////////////////////////////// //////////////////////////////////////////////////////////////////
+    public static void deleteContactController() {
 
         System.out.println("Server started.");
 
-            delete("/contacts/delete/:contactType/:id", new Route()  {
+        delete("/contacts/delete/:contactType/:id", new Route() {
 
-                @Override
-                public String handle(Request request, Response response) throws InvalidContactTypeException  {
+            @Override
+            public String handle(Request request, Response response) throws InvalidContactTypeException {
 
-                    String contactType = String.valueOf(request.params(":contactType"));
+                String contactType = String.valueOf(request.params(":contactType"));
 
-                    int id = Integer.parseInt(request.params(":id"));
-    
-                        try {
-    
-                            service.deleteContact(id, contactType);       
-        
-                        } catch (ContactNotFoundException | InvalidContactTypeException e) {
-        
-                            return e.getMessage();
-                        }  
-                        
-                        return "Contact deleted successfully.";
+                int id = Integer.parseInt(request.params(":id"));
+
+                try {
+
+                    service.deleteContact(id, contactType);
+
+                } catch (ContactNotFoundException | InvalidContactTypeException e) {
+
+                    return e.getMessage();
                 }
-            }
-    
-            );  
-    }
-/////////////////////////////////////////////////// Update METHOD //////////////////////////////////////////////////////////////////
 
-    public static void updateContactController()  {
+                return "Contact deleted successfully.";
+            }
+        }
+
+        );
+    }
+    /////////////////////////////////////////////////// Update METHOD
+    /////////////////////////////////////////////////// //////////////////////////////////////////////////////////////////
+
+    public static void updateContactController() {
 
         // A list of the contact table's columns
 
         Gson gson = new Gson();
 
-		System.out.println("Server started.");
+        System.out.println("Server started.");
 
-        put("/contacts/:contactType/put/:id" , new Route() {
+        put("/contacts/:contactType/put/:id", new Route() {
 
             @Override
-            public String handle(Request request, Response response)   {
-                
-				// We retireve the contact type from the url 
+            public String handle(Request request, Response response) {
+
+                // We retireve the contact type from the url
                 String contactType = String.valueOf(request.params(":contactType"));
 
-                // We retireve the contact id from the url 
-                int id = Integer.parseInt(request.params(":id")); 
+                // We retireve the contact id from the url
+                int id = Integer.parseInt(request.params(":id"));
 
                 String body = request.body(); // We get the json containing update information as string
-                    
+
                 // The corresponding list of attribute (used to parse the json)
                 List<String> columns = ContactParser.contact_columns_by_type_map.get(contactType);
-    
+
                 // We collect all the values to update from the request body in one list :
                 List contactValues = ContactParser.contactValuesCollector(gson, body, contactType);
-    
-                // We select only the non null values with their corresponding columns and form the update map :
+
+                // We select only the non null values with their corresponding columns and form
+                // the update map :
                 Map<String, Object> contact_columns_new_values = Parser.mapFormater(columns, contactValues);
-    
+
                 // And finally we update the contact :
                 try {
-                            
-                    service.updateContact(id, contact_columns_new_values, contactType);;
-    
-                } catch (ContactNotFoundException | InvalidContactTypeException  e) {
-    
+
+                    service.updateContact(id, contact_columns_new_values, contactType);
+                    ;
+
+                } catch (ContactNotFoundException | InvalidContactTypeException e) {
+
                     return e.getMessage();
                 }
-                     
+
                 return "Contact updated successfully.";
 
-    
-        }});
+            }
+        });
 
     }
 }
