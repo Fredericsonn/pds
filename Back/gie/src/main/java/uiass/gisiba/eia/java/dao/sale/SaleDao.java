@@ -65,6 +65,7 @@ public class SaleDao implements iSaleDao {
 
         return true;
     }
+    
     @Override
     public void addSale(Sale sale) throws InsufficientQuantityInStock {
 

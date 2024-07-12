@@ -190,9 +190,7 @@ public static void deleteOrderController()  {
 
 					return e.getMessage();
 				}   
-
-			
-				
+	
 			return "Purchase order deleted successfully.";
 		}
 	}

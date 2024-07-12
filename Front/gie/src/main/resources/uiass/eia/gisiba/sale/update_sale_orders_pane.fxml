@@ -25,7 +25,7 @@
             <TableView fx:id="ordersTableView" prefHeight="314.0" prefWidth="515.0" />
             <HBox alignment="CENTER" prefHeight="94.0" prefWidth="517.0" spacing="5.0">
                <children>
-                  <HBox fx:id="editHbox" alignment="CENTER" disable="true" prefHeight="90.0" prefWidth="478.0" spacing="30.0">
+                  <HBox fx:id="editHbox" alignment="CENTER" disable="true" prefHeight="90.0" prefWidth="406.0" spacing="30.0">
                      <children>
                         <VBox prefHeight="90.0" prefWidth="136.0" spacing="3.0">
                            <children>
@@ -40,9 +40,9 @@
                            <children>
                               <Label text="New Profit :" />
                               <Slider fx:id="profitMarginSlider" blockIncrement="5.0" prefHeight="24.0" prefWidth="106.0" value="20.0" />
-                              <Label fx:id="sliderValueLabel" text="0">
+                              <Label fx:id="profitValueLabel" text="20">
                                  <VBox.margin>
-                                    <Insets left="42.0" />
+                                    <Insets left="28.0" />
                                  </VBox.margin>
                                  <font>
                                     <Font size="13.0" />
@@ -56,14 +56,26 @@
                         <Button fx:id="updateQuantityBtn" mnemonicParsing="false" prefHeight="34.0" prefWidth="124.0" text="Update Order" />
                      </children>
                      <padding>
-                        <Insets left="40.0" right="40.0" />
+                        <Insets left="40.0" right="10.0" />
                      </padding>
                   </HBox>
-                  <ImageView fx:id="confirmBtn" fitHeight="34.0" fitWidth="34.0">
-                     <image>
-                        <Image url="@../imgs/mark.png" />
-                     </image>
-                  </ImageView>
+                  <HBox alignment="CENTER" prefHeight="90.0" prefWidth="123.0" spacing="10.0">
+                     <children>
+                        <ImageView fx:id="deleteBtn" fitHeight="32.0" fitWidth="35.0">
+                           <image>
+                              <Image url="@../imgs/delete.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </ImageView>
+                        <ImageView fx:id="confirmBtn" fitHeight="34.0" fitWidth="34.0">
+                           <image>
+                              <Image url="@../imgs/mark.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
                </children>
                <padding>
                   <Insets right="15.0" />

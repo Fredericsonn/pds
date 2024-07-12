@@ -144,11 +144,11 @@ public static void updateOrder() {
 
 			int orderId = Integer.parseInt(request.params("orderId"));
 
-			int quantity = OrderParser.updateOrderQuantityParser(body);
+			Map<String,Object> map = OrderParser.updateSaleOrderParser(body);
 
 			try {
 
-				service.updateOrder(orderId, quantity, "Sale");
+				service.updateSaleOrder(orderId, map);
 
 			} catch (InvalidOrderTypeException e) {
 
@@ -159,7 +159,7 @@ public static void updateOrder() {
 				return e.getMessage();
 			}
 
-			return "Order updated successfully";
+			return "Order Updated Successfully";
 
 
 }});
@@ -192,7 +192,6 @@ public static void deleteOrderController()  {
 
 					return e.getMessage();
 				}   
-
 			
 			return "Sale order deleted successfully.";
 		}

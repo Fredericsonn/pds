@@ -28,4 +28,6 @@ public interface iOrderDao {
     void deleteOrder(int orderId, String orderType) throws InvalidOrderTypeException, OrderNotFoundException;
 
     void updateOrder(int orderId, int quantity, String orderType) throws InvalidOrderTypeException, OrderNotFoundException;
+
+    void updateSaleOrder(int orderId, Map<String,Object> newValues) throws InvalidOrderTypeException, OrderNotFoundException;
 }

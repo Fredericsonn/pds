@@ -24,6 +24,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -381,14 +382,14 @@ public class SaleFX extends OperationFX {
         // here we load the creation page fxml file
 
         String path = "/uiass/eia/gisiba/sale/update_sale_orders_pane.fxml";
-        FXManager.loadFXML(path, pane, PurchaseCrud.class); 
+        FXManager.loadFXML(path, pane, SaleFX.class); 
 
         // We call the method that handles the creation
-        PurchaseCrud.editPurchaseOrdersPane(pane, saleId);
+        SaleCrud.editSaleOrdersPane(pane, saleId);
         
         // We add the stage info and show it
         String iconPath = "/uiass/eia/gisiba/imgs/carts.png";
-        InputStream inputStream = PurchaseCrud.class.getResourceAsStream(iconPath);
+        InputStream inputStream = SaleFX.class.getResourceAsStream(iconPath);
         Image icon = new Image(inputStream);
 
         stage.setScene(scene);
@@ -449,7 +450,7 @@ public class SaleFX extends OperationFX {
 
     public static void profitMarginSliderHandler(HBox addHbox) {
 
-        Slider profitSlider = FXManager.getSlider(addHbox, "profitSlider");
+        Slider profitSlider = FXManager.getSlider(addHbox, "profitMarginSlider");
 
         Label sliderValueLabel = FXManager.getLabel(addHbox, "profitValueLabel");
 
@@ -586,57 +587,114 @@ public class SaleFX extends OperationFX {
         });
     }
 
-    public static void editOrdersTableFiller(TableView salesTable, String saleId) {
+    public static void fillSaleOrdersTable(TableView salesTable, String saleId) {
 
         List<List<String>> orders = OrderDto.getAllOrdersBySale(Integer.parseInt(saleId));
 
-        FXManager.populateTableView(salesTable, FXManager.order_columns_per_operation_type.get("sale"), Arrays.asList("order id", "itemid"), orders);
+        orders.forEach(order -> {
+            
+            String profitMargin = order.get(9);
+
+            order.set(9, profitMargin + "%");
+        });
+
+        FXManager.populateTableView(salesTable, FXManager.order_columns_per_operation_type.get("sale"), Arrays.asList("order id", "item id"), orders);
     }
 
-    public static void saleOrdersTableHandler(TableView ordersTable, Parent pane, String saleId) {
+    public static boolean validUpdateChecker(TextField quantity, Slider margin) {
 
+        return (!quantity.getText().equals("") || margin.getValue() != 20);
+    }
+
+    public static void editOrdersTableHandler(TableView salesTable, String saleId, Parent pane) {
+
+        // HBox
         HBox editHbox = FXManager.getHBox(pane, "editHbox");
 
-        // Button
+        // Buttons
         Button update = FXManager.getButton(pane, "updateQuantityBtn");
+        ImageView delete = FXManager.getImageView(pane, "deleteBtn");
 
-        // Text Field
+        // TextField
         TextField quantityTextField = FXManager.getTextField(pane, "quantityTextField");
-        FXManager.setTextFieldNumericFormatRule(quantityTextField);
 
-        ordersTable.setOnMouseClicked(event -> {
+        // Label
+        Label profitLabel = FXManager.getLabel(pane, "profitValueLabel");
 
-            if (!ordersTable.getSelectionModel().isEmpty()) {
+        // Slider
+        Slider profitMarginSlider = FXManager.getSlider(pane, "profitMarginSlider");
+        profitMarginSliderHandler(editHbox); // we handle the slider's properties here
 
-                List<String> order = (List<String>) ordersTable.getSelectionModel().getSelectedItem();
+        // we fill the table with the corresponding sale's orders
+        fillSaleOrdersTable(salesTable, saleId);
+
+        salesTable.setOnMouseClicked(event -> {
+
+            editHbox.setDisable(false);
+
+            if (!salesTable.getSelectionModel().isEmpty()) {
+
+                List<String> order = (List<String>) salesTable.getSelectionModel().getSelectedItem();
 
                 int orderId = Integer.parseInt(order.get(0));
 
-                editHbox.setDisable(false);
+                delete.setOnMouseClicked(delete_event -> {
 
-                update.setOnAction(update_event -> {
+                    String result = OrderDto.delteOrder(orderId, "sale");
 
-                    String quantity = quantityTextField.getText();
+                    System.out.println(result);
 
-                    if (!quantity.equals("")) {
+                    fillSaleOrdersTable(salesTable, saleId);
 
-                        Map<String, Object> map = Map.of("quantity", quantity);
-
-                        String json = Parser.jsonGenerator(map);
-
-                        OrderDto.updateOrder(json, orderId);
-
-                        editOrdersTableFiller(ordersTable, saleId);
-
-                        editHbox.setDisable(true);
-                    }
-
-                    else FXManager.showAlert(AlertType.WARNING, "Error", "No quantity provided", "Please provide a quantity.");
-
+                    editHbox.setDisable(true);
+            
                 });
 
+                update.setOnAction(confirm_event -> {
+
+                    if (validUpdateChecker(quantityTextField, profitMarginSlider)) {
+
+                        Map<String,Object> map = new HashMap<String,Object>();
+
+                        double profitMargin = profitMarginSlider.getValue();
+
+                        String quantity = quantityTextField.getText();
+
+                        if (quantity.equals("")) quantity = null;
+
+                        map.put("quantity", quantity);
+    
+                        map.put("profitMargin", truncateToTwoDecimalPlaces(profitMargin));
+    
+                        String json = Parser.jsonGenerator(map);
+
+                        System.out.println(json);
+    
+                        String updateResult = OrderDto.updateSaleOrder(json, orderId);
+    
+                        if (updateResult.equals("Order Updated Successfully")) {
+    
+                            fillSaleOrdersTable(salesTable, saleId);
+    
+                            quantityTextField.setText("");
+    
+                            profitMarginSlider.setValue(20);
+
+                            profitLabel.setText("20");
+
+                            editHbox.setDisable(true);
+                        }
+
+                        else FXManager.showAlert(AlertType.ERROR, "Error", "Internal Server Error", "an error has occured during this operation.");
+                    }
+
+                    else FXManager.showAlert(AlertType.ERROR, "Error", "No values provided", "Please provide some new values to update the order");
+ 
+                });
             }
         });
+
+
     }
 
     public static String percentageCorrector(String percentage) {
@@ -648,6 +706,11 @@ public class SaleFX extends OperationFX {
 
         // Divide by 100 to convert to a decimal value
         return String.valueOf(value / 100.0);
+    }
+
+    public static double truncateToTwoDecimalPlaces(double value) {
+
+        return (double) (value * 100) / 100.0;
     }
     
 }

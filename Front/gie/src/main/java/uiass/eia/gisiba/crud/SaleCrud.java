@@ -231,18 +231,16 @@ public class SaleCrud {
         // Table View
         TableView ordersTable = FXManager.getTableView(pane, "ordersTableView");
 
-        // Buttons
+        // Button
         ImageView confirm = FXManager.getImageView(pane, "confirmBtn");
 
-        SaleFX.editOrdersTableFiller(ordersTable, saleId);
-
-        SaleFX.saleOrdersTableHandler(ordersTable, pane, saleId);
+        SaleFX.editOrdersTableHandler(ordersTable, saleId, pane);
 
         confirm.setOnMouseClicked(event -> {
 
-            ((Stage) pane.getScene().getWindow()).close(); // We close the orders update page after pressing the confirm button
+            ((Stage) pane.getScene().getWindow()).close(); // We close the page after pressing the confirm button
 
-        });      
+        });
     
     }
 

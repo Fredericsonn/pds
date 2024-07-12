@@ -154,6 +154,8 @@ public interface iService {
 
     void updateOrder(int orderId, int quantity, String orderType) throws InvalidOrderTypeException, OrderNotFoundException;
 
+    void updateSaleOrder(int orderId, Map<String,Object> newValues) throws InvalidOrderTypeException, OrderNotFoundException;
+
 /////////////////////////////////////////////////////// Purchase /////////////////////////////////////////////////////////////////////
 
     Purchase getPurchaseById(int id) throws PurchaseNotFoundException;

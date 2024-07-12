@@ -132,12 +132,18 @@ public class OrderDto {
 
         if (json != null) return DataSender.putDataSender(json,"orders/sale/put/" + orderId);
 
-        return "Please provide a quantity to update";
-
-
+        return "Please provide new values to update";
 
     }
 
+                              //////////////// DELETE METHODS //////////////// 
+
+    // Find all the filtered products :
+    public static String delteOrder(int orderId, String operation) {
+
+        return DataSender.deleteDataSender("orders/" + operation + "/delete/" + orderId);
+
+    }
 
 
 }

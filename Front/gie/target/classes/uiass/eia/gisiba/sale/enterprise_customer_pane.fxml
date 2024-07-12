@@ -13,7 +13,7 @@
    <children>
       <VBox alignment="TOP_CENTER" prefHeight="417.0" prefWidth="276.0">
          <children>
-            <Label text="SUPPLIER INFO">
+            <Label text="CUSTOMER INFO">
                <font>
                   <Font size="24.0" />
                </font>

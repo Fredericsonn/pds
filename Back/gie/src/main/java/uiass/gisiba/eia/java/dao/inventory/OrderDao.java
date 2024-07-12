@@ -2,6 +2,7 @@ package uiass.gisiba.eia.java.dao.inventory;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -135,6 +136,8 @@ public class OrderDao implements iOrderDao {
 
         em.remove(order);
 
+        em.flush();
+
         tr.commit();
 
     }
@@ -151,6 +154,30 @@ public class OrderDao implements iOrderDao {
         em.persist(order);
 
         tr.commit();
+    }
+
+    @Override
+    public void updateSaleOrder(int orderId, Map<String,Object> newValues) throws OrderNotFoundException, InvalidOrderTypeException {
+
+        SaleOrder order = (SaleOrder) getOrderById(orderId, "Sale");
+
+        double profitMargin = (double) newValues.get("profitMargin");
+
+        int quantity = (int) newValues.get("quantity");
+
+        order.setProfitMargin(profitMargin);
+
+        if (quantity != 0) order.setQuantity(quantity);
+
+        order.setOrderTime(Time.valueOf(LocalTime.now()));
+
+        tr.begin();
+
+        em.persist(order);
+
+        tr.commit();
+
+        
     }
 
 

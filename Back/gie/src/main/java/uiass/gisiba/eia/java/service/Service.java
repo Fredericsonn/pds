@@ -393,6 +393,14 @@ public class Service implements iService {
                 
     }
 
+    @Override
+    public void updateSaleOrder(int orderId, Map<String, Object> newValues)
+
+            throws InvalidOrderTypeException, OrderNotFoundException {
+
+        odao.updateSaleOrder(orderId, newValues);
+    }
+
 /////////////////////////////////////////////////////// Purchase /////////////////////////////////////////////////////////////////////
 
     @Override
@@ -563,6 +571,8 @@ public class Service implements iService {
 
         sdao.updateSaleStatus(id, status);
     }
+
+
 
 
 

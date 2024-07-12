@@ -150,7 +150,7 @@ public class Main {
         map.put("status", "CANCELED");*/
 
 
-        Map<String,Object> map = new HashMap<String,Object>();
+        /*Map<String,Object> map = new HashMap<String,Object>();
 
         Map<String,String> customerMap = new HashMap<String,String>();
 
@@ -158,17 +158,17 @@ public class Main {
 
         customerMap.put("customerType", "Person");
 
-        map.put("customer", customerMap);
+        map.put("customer", customerMap);*/
 
         try {
-            System.out.println(service.salesFilter(map));
-        } catch (InvalidFilterCriteriaMapFormatException e) {
+            service.deleteOrder(2, "Sale");
+        } catch (InvalidOrderTypeException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (OrderNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-
-
 
         
 

@@ -88,4 +88,33 @@ public class OrderParser extends Parser {
 
         return quantity;
     }
+
+    public static Map<String,Object> updateSaleOrderParser(String json) {
+
+        Map<String,Object> map = new HashMap<String,Object>();
+
+        JsonObject orderObject = new JsonParser().parse(json).getAsJsonObject();
+
+        String quantityString = collectString(orderObject, "quantity");
+
+        double profitMargin = collectDouble(orderObject, "profitMargin");
+
+        System.out.println(profitMargin);
+
+        int quantity = quantityString != null ? Integer.parseInt(quantityString) : 0;
+
+        map.put("quantity", quantity);
+
+        map.put("profitMargin", profitMarginAdapter(profitMargin));
+
+        System.out.println(map);
+        
+        return map;
+
+    }
+
+    public static double profitMarginAdapter(double value) {
+
+        return value / 100;
+    }
 }
