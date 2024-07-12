@@ -6,7 +6,7 @@
     <session-factory>
 
         <!-- Set URL -->
-        <property name = "hibernate.connection.url">jdbc:mysql://localhost:3306/gie?createDatabaseIfNotExist=true</property>
+        <property name = "hibernate.connection.url">jdbc:mysql://bd:3306/gie?createDatabaseIfNotExist=true</property>
 
         <!-- Set Username -->
         <property name = "hibernate.connection.username">root</property>
